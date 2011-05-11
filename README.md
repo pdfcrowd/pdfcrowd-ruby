@@ -9,7 +9,7 @@ code in your Ruby applications.
     
     begin
         # create an API client instance
-        client = Pdfcrowd::Client.new("{{ username }}", "{{ apikey }}")
+        client = Pdfcrowd::Client.new("username", "apikey")
     
         # convert a web page and store the generated PDF into a pdf variable
         pdf = client.convertURI('http://example.com')
@@ -21,14 +21,11 @@ code in your Ruby applications.
         # convert an HTML file
         File.open('file.pdf', 'wb') {|f| client.convertFile('/path/to/local/file.html', f)}
     
-        # retrieve the number of tokens in your account
-        ntokens = client.numTokens()
-    
     rescue Pdfcrowd::Error => why
         print 'FAILED: ', why
     end
 
-## Resources
+## Links
 
 API Home:
  <https://pdfcrowd.com/html-to-pdf-api/>
