@@ -3,6 +3,12 @@
 The Pdfcrowd API lets you easily create PDF from web pages or raw HTML
 code in your Ruby applications.
 
+To use the API, you need an account on
+[http://pdfcrowd.com](https://pdfcrowd.com), if you don't have one you
+can sign up [here](https://pdfcrowd.com/pricing/api/). This will give
+you a username and an API key.
+
+
 ## Example
 
     require 'pdfcrowd'
