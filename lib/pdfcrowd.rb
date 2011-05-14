@@ -69,7 +69,9 @@ module Pdfcrowd
       useSSL(false)
       @fields  = {  
         'username' => username,
-        'key' => apikey 
+        'key' => apikey,
+        'html_zoom' => 200,
+        'pdf_scaling_factor' => 1
       }
     end
     
