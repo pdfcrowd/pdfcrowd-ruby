@@ -277,7 +277,7 @@ module Pdfcrowd
     
     def call_api_urlencoded(path, src=nil, out_stream=nil)
       request = Net::HTTP::Post.new(path)
-      request.set_form_data(encode_post_data({'src' => src}))
+      request.set_form_data(rename_post_data({'src' => src}))
       return call_api(request, out_stream)
     end
        
@@ -306,7 +306,7 @@ module Pdfcrowd
       end
     end
 
-    def encode_post_data(extra_data={})
+    def rename_post_data(extra_data={})
         result = extra_data.clone()
         @fields.each { |key, val| result[key] = val if val }
         result
