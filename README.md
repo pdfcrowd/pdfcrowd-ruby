@@ -8,6 +8,19 @@ To use the API, you need an account on
 can sign up [here](https://pdfcrowd.com/pricing/api/). This will give
 you a username and an API key.
 
+## Installation
+
+The recommended installation method is via
+[RubyGems](https://rubygems.org/gems/pdfcrowd):
+
+    sudo gem install pdfcrowd
+    
+Or you can build and install the gem manually:
+
+    git clone git@github.com:pdfcrowd/pdfcrowd-ruby.git
+    cd pdfcrowd-ruby/
+    make gem
+    sudo gem install pdfcrowd-*.gem   
 
 ## Example
 

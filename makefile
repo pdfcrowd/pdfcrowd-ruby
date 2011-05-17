@@ -2,6 +2,8 @@ all:
 
 dist: pdfcrowd-*.gem
 
+gem: dist
+
 pdfcrowd-*.gem: pdfcrowd.gemspec lib/pdfcrowd.rb
 	gem build pdfcrowd.gemspec
 
