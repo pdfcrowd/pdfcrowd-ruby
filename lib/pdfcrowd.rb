@@ -49,6 +49,7 @@ module Pdfcrowd
     end
     
     def to_s()
+
       @http_code ?  "#{@http_code} - #{@error}" : @error
     end
   end
@@ -83,7 +84,7 @@ module Pdfcrowd
     #               return value is a string containing the PDF.
     #               
     def convertURI(uri, outstream=nil)
-        return convert(outstream, 'uri', uri)
+        return call_api_urlencoded('/api/pdf/convert/uri/', uri, outstream)
     end
         
     #
@@ -94,7 +95,7 @@ module Pdfcrowd
     #               return value is a string containing the PDF.
     # 
     def convertHtml(content, outstream=nil)
-        return convert(outstream, 'html', content)
+        return call_api_urlencoded('/api/pdf/convert/html/', content, outstream)
     end
 
     #
@@ -112,9 +113,8 @@ module Pdfcrowd
     # Returns the number of available conversion tokens.
     # 
     def numTokens()
-      uri = @api_uri + 'user/%s/tokens/' % @fields['username']
-      response = call_api(uri, nil)
-      return Integer(response)
+      uri = '/api/user/%s/tokens/' % @fields['username']
+      return Integer(call_api_urlencoded(uri))
     end
     
     def useSSL(use_ssl)
@@ -275,35 +275,37 @@ module Pdfcrowd
       return http
     end
     
-    def convert(out_stream, method, src)
-      uri = @api_uri + 'pdf/convert/%s/' % method
-      return call_api(uri, out_stream, src)
+    def call_api_urlencoded(path, src=nil, out_stream=nil)
+      request = Net::HTTP::Post.new(path)
+      request.set_form_data(encode_post_data({'src' => src}))
+      return call_api(request, out_stream)
     end
-        
-    def call_api(uri, out_stream, src=nil)
-      data = encode_post_data({'src' => src})
-      url = URI.parse(uri)
-      req = Net::HTTP::Post.new(url.path)
-      req.set_form_data(data)
+       
+
+    def call_api(request, out_stream)
       http = create_http_obj()
       begin
-        res = http.start {|connection| connection.request(req) }
-        case res
-        when Net::HTTPSuccess, Net::HTTPRedirection
-          if out_stream
-            out_stream.write(res.body)
-            return out_stream
-          else
-            return res.body
-          end
-        else
-          raise Error.new(res.body, res.code)
-        end
+        http.start {|conn|
+          conn.request(request) {|response|
+            case response
+            when Net::HTTPSuccess
+              if out_stream
+                response.read_body do |chunk|
+                  out_stream.write(chunk)
+                end
+              else
+                return response.body
+              end
+            else
+              raise Error.new(response.body, response.code)
+            end
+          }
+        }
       rescue SystemCallError => why
         raise Error.new("#{why}\n")
       end
     end
-    
+
     def encode_post_data(extra_data={})
         result = extra_data.clone()
         @fields.each { |key, val| result[key] = val if val }
@@ -332,26 +334,9 @@ module Pdfcrowd
     end
     
     def post_multipart(fpath, out_stream)
-      content_type, body = encode_multipart_post_data(fpath)
-      headers = { 'content-type' => content_type, 'content-length' => body.length.to_s }
-      http = create_http_obj()
-      begin
-        res = http.start {|connection| connection.post(API_SELECTOR_BASE + 'pdf/convert/html/', body, headers) }
-        case res
-        when Net::HTTPSuccess, Net::HTTPRedirection
-          if out_stream
-            out_stream.write(res.body)
-            return out_stream
-          else
-            return res.body
-          end
-        else
-          raise Error.new(res.body, res.code)
-        end
-      rescue SystemCallError => why
-        raise Error.new("#{why}\n")
-      end
-      return
+      req = Net::HTTP::Post.new('/api/pdf/convert/html/')
+      req.content_type, req.body = encode_multipart_post_data(fpath)
+      return call_api(req, out_stream)
     end
 end
 end
