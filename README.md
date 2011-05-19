@@ -24,6 +24,8 @@ Or you can build and install the gem manually:
 
 ## Example
 
+(don't forget to use your `"username"` and `"apikey"`)
+
     require 'pdfcrowd'
     
     begin
