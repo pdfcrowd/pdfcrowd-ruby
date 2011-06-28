@@ -251,6 +251,11 @@ module Pdfcrowd
         @fields['header_url'] = value
     end
 
+    def setPageBackgroundColor(value)
+        @fields['page_background_color'] = value
+    end
+
+
 
 
 
