@@ -255,6 +255,9 @@ module Pdfcrowd
         @fields['page_background_color'] = value
     end
 
+    def setTransparentBackground(value=true)
+        @fields['transparent_background'] = value
+    end
 
 
 
