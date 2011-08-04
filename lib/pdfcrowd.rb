@@ -450,7 +450,8 @@ if __FILE__ == $0
                         [:setHeaderHtml, 'page %p out of %n'],
                         [:setHeaderUrl, 'http://google.com'],
                         [:setPdfScalingFactor, 0.5],
-                        [:setPageBackgroundColor, 'ee82EE']]
+                        [:setPageBackgroundColor, 'ee82EE'],
+                        [:setTransparentBackground, true]]
       client = Pdfcrowd::Client.new(ARGV[0], ARGV[1])
       client.setVerticalMargin("1in")
       client.send(method, arg)
