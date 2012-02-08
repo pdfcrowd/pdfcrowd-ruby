@@ -139,11 +139,11 @@ module Pdfcrowd
     end
     
     def setHorizontalMargin(value)
-        @fields['hmargin'] = value
+        @fields['hmargin'] = value.to_s()
     end
     
     def setVerticalMargin(value)
-        @fields['vmargin'] = value
+        @fields['vmargin'] = value.to_s()
     end
     
     def setEncrypted(val=true)
@@ -259,6 +259,27 @@ module Pdfcrowd
         @fields['transparent_background'] = value
     end
 
+    def setPageNumberingOffset(value)
+        @fields['page_numbering_offset'] = value
+    end
+
+    def setHeaderFooterPageExcludeList(value)
+        @fields['header_footer_page_exclude_list'] = value
+    end
+
+    def setWatermark(url, offset_x=0, offset_y=0)
+        @fields["watermark_url"] = value
+        @fields["watermark_offset_x"] = offset_x
+        @fields["watermark_offset_y"] = offset_y
+    end
+
+    def setWatermarkRotation(angle)
+        @fields["watermark_rotation"] = angle
+    end
+
+    def setWatermarkInBackground(val=True)
+        @fields["watermark_in_background"] = val
+    end
 
 
 
@@ -423,8 +444,7 @@ if __FILE__ == $0
   begin
     for method, arg in [[:setPageWidth, 500],
                         [:setPageHeight, -1],
-                        [:setHorizontalMargin, 72],
-                        [:setVerticalMargin, 72],
+                        [:setHorizontalMargin, 0],
                         [:setEncrypted, true],
                         [:setUserPassword, 'userpwd'],
                         [:setOwnerPassword, 'ownerpwd'],
