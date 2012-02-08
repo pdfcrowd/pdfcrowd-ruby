@@ -231,6 +231,14 @@ module Pdfcrowd
         @fields['initial_pdf_zoom'] = value
     end
 
+    def setAuthor(value)
+        @fields['author'] = value
+    end
+
+    def setFailOnNon200(value)
+        @fields['fail_on_non200'] = value
+    end
+
     def setPdfScalingFactor(value)
         @fields['pdf_scaling_factor'] = value
     end
@@ -451,6 +459,8 @@ if __FILE__ == $0
                         [:setNoPrint, true],
                         [:setNoModify, true],
                         [:setNoCopy, true],
+                        [:setAuthor, "ruby test"],
+                        [:setFailOnNon200, true],
                         [:setPageLayout, Pdfcrowd::CONTINUOUS],
                         [:setPageMode, Pdfcrowd::FULLSCREEN],
                         [:setFooterText, '%p/%n | source %u'],
