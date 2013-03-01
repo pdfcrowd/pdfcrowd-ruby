@@ -139,12 +139,20 @@ module Pdfcrowd
     end
     
     def setHorizontalMargin(value)
-        @fields['hmargin'] = value.to_s()
+        @fields['margin_right'] = @fields['margin_left'] = value.to_s()
     end
     
     def setVerticalMargin(value)
-        @fields['vmargin'] = value.to_s()
+        @fields['margin_top'] = @fields['margin_bottom'] = value.to_s()
     end
+
+    def setPageMargins(top, right, bottom, left)
+        @fields['margin_top'] = top.to_s()
+        @fields['margin_right'] = right.to_s()
+        @fields['margin_bottom'] = bottom.to_s()
+        @fields['margin_left'] = left.to_s()
+    end
+
     
     def setEncrypted(val=true)
         @fields['encrypted'] = val
@@ -491,5 +499,11 @@ if __FILE__ == $0
     print 'FAILED: ', why
     exit(1)
   end
+
+  # 4 margins
+  client = Pdfcrowd::Client.new(ARGV[0], ARGV[1])
+  client.setPageMargins('0.25in', '0.5in', '0.75in', '1.0in')
+  client.convertHtml('<div style="background-color:red;height:100%">4 margins</div>', out_stream('4margins', false))
+
   
 end
