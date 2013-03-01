@@ -430,7 +430,7 @@ if __FILE__ == $0
   $test_dir = '../../test_files'
 
   def out_stream(name, use_ssl)
-    fname = "#{$test_dir}/out/rb_client_#{name}"
+    fname = "./../out/rb_client_#{name}"
     if use_ssl
       fname = fname + '_ssl'
     end
