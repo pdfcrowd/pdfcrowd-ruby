@@ -427,10 +427,10 @@ if __FILE__ == $0
 
   some_html="<html><body>Uploaded content!</body></html>"
   Dir.chdir(File.dirname($0))
-  $test_dir = '../../test_files'
+  $test_dir = '../test_files'
 
   def out_stream(name, use_ssl)
-    fname = "./../out/rb_client_#{name}"
+    fname = $test_dir + "/out/rb_client_#{name}"
     if use_ssl
       fname = fname + '_ssl'
     end
