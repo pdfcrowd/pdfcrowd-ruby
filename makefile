@@ -19,4 +19,4 @@ init:
 
 .PHONY: clean
 clean:
-	rm -rf *.gem ./out/rb_*.pdf
+	rm -rf *.gem ./test_files/out/rb_*.pdf
