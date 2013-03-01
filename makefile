@@ -15,4 +15,4 @@ publish: clean dist
 
 .PHONY: clean
 clean:
-	rm -rf *.gem
+	rm -rf *.gem ./out/rb_*.pdf
