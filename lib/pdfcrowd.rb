@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2011 pdfcrowd.com
+# Copyright (C) 2009-2013 pdfcrowd.com
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
