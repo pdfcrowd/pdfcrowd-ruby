@@ -8,10 +8,10 @@
 # copies of the Software, and to permit persons to whom the
 # Software is furnished to do so, subject to the following
 # conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 # OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,26 +28,26 @@ require 'cgi'
 module Pdfcrowd
   # constants for setPageLayout()
   SINGLE_PAGE, CONTINUOUS, CONTINUOUS_FACING = 1, 2, 3
-  
+
   # constants for setPageMode()
   NONE_VISIBLE, THUMBNAILS_VISIBLE, FULLSCREEN = 1, 2, 3
-  
+
   # constants for setInitialPdfZoomType()
   FIT_WIDTH, FIT_HEIGHT, FIT_PAGE = 1, 2, 3
 
 
   #
   # Thrown when an error occurs.
-  # 
+  #
   class Error < RuntimeError
     attr_reader :http_code, :error
-    
+
     def initialize(error, http_code=nil)
       super()
       @http_code = http_code
         @error = error
     end
-    
+
     def to_s()
 
       @http_code ?  "#{@http_code} - #{@error}" : @error
@@ -57,9 +57,9 @@ module Pdfcrowd
 
   #
   # Pdfcrowd API client.
-  # 
+  #
   class Client
-    
+
     #
     # Client constructor.
     #
@@ -68,39 +68,39 @@ module Pdfcrowd
     #
     def initialize(username, apikey)
       useSSL(false)
-      @fields  = {  
+      @fields  = {
         'username' => username,
         'key' => apikey,
         'html_zoom' => 200,
         'pdf_scaling_factor' => 1
       }
     end
-    
+
     #
     # Converts a web page.
-    #     
+    #
     # uri        -- a web page URL
     # outstream -- an object having method 'write(data)'; if nil then the
     #               return value is a string containing the PDF.
-    #               
+    #
     def convertURI(uri, outstream=nil)
         return call_api_urlencoded('/api/pdf/convert/uri/', uri, outstream)
     end
-        
+
     #
     # Converts an in-memory html document.
     #
     # content    -- a string containing an html document
     # outstream -- an object having method 'write(data)'; if nil then the
     #               return value is a string containing the PDF.
-    # 
+    #
     def convertHtml(content, outstream=nil)
         return call_api_urlencoded('/api/pdf/convert/html/', content, outstream)
     end
 
     #
     # Converts an html file.
-    # 
+    #
     # fpath      -- a path to an html file
     # outstream -- an object having method 'write(data)'; if nil then the
     #               return value is a string containing the PDF.
@@ -111,37 +111,37 @@ module Pdfcrowd
 
     #
     # Returns the number of available conversion tokens.
-    # 
+    #
     def numTokens()
       uri = '/api/user/%s/tokens/' % @fields['username']
       return Integer(call_api_urlencoded(uri))
     end
-    
+
     def useSSL(use_ssl)
         @use_ssl = use_ssl
         @api_uri = use_ssl ? HTTPS_API_URI : HTTP_API_URI
     end
-    
+
     def setUsername(username)
         @fields['username'] = username
     end
-    
+
     def setApiKey(key)
         @fields['key'] = key
     end
-    
+
     def setPageWidth(value)
         @fields['width'] = value
     end
-    
+
     def setPageHeight(value)
         @fields['height'] = value
     end
-    
+
     def setHorizontalMargin(value)
         @fields['margin_right'] = @fields['margin_left'] = value.to_s()
     end
-    
+
     def setVerticalMargin(value)
         @fields['margin_top'] = @fields['margin_bottom'] = value.to_s()
     end
@@ -153,31 +153,31 @@ module Pdfcrowd
         @fields['margin_left'] = left.to_s()
     end
 
-    
+
     def setEncrypted(val=true)
         @fields['encrypted'] = val
     end
-    
+
     def setUserPassword(pwd)
         @fields['user_pwd'] = pwd
     end
-    
+
     def setOwnerPassword(pwd)
         @fields['owner_pwd'] = pwd
     end
-    
+
     def setNoPrint(val=true)
         @fields['no_print'] = val
     end
-    
+
     def setNoModify(val=true)
         @fields['no_modify'] = val
     end
-    
+
     def setNoCopy(val=true)
         @fields['no_copy'] = val
     end
-    
+
     def setPageLayout(value)
         assert { value > 0 and value <= 3 }
         @fields['page_layout'] = value
@@ -233,7 +233,7 @@ module Pdfcrowd
         assert { value>0 and value<=3 }
         @fields['initial_pdf_zoom_type'] = value
     end
-    
+
     def setInitialPdfExactZoom(value)
         @fields['initial_pdf_zoom_type'] = 4
         @fields['initial_pdf_zoom'] = value
@@ -254,15 +254,15 @@ module Pdfcrowd
     def setFooterHtml(value)
         @fields['footer_html'] = value
     end
-        
+
     def setFooterUrl(value)
         @fields['footer_url'] = value
     end
-        
+
     def setHeaderHtml(value)
         @fields['header_html'] = value
     end
-        
+
     def setHeaderUrl(value)
         @fields['header_url'] = value
     end
@@ -304,28 +304,28 @@ module Pdfcrowd
     #                      Private stuff
     #
 
-    private   
+    private
 
     def create_http_obj()
       if @use_ssl
-        require 'net/https' #apt-get install libopenssl-ruby 
+        require 'net/https' #apt-get install libopenssl-ruby
         http = Net::HTTP.new($api_hostname, $api_https_port)
         # OpenSSL::SSL::VERIFY_PEER fails here:
         # ... certificate verify failed ...
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        http.use_ssl = @use_ssl 
+        http.use_ssl = @use_ssl
       else
         http = Net::HTTP.new($api_hostname, $api_http_port)
       end
       return http
     end
-    
+
     def call_api_urlencoded(path, src=nil, out_stream=nil)
       request = Net::HTTP::Post.new(path)
       request.set_form_data(rename_post_data({'src' => src}))
       return call_api(request, out_stream)
     end
-       
+
 
     def call_api(request, out_stream)
       http = create_http_obj()
@@ -356,7 +356,7 @@ module Pdfcrowd
         @fields.each { |key, val| result[key] = val if val }
         result
     end
-    
+
     def encode_multipart_post_data(filename)
         boundary = '----------ThIs_Is_tHe_bOUnDary_$'
         body = []
@@ -377,7 +377,7 @@ module Pdfcrowd
         content_type = 'multipart/form-data; boundary=%s' % boundary
         return content_type, body
     end
-    
+
     def post_multipart(fpath, out_stream)
       req = Net::HTTP::Post.new('/api/pdf/convert/html/')
       req.content_type, req.body = encode_multipart_post_data(fpath)
@@ -406,7 +406,7 @@ HTTPS_API_URI = "https://#{$api_hostname}#{API_SELECTOR_BASE}"
 # ---------------------------------------------------------------------------
 #
 #                                   Test
-# 
+#
 
 if __FILE__ == $0
   if ARGV.length < 2
@@ -505,5 +505,5 @@ if __FILE__ == $0
   client.setPageMargins('0.25in', '0.5in', '0.75in', '1.0in')
   client.convertHtml('<div style="background-color:red;height:100%">4 margins</div>', out_stream('4margins', false))
 
-  
+
 end
