@@ -442,7 +442,7 @@ if __FILE__ == $0
     client.useSSL(use_ssl)
     begin
       ntokens = client.numTokens()
-      client.convertURI('http://www.jagpdf.org/', out_stream('uri', use_ssl))
+      client.convertURI('http://www.web-to-pdf.com', out_stream('uri', use_ssl))
       client.convertHtml(some_html, out_stream('content', use_ssl))
       client.convertFile("#{$test_dir}/in/simple.html", out_stream('upload', use_ssl))
       client.convertFile("#{$test_dir}/in/archive.tar.gz", out_stream('archive', use_ssl))
@@ -484,9 +484,9 @@ if __FILE__ == $0
                         [:setInitialPdfZoomType, Pdfcrowd::FIT_PAGE],
                         [:setInitialPdfExactZoom, 113],
                         [:setFooterHtml, '<b>bold</b> and <i>italic</i> <img src="http://pdfcrowd.com/static/images/logo175x30.png" />'],
-                        [:setFooterUrl, 'http://google.com'],
+                        [:setFooterUrl, 'http://pdfcrowd.com/hub/random/footer.html'],
                         [:setHeaderHtml, 'page %p out of %n'],
-                        [:setHeaderUrl, 'http://google.com'],
+                        [:setHeaderUrl, 'http://pdfcrowd.com/hub/random/header.html'],
                         [:setPdfScalingFactor, 0.5],
                         [:setPageBackgroundColor, 'ee82EE'],
                         [:setTransparentBackground, true]]
