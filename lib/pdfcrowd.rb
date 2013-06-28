@@ -352,7 +352,8 @@ module Pdfcrowd
     end
 
     def rename_post_data(extra_data={})
-        result = extra_data.clone()
+        result = {}
+        extra_data.each { |key, val| result[key] = val if val }
         @fields.each { |key, val| result[key] = val if val }
         result
     end
