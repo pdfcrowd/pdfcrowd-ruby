@@ -66,7 +66,7 @@ module Pdfcrowd
     # username -- your username at Pdfcrowd
     # apikey  -- your API key
     #
-    def initialize(username, apikey)
+    def initialize(username, apikey, hostname=nil)
       useSSL(false)
       @fields  = {
         'username' => username,
@@ -74,6 +74,7 @@ module Pdfcrowd
         'html_zoom' => 200,
         'pdf_scaling_factor' => 1
       }
+      @hostname = hostname || $api_hostname;
     end
 
     #
@@ -309,13 +310,13 @@ module Pdfcrowd
     def create_http_obj()
       if @use_ssl
         require 'net/https' #apt-get install libopenssl-ruby
-        http = Net::HTTP.new($api_hostname, $api_https_port)
+        http = Net::HTTP.new(@hostname, $api_https_port)
         # OpenSSL::SSL::VERIFY_PEER fails here:
         # ... certificate verify failed ...
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         http.use_ssl = @use_ssl
       else
-        http = Net::HTTP.new($api_hostname, $api_http_port)
+        http = Net::HTTP.new(@hostname, $api_http_port)
       end
       return http
     end
