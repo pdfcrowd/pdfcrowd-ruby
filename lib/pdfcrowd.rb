@@ -444,7 +444,7 @@ if __FILE__ == $0
     client.useSSL(use_ssl)
     begin
       ntokens = client.numTokens()
-      client.convertURI('http://www.web-to-pdf.com', out_stream('uri', use_ssl))
+      client.convertURI('http://dl.dropboxusercontent.com/u/9346438/tests/webtopdfcom.html', out_stream('uri', use_ssl))
       client.convertHtml(some_html, out_stream('content', use_ssl))
       client.convertFile("#{$test_dir}/in/simple.html", out_stream('upload', use_ssl))
       client.convertFile("#{$test_dir}/in/archive.tar.gz", out_stream('archive', use_ssl))
