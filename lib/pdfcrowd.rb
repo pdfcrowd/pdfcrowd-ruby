@@ -1,5 +1,5 @@
-# Copyright (C) 2009-2013 pdfcrowd.com
-#
+# Copyright (C) 2009-2016 pdfcrowd.com
+# 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
 # files (the "Software"), to deal in the Software without
@@ -8,10 +8,10 @@
 # copies of the Software, and to permit persons to whom the
 # Software is furnished to do so, subject to the following
 # conditions:
-#
+# 
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-#
+# 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 # OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,6 +24,9 @@
 require 'net/http'
 require 'cgi'
 
+# ======================================
+# === PDFCrowd legacy version client ===
+# ======================================
 
 module Pdfcrowd
   # constants for setPageLayout()
@@ -45,12 +48,19 @@ module Pdfcrowd
     def initialize(error, http_code=nil)
       super()
       @http_code = http_code
-        @error = error
+      @error = error
     end
 
     def to_s()
-
       @http_code ?  "#{@http_code} - #{@error}" : @error
+    end
+
+    def getCode()
+        @http_code
+    end
+
+    def getMessage()
+        @error
     end
   end
 
@@ -429,7 +439,9 @@ if __FILE__ == $0
 
   some_html="<html><body>Uploaded content!</body></html>"
   Dir.chdir(File.dirname($0))
-  $test_dir = '../test_files'
+  $test_dir = '/tmp/legacy'
+  $in_dir = File.expand_path('../../../../../../tests/input/', File.dirname(__FILE__))
+
 
   def out_stream(name, use_ssl)
     fname = $test_dir + "/out/rb_client_#{name}"
@@ -446,8 +458,8 @@ if __FILE__ == $0
       ntokens = client.numTokens()
       client.convertURI('https://storage.googleapis.com/pdfcrowd-legacy-tests/tests/webtopdfcom.html', out_stream('uri', use_ssl))
       client.convertHtml(some_html, out_stream('content', use_ssl))
-      client.convertFile("#{$test_dir}/in/simple.html", out_stream('upload', use_ssl))
-      client.convertFile("#{$test_dir}/in/archive.tar.gz", out_stream('archive', use_ssl))
+      client.convertFile("#{$in_dir}/hello_world.html", out_stream('upload', use_ssl))
+      client.convertFile("#{$in_dir}/hello_world.tar.gz", out_stream('archive', use_ssl))
       after_tokens = client.numTokens()
       if ntokens-4 != after_tokens
         raise RuntimeError, 'got unexpected number of tokens'
@@ -495,7 +507,7 @@ if __FILE__ == $0
       client = Pdfcrowd::Client.new(ARGV[0], ARGV[1])
       client.setVerticalMargin("1in")
       client.send(method, arg)
-      client.convertFile("#{$test_dir}/in/simple.html", out_stream(method.id2name.downcase(), false))
+      client.convertFile("#{$in_dir}/hello_world.html", out_stream(method.id2name.downcase(), false))
     end
   rescue Pdfcrowd::Error => why
     print 'FAILED: ', why
@@ -507,5 +519,1971 @@ if __FILE__ == $0
   client.setPageMargins('0.25in', '0.5in', '0.75in', '1.0in')
   client.convertHtml('<div style="background-color:red;height:100%">4 margins</div>', out_stream('4margins', false))
 
+
+end
+
+# =====================================
+# === PDFCrowd cloud version client ===
+# =====================================
+
+module Pdfcrowd
+    HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
+    MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
+    CLIENT_VERSION = '4.0'
+
+    def self.float_to_string(value)
+        value.to_s.sub(',', '.')
+    end
+
+    class ConnectionHelper
+        def initialize(user_name, api_key)
+            @user_name = user_name
+            @api_key = api_key
+
+            reset_response_data()
+
+            setProxy(nil, nil, nil, nil)
+            setUseHttp(false)
+            setUserAgent('pdfcrowd_ruby_client/4.0 (http://pdfcrowd.com)')
+        end
+
+        def post(fields, files, raw_data, out_stream = nil)
+            return (files.empty? and raw_data.empty?) ? post_url_encoded(fields, out_stream) : post_multipart(fields, files, raw_data, out_stream)
+        end
+
+        def setUseHttp(use_http)
+            @use_http = use_http
+        end
+
+        def setUserAgent(user_agent)
+            @user_agent = user_agent
+        end
+
+        def setProxy(host, port, user_name, password)
+            @proxy_host = host
+            @proxy_port = port
+            @proxy_user_name = user_name
+            @proxy_password = password
+        end
+
+        def getDebugLogUrl()
+            @debug_log_url
+        end
+
+        def getRemainingCreditCount()
+            @credits
+        end
+
+        def getConsumedCreditCount()
+            @consumed_credits
+        end
+
+        def getJobId()
+            @job_id
+        end
+
+        def getPageCount()
+            @page_count
+        end
+
+        def getOutputSize()
+            @output_size
+        end
+
+        private
+
+        def reset_response_data()
+            @debug_log_url = nil
+            @credits = 999999
+            @consumed_credits = 0
+            @job_id = ''
+            @page_count = 0
+            @output_size = 0
+        end
+
+        def post_url_encoded(fields, out_stream)
+            request = ConnectionHelper.create_request()
+            data = {}
+            fields.each { |key, value| data[key] = value.to_s if value }
+            request.set_form_data(data)
+            do_post(request, out_stream)
+        end
+
+        def post_multipart(fields, files, raw_data, out_stream)
+            request = ConnectionHelper.create_request()
+            request.body = ConnectionHelper.encode_multipart_post_data(fields, files, raw_data)
+            request.content_type = 'multipart/form-data; boundary=' + MULTIPART_BOUNDARY
+            do_post(request, out_stream)
+        end
+
+        def self.create_request()
+            Net::HTTP::Post.new('/convert/')
+        end
+
+        def self.add_file_field(name, file_name, data, body)
+            body << '--' + MULTIPART_BOUNDARY
+            body << 'Content-Disposition: form-data; name="%s"; filename="%s"' % [name, file_name]
+            body << 'Content-Type: application/octet-stream'
+            body << ''
+            body << data
+        end
+
+        def self.encode_multipart_post_data(fields, files, raw_data)
+            body = []
+            for field, value in fields
+                body << '--' + MULTIPART_BOUNDARY << 'Content-Disposition: form-data; name="%s"' % field << '' << value.to_s if value
+            end
+            for name, file_name in files
+                File.open(file_name, 'rb') do |f|
+                    ConnectionHelper.add_file_field(name, file_name, f.read, body)
+                end
+            end
+            for name, data in raw_data
+                ConnectionHelper.add_file_field(name, name, data, body)
+            end
+            # finalize
+            body << '--' + MULTIPART_BOUNDARY + '--'
+            body << ''
+            body.join("\r\n")
+        end
+
+        def create_http_obj()
+            if !@use_http
+                require 'net/https' #apt-get install libopenssl-ruby
+                http = Net::HTTP.new(HOST, 443)
+                http.verify_mode = OpenSSL::SSL::VERIFY_NONE unless HOST == 'api.pdfcrowd.com'
+                http.use_ssl = true
+            elsif @proxy_host
+                http = Net::HTTP.new(HOST, 80, @proxy_host, @proxy_port, @proxy_user_name, @proxy_password)
+            else
+                http = Net::HTTP.new(HOST, 80)
+            end
+
+            return http
+        end
+
+        # sends a POST to the API
+        def do_post(request, out_stream)
+            raise Error.new("HTTPS over a proxy is not supported.") if !@use_http and @proxy_host
+
+            reset_response_data()
+
+            request.basic_auth(@user_name, @api_key)
+            request.add_field('User-Agent', @user_agent)
+            
+            begin
+                http = create_http_obj()
+
+                begin
+                    http.start {|conn|
+                        conn.request(request) {|response|
+                            @debug_log_url = response["X-Pdfcrowd-Debug-Log"] || ''
+                            @credits = (response["X-Pdfcrowd-Remaining-Credits"] || 999999).to_i
+                            @consumed_credits = (response["X-Pdfcrowd-Consumed-Credits"] || 0).to_i
+                            @job_id = response["X-Pdfcrowd-Job-Id"] || ''
+                            @page_count = (response["X-Pdfcrowd-Pages"] || 0).to_i
+                            @output_size = (response["X-Pdfcrowd-Output-Size"] || 0).to_i
+
+                            case response
+                            when Net::HTTPSuccess
+                                if out_stream
+                                    response.read_body do |chunk|
+                                        out_stream.write(chunk)
+                                    end
+                                else
+                                    return response.body
+                                end
+                            else
+                                raise Error.new(response.body, response.code)
+                            end
+                        }
+                    }
+                rescue SystemCallError => why
+                    raise Error.new("#{why}\n")
+                rescue Timeout::Error => why
+                    raise Error.new("Operation timed out\n")
+                end
+            end
+        end
+    end
+
+    def self.create_invalid_value_message(value, field, converter, hint, id)
+        message = "Invalid value '%s' for a field '%s'." % [value, field]
+        message += " " + hint if hint
+        return message + " " + "Details: https://www.pdfcrowd.com/doc/api/%s/ruby/#%s" % [converter, id]
+    end
+
+# generated code
+
+    # Conversion from HTML to PDF.
+    class HtmlToPdfClient
+        # Constructor for the Pdfcrowd API client.
+        # 
+        # * +user_name+ - Your username at Pdfcrowd.
+        # * +api_key+ - Your API key.
+        def initialize(user_name, api_key)
+            @helper = ConnectionHelper.new(user_name, api_key)
+            @fields = {
+                'input_format'=>'html',
+                'output_format'=>'pdf'
+            }
+            @file_id = 1
+            @files = {}
+            @raw_data = {}
+        end
+
+        # Convert a web page.
+        # 
+        # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "url", "html-to-pdf", "The supported protocols are http:// and https://.", "convert_url"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a web page and write the result to an output stream.
+        # 
+        # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertUrlToStream(url, out_stream)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "url", "html-to-pdf", "The supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a web page and write the result to a local file.
+        # 
+        # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertUrlToFile(url, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "html-to-pdf", "The string must not be empty.", "convert_url_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertUrlToStream(url, output_file)
+            output_file.close()
+        end
+
+        # Convert a local file.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty. The file name must have valid extension.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertFile(file)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-pdf", "The file must exist and not be empty.", "convert_file"), 470);
+            end
+            
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-pdf", "The file name must have valid extension.", "convert_file"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a local file and write the result to an output stream.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty. The file name must have valid extension.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertFileToStream(file, out_stream)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-pdf", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
+            end
+            
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-pdf", "The file name must have valid extension.", "convert_file_to_stream"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a local file and write the result to a local file.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty. The file name must have valid extension.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertFileToFile(file, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "html-to-pdf", "The string must not be empty.", "convert_file_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertFileToStream(file, output_file)
+            output_file.close()
+        end
+
+        # Convert a string.
+        # 
+        # * +text+ - The string content to convert. The string must not be empty.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertString(text)
+            if (!(!text.nil? && !text.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(text, "text", "html-to-pdf", "The string must not be empty.", "convert_string"), 470);
+            end
+            
+            @fields['text'] = text
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a string and write the output to an output stream.
+        # 
+        # * +text+ - The string content to convert. The string must not be empty.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertStringToStream(text, out_stream)
+            if (!(!text.nil? && !text.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(text, "text", "html-to-pdf", "The string must not be empty.", "convert_string_to_stream"), 470);
+            end
+            
+            @fields['text'] = text
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a string and write the output to a file.
+        # 
+        # * +text+ - The string content to convert. The string must not be empty.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertStringToFile(text, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "html-to-pdf", "The string must not be empty.", "convert_string_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertStringToStream(text, output_file)
+            output_file.close()
+        end
+
+        # Set the output page size.
+        # 
+        # * +page_size+ - Allowed values are A2, A3, A4, A5, A6, Letter.
+        def setPageSize(page_size)
+            unless /(?i)^(A2|A3|A4|A5|A6|Letter)$/.match(page_size)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_size, "page_size", "html-to-pdf", "Allowed values are A2, A3, A4, A5, A6, Letter.", "set_page_size"), 470);
+            end
+            
+            @fields['page_size'] = page_size
+        end
+
+        # Set the output page width.
+        # 
+        # * +page_width+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setPageWidth(page_width)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(page_width)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_width, "page_width", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_page_width"), 470);
+            end
+            
+            @fields['page_width'] = page_width
+        end
+
+        # Set the output page height.
+        # 
+        # * +page_height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setPageHeight(page_height)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(page_height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_height, "page_height", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_page_height"), 470);
+            end
+            
+            @fields['page_height'] = page_height
+        end
+
+        # Set the output page dimensions.
+        # 
+        # * +width+ - Set the output page width. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +height+ - Set the output page height. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setPageDimensions(width, height)
+            setPageWidth(width)
+            setPageHeight(height)
+        end
+
+        # Set the output page orientation.
+        # 
+        # * +orientation+ - Allowed values are landscape, portrait.
+        def setOrientation(orientation)
+            unless /(?i)^(landscape|portrait)$/.match(orientation)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(orientation, "orientation", "html-to-pdf", "Allowed values are landscape, portrait.", "set_orientation"), 470);
+            end
+            
+            @fields['orientation'] = orientation
+        end
+
+        # Set the output page top margin.
+        # 
+        # * +margin_top+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setMarginTop(margin_top)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(margin_top)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(margin_top, "margin_top", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_margin_top"), 470);
+            end
+            
+            @fields['margin_top'] = margin_top
+        end
+
+        # Set the output page right margin.
+        # 
+        # * +margin_right+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setMarginRight(margin_right)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(margin_right)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(margin_right, "margin_right", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_margin_right"), 470);
+            end
+            
+            @fields['margin_right'] = margin_right
+        end
+
+        # Set the output page bottom margin.
+        # 
+        # * +margin_bottom+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setMarginBottom(margin_bottom)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(margin_bottom)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(margin_bottom, "margin_bottom", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_margin_bottom"), 470);
+            end
+            
+            @fields['margin_bottom'] = margin_bottom
+        end
+
+        # Set the output page left margin.
+        # 
+        # * +margin_left+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setMarginLeft(margin_left)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(margin_left)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(margin_left, "margin_left", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_margin_left"), 470);
+            end
+            
+            @fields['margin_left'] = margin_left
+        end
+
+        # Disable margins.
+        # 
+        # * +no_margins+ - Set to true to disable margins.
+        def setNoMargins(no_margins)
+            @fields['no_margins'] = no_margins
+        end
+
+        # Set the output page margins.
+        # 
+        # * +top+ - Set the output page top margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +right+ - Set the output page right margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +bottom+ - Set the output page bottom margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +left+ - Set the output page left margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setPageMargins(top, right, bottom, left)
+            setMarginTop(top)
+            setMarginRight(right)
+            setMarginBottom(bottom)
+            setMarginLeft(left)
+        end
+
+        # Load an HTML code from the specified URL and use it as a page header. The following classnames can be used in the HTML. The content of the respective elements will be set as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of used numerals. Arabic numerals are used by default.
+        # Roman numerals can be generated by roman and roman-lowercase value. E.g. <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies the placement of source URL. The URL is placed as the content of the desired element by default.
+        # The URL can be set to href attribute by using the value href. E.g. <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a>
+        # The URL can be set to the href attribute and to the content by using the value href-and-content. E.g. <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a>
+        # 
+        # * +header_url+ - The supported protocols are http:// and https://.
+        def setHeaderUrl(header_url)
+            unless /(?i)^https?:\/\/.*$/.match(header_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(header_url, "header_url", "html-to-pdf", "The supported protocols are http:// and https://.", "set_header_url"), 470);
+            end
+            
+            @fields['header_url'] = header_url
+        end
+
+        # Use the specified HTML code as a page header. The following classnames can be used in the HTML. The content of the respective elements will be set as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of used numerals. Arabic numerals are used by default.
+        # Roman numerals can be generated by roman and roman-lowercase value. E.g. <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies the placement of source URL. The URL is placed as the content of the desired element by default.
+        # The URL can be set to href attribute by using the value href. E.g. <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a>
+        # The URL can be set to the href attribute and to the content by using the value href-and-content. E.g. <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a>
+        # 
+        # * +header_html+ - The string must not be empty.
+        def setHeaderHtml(header_html)
+            if (!(!header_html.nil? && !header_html.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(header_html, "header_html", "html-to-pdf", "The string must not be empty.", "set_header_html"), 470);
+            end
+            
+            @fields['header_html'] = header_html
+        end
+
+        # Set the header height.
+        # 
+        # * +header_height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setHeaderHeight(header_height)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(header_height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(header_height, "header_height", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_header_height"), 470);
+            end
+            
+            @fields['header_height'] = header_height
+        end
+
+        # Load an HTML code from the specified URL and use it as a page footer. The following classnames can be used in the HTML. The content of the respective elements will be set as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of used numerals. Arabic numerals are used by default.
+        # Roman numerals can be generated by roman and roman-lowercase value. E.g. <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies the placement of source URL. The URL is placed as the content of the desired element by default.
+        # The URL can be set to href attribute by using the value href. E.g. <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a>
+        # The URL can be set to the href attribute and to the content by using the value href-and-content. E.g. <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a>
+        # 
+        # * +footer_url+ - The supported protocols are http:// and https://.
+        def setFooterUrl(footer_url)
+            unless /(?i)^https?:\/\/.*$/.match(footer_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(footer_url, "footer_url", "html-to-pdf", "The supported protocols are http:// and https://.", "set_footer_url"), 470);
+            end
+            
+            @fields['footer_url'] = footer_url
+        end
+
+        # Use the specified HTML as a page footer. The following classnames can be used in the HTML. The content of the respective elements will be set as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of used numerals. Arabic numerals are used by default.
+        # Roman numerals can be generated by roman and roman-lowercase value. E.g. <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies the placement of source URL. The URL is placed as the content of the desired element by default.
+        # The URL can be set to href attribute by using the value href. E.g. <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a>
+        # The URL can be set to the href attribute and to the content by using the value href-and-content. E.g. <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a>
+        # 
+        # * +footer_html+ - The string must not be empty.
+        def setFooterHtml(footer_html)
+            if (!(!footer_html.nil? && !footer_html.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(footer_html, "footer_html", "html-to-pdf", "The string must not be empty.", "set_footer_html"), 470);
+            end
+            
+            @fields['footer_html'] = footer_html
+        end
+
+        # Set the footer height.
+        # 
+        # * +footer_height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        def setFooterHeight(footer_height)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(footer_height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(footer_height, "footer_height", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_footer_height"), 470);
+            end
+            
+            @fields['footer_height'] = footer_height
+        end
+
+        # Set the page range to print.
+        # 
+        # * +pages+ - A comma seperated list of page numbers or ranges.
+        def setPrintPageRange(pages)
+            unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "pages", "html-to-pdf", "A comma seperated list of page numbers or ranges.", "set_print_page_range"), 470);
+            end
+            
+            @fields['print_page_range'] = pages
+        end
+
+        # Apply the first page of the watermark PDF to every page of the output PDF.
+        # 
+        # * +page_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        def setPageWatermark(page_watermark)
+            if (!(File.file?(page_watermark) && !File.zero?(page_watermark)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_watermark, "page_watermark", "html-to-pdf", "The file must exist and not be empty.", "set_page_watermark"), 470);
+            end
+            
+            @files['page_watermark'] = page_watermark
+        end
+
+        # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        # 
+        # * +multipage_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        def setMultipageWatermark(multipage_watermark)
+            if (!(File.file?(multipage_watermark) && !File.zero?(multipage_watermark)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_watermark, "multipage_watermark", "html-to-pdf", "The file must exist and not be empty.", "set_multipage_watermark"), 470);
+            end
+            
+            @files['multipage_watermark'] = multipage_watermark
+        end
+
+        # Apply the first page of the specified PDF to the background of every page of the output PDF.
+        # 
+        # * +page_background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        def setPageBackground(page_background)
+            if (!(File.file?(page_background) && !File.zero?(page_background)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background, "page_background", "html-to-pdf", "The file must exist and not be empty.", "set_page_background"), 470);
+            end
+            
+            @files['page_background'] = page_background
+        end
+
+        # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
+        # 
+        # * +multipage_background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        def setMultipageBackground(multipage_background)
+            if (!(File.file?(multipage_background) && !File.zero?(multipage_background)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_background, "multipage_background", "html-to-pdf", "The file must exist and not be empty.", "set_multipage_background"), 470);
+            end
+            
+            @files['multipage_background'] = multipage_background
+        end
+
+        # The page header is not printed on the specified pages.
+        # 
+        # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma seperated list of page numbers.
+        def setExcludeHeaderOnPages(pages)
+            unless /^(?:\s*\-?\d+\s*,)*\s*\-?\d+\s*$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "pages", "html-to-pdf", "A comma seperated list of page numbers.", "set_exclude_header_on_pages"), 470);
+            end
+            
+            @fields['exclude_header_on_pages'] = pages
+        end
+
+        # The page footer is not printed on the specified pages.
+        # 
+        # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma seperated list of page numbers.
+        def setExcludeFooterOnPages(pages)
+            unless /^(?:\s*\-?\d+\s*,)*\s*\-?\d+\s*$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "pages", "html-to-pdf", "A comma seperated list of page numbers.", "set_exclude_footer_on_pages"), 470);
+            end
+            
+            @fields['exclude_footer_on_pages'] = pages
+        end
+
+        # Set an offset between physical and logical page numbers.
+        # 
+        # * +offset+ - Integer specifying page offset.
+        def setPageNumberingOffset(offset)
+            @fields['page_numbering_offset'] = offset
+        end
+
+        # Do not print the background graphics.
+        # 
+        # * +no_background+ - Set to true to disable the background graphics.
+        def setNoBackground(no_background)
+            @fields['no_background'] = no_background
+        end
+
+        # Do not execute JavaScript.
+        # 
+        # * +disable_javascript+ - Set to true to disable JavaScript in web pages.
+        def setDisableJavascript(disable_javascript)
+            @fields['disable_javascript'] = disable_javascript
+        end
+
+        # Do not load images.
+        # 
+        # * +disable_image_loading+ - Set to true to disable loading of images.
+        def setDisableImageLoading(disable_image_loading)
+            @fields['disable_image_loading'] = disable_image_loading
+        end
+
+        # Disable loading fonts from remote sources.
+        # 
+        # * +disable_remote_fonts+ - Set to true disable loading remote fonts.
+        def setDisableRemoteFonts(disable_remote_fonts)
+            @fields['disable_remote_fonts'] = disable_remote_fonts
+        end
+
+        # Set the default HTML content text encoding.
+        # 
+        # * +default_encoding+ - The text encoding of the HTML content.
+        def setDefaultEncoding(default_encoding)
+            @fields['default_encoding'] = default_encoding
+        end
+
+        # Set the HTTP authentication user name.
+        # 
+        # * +user_name+ - The user name.
+        def setHttpAuthUserName(user_name)
+            @fields['http_auth_user_name'] = user_name
+        end
+
+        # Set the HTTP authentication password.
+        # 
+        # * +password+ - The password.
+        def setHttpAuthPassword(password)
+            @fields['http_auth_password'] = password
+        end
+
+        # Set the HTTP authentication.
+        # 
+        # * +user_name+ - Set the HTTP authentication user name.
+        # * +password+ - Set the HTTP authentication password.
+        def setHttpAuth(user_name, password)
+            setHttpAuthUserName(user_name)
+            setHttpAuthPassword(password)
+        end
+
+        # Use the print version of the page if available (@media print).
+        # 
+        # * +use_print_media+ - Set to true to use the print version of the page.
+        def setUsePrintMedia(use_print_media)
+            @fields['use_print_media'] = use_print_media
+        end
+
+        # Do not send the X-Pdfcrowd HTTP header in Pdfcrowd HTTP requests.
+        # 
+        # * +no_xpdfcrowd_header+ - Set to true to disable sending X-Pdfcrowd HTTP header.
+        def setNoXpdfcrowdHeader(no_xpdfcrowd_header)
+            @fields['no_xpdfcrowd_header'] = no_xpdfcrowd_header
+        end
+
+        # Set cookies that are sent in Pdfcrowd HTTP requests.
+        # 
+        # * +cookies+ - The cookie string.
+        def setCookies(cookies)
+            @fields['cookies'] = cookies
+        end
+
+        # Do not allow insecure HTTPS connections.
+        # 
+        # * +verify_ssl_certificates+ - Set to true to enable SSL certificate verification.
+        def setVerifySslCertificates(verify_ssl_certificates)
+            @fields['verify_ssl_certificates'] = verify_ssl_certificates
+        end
+
+        # Abort the conversion if the main URL HTTP status code is greater than or equal to 400.
+        # 
+        # * +fail_on_error+ - Set to true to abort the conversion.
+        def setFailOnMainUrlError(fail_on_error)
+            @fields['fail_on_main_url_error'] = fail_on_error
+        end
+
+        # Abort the conversion if any of the sub-request HTTP status code is greater than or equal to 400.
+        # 
+        # * +fail_on_error+ - Set to true to abort the conversion.
+        def setFailOnAnyUrlError(fail_on_error)
+            @fields['fail_on_any_url_error'] = fail_on_error
+        end
+
+        # Run a custom JavaScript after the document is loaded. The script is Intended for post-load DOM manipulation (add/remove elements, update CSS, ...).
+        # 
+        # * +custom_javascript+ - String containing a JavaScript code. The string must not be empty.
+        def setCustomJavascript(custom_javascript)
+            if (!(!custom_javascript.nil? && !custom_javascript.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(custom_javascript, "custom_javascript", "html-to-pdf", "The string must not be empty.", "set_custom_javascript"), 470);
+            end
+            
+            @fields['custom_javascript'] = custom_javascript
+        end
+
+        # Set a custom HTTP header that is sent in Pdfcrowd HTTP requests.
+        # 
+        # * +custom_http_header+ - A string containing the header name and value separated by a colon.
+        def setCustomHttpHeader(custom_http_header)
+            unless /^.+:.+$/.match(custom_http_header)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(custom_http_header, "custom_http_header", "html-to-pdf", "A string containing the header name and value separated by a colon.", "set_custom_http_header"), 470);
+            end
+            
+            @fields['custom_http_header'] = custom_http_header
+        end
+
+        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. The maximum value is determined by your API license.
+        # 
+        # * +javascript_delay+ - The number of milliseconds to wait. Must be positive integer number or 0.
+        def setJavascriptDelay(javascript_delay)
+            if (!(Integer(javascript_delay) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(javascript_delay, "javascript_delay", "html-to-pdf", "Must be positive integer number or 0.", "set_javascript_delay"), 470);
+            end
+            
+            @fields['javascript_delay'] = javascript_delay
+        end
+
+        # Convert only the wanted element and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
+        # 
+        # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
+        def setElementToConvert(selectors)
+            if (!(!selectors.nil? && !selectors.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(selectors, "selectors", "html-to-pdf", "The string must not be empty.", "set_element_to_convert"), 470);
+            end
+            
+            @fields['element_to_convert'] = selectors
+        end
+
+        # Specify the DOM handling when only a part of the document is converted.
+        # 
+        # * +mode+ - Allowed values are cut-out, remove-siblings, hide-siblings.
+        def setElementToConvertMode(mode)
+            unless /(?i)^(cut-out|remove-siblings|hide-siblings)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "mode", "html-to-pdf", "Allowed values are cut-out, remove-siblings, hide-siblings.", "set_element_to_convert_mode"), 470);
+            end
+            
+            @fields['element_to_convert_mode'] = mode
+        end
+
+        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails.
+        # 
+        # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
+        def setWaitForElement(selectors)
+            if (!(!selectors.nil? && !selectors.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(selectors, "selectors", "html-to-pdf", "The string must not be empty.", "set_wait_for_element"), 470);
+            end
+            
+            @fields['wait_for_element'] = selectors
+        end
+
+        # Set the viewport width in pixels. The viewport is the user's visible area of the page.
+        # 
+        # * +viewport_width+ - The value must be in a range 96-7680.
+        def setViewportWidth(viewport_width)
+            if (!(Integer(viewport_width) >= 96 && Integer(viewport_width) <= 7680))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(viewport_width, "viewport_width", "html-to-pdf", "The value must be in a range 96-7680.", "set_viewport_width"), 470);
+            end
+            
+            @fields['viewport_width'] = viewport_width
+        end
+
+        # Set the viewport height in pixels. The viewport is the user's visible area of the page.
+        # 
+        # * +viewport_height+ - Must be positive integer number.
+        def setViewportHeight(viewport_height)
+            if (!(Integer(viewport_height) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(viewport_height, "viewport_height", "html-to-pdf", "Must be positive integer number.", "set_viewport_height"), 470);
+            end
+            
+            @fields['viewport_height'] = viewport_height
+        end
+
+        # Set the viewport size. The viewport is the user's visible area of the page.
+        # 
+        # * +width+ - Set the viewport width in pixels. The viewport is the user's visible area of the page. The value must be in a range 96-7680.
+        # * +height+ - Set the viewport height in pixels. The viewport is the user's visible area of the page. Must be positive integer number.
+        def setViewport(width, height)
+            setViewportWidth(width)
+            setViewportHeight(height)
+        end
+
+        # TODO
+        # 
+        # * +rendering_mode+ - The rendering mode. Allowed values are default, viewport.
+        def setRenderingMode(rendering_mode)
+            unless /(?i)^(default|viewport)$/.match(rendering_mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(rendering_mode, "rendering_mode", "html-to-pdf", "Allowed values are default, viewport.", "set_rendering_mode"), 470);
+            end
+            
+            @fields['rendering_mode'] = rendering_mode
+        end
+
+        # Set the scaling factor (zoom) for main page area.
+        # 
+        # * +scale_factor+ - The scale factor. The value must be in a range 10-500.
+        def setScaleFactor(scale_factor)
+            if (!(Integer(scale_factor) >= 10 && Integer(scale_factor) <= 500))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(scale_factor, "scale_factor", "html-to-pdf", "The value must be in a range 10-500.", "set_scale_factor"), 470);
+            end
+            
+            @fields['scale_factor'] = scale_factor
+        end
+
+        # Set the scaling factor (zoom) for header and footer.
+        # 
+        # * +header_footer_scale_factor+ - The scale factor. The value must be in a range 10-500.
+        def setHeaderFooterScaleFactor(header_footer_scale_factor)
+            if (!(Integer(header_footer_scale_factor) >= 10 && Integer(header_footer_scale_factor) <= 500))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(header_footer_scale_factor, "header_footer_scale_factor", "html-to-pdf", "The value must be in a range 10-500.", "set_header_footer_scale_factor"), 470);
+            end
+            
+            @fields['header_footer_scale_factor'] = header_footer_scale_factor
+        end
+
+        # Create linearized PDF. This is also known as Fast Web View.
+        # 
+        # * +linearize+ - Set to true to create linearized PDF.
+        def setLinearize(linearize)
+            @fields['linearize'] = linearize
+        end
+
+        # Encrypt the PDF. This prevents search engines from indexing the contents.
+        # 
+        # * +encrypt+ - Set to true to enable PDF encryption.
+        def setEncrypt(encrypt)
+            @fields['encrypt'] = encrypt
+        end
+
+        # Protect the PDF with a user password. When a PDF has a user password, it must be supplied in order to view the document and to perform operations allowed by the access permissions.
+        # 
+        # * +user_password+ - The user password.
+        def setUserPassword(user_password)
+            @fields['user_password'] = user_password
+        end
+
+        # Protect the PDF with an owner password. Supplying an owner password grants unlimited access to the PDF including changing the passwords and access permissions.
+        # 
+        # * +owner_password+ - The owner password.
+        def setOwnerPassword(owner_password)
+            @fields['owner_password'] = owner_password
+        end
+
+        # Disallow printing of the output PDF.
+        # 
+        # * +no_print+ - Set to true to set the no-print flag in the output PDF.
+        def setNoPrint(no_print)
+            @fields['no_print'] = no_print
+        end
+
+        # Disallow modification of the ouput PDF.
+        # 
+        # * +no_modify+ - Set to true to set the read-only only flag in the output PDF.
+        def setNoModify(no_modify)
+            @fields['no_modify'] = no_modify
+        end
+
+        # Disallow text and graphics extraction from the output PDF.
+        # 
+        # * +no_copy+ - Set to true to set the no-copy flag in the output PDF.
+        def setNoCopy(no_copy)
+            @fields['no_copy'] = no_copy
+        end
+
+        # Turn on the debug logging.
+        # 
+        # * +debug_log+ - Set to true to enable the debug logging.
+        def setDebugLog(debug_log)
+            @fields['debug_log'] = debug_log
+        end
+
+        # Get the URL of the debug log for the last conversion.
+        # * *Returns* - The link to the debug log.
+        def getDebugLogUrl()
+            return @helper.getDebugLogUrl()
+        end
+
+        # Get the number of available conversion credits in your account.
+        # This number might not be exact if you run parallel conversions.
+        # Special value 999999 is returned if the number is not accessible.
+        # * *Returns* - The number of credits.
+        def getRemainingCreditCount()
+            return @helper.getRemainingCreditCount()
+        end
+
+        # Get the number of credits consumed by the last conversion.
+        # * *Returns* - The number of credits.
+        def getConsumedCreditCount()
+            return @helper.getConsumedCreditCount()
+        end
+
+        # Get the job id.
+        # * *Returns* - The unique job identifier.
+        def getJobId()
+            return @helper.getJobId()
+        end
+
+        # Get the total number of pages in the output document.
+        # * *Returns* - The page count.
+        def getPageCount()
+            return @helper.getPageCount()
+        end
+
+        # Get the size of the output in bytes.
+        # * *Returns* - The count of bytes.
+        def getOutputSize()
+            return @helper.getOutputSize()
+        end
+
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # 
+        # * +use_http+ - Set to true to use HTTP.
+        def setUseHttp(use_http)
+            @helper.setUseHttp(use_http)
+        end
+
+        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # 
+        # * +user_agent+ - The user agent string.
+        def setUserAgent(user_agent)
+            @helper.setUserAgent(user_agent)
+        end
+
+        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
+        # 
+        # * +host+ - The proxy hostname.
+        # * +port+ - The proxy port.
+        # * +user_name+ - The username.
+        # * +password+ - The password.
+        def setProxy(host, port, user_name, password)
+            @helper.setProxy(host, port, user_name, password)
+        end
+
+    end
+
+    # Conversion from HTML to image.
+    class HtmlToImageClient
+        # Constructor for the Pdfcrowd API client.
+        # 
+        # * +user_name+ - Your username at Pdfcrowd.
+        # * +api_key+ - Your API key.
+        def initialize(user_name, api_key)
+            @helper = ConnectionHelper.new(user_name, api_key)
+            @fields = {
+                'input_format'=>'html',
+                'output_format'=>'png'
+            }
+            @file_id = 1
+            @files = {}
+            @raw_data = {}
+        end
+
+        # The format of output file.
+        # 
+        # * +output_format+ - Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.
+        def setOutputFormat(output_format)
+            unless /(?i)^(png|jpg|gif|tiff|bmp|ico|ppm|pgm|pbm|pnm|psb|pct|ras|tga|sgi|sun|webp)$/.match(output_format)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(output_format, "output_format", "html-to-image", "Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.", "set_output_format"), 470);
+            end
+            
+            @fields['output_format'] = output_format
+        end
+
+        # Convert a web page.
+        # 
+        # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "url", "html-to-image", "The supported protocols are http:// and https://.", "convert_url"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a web page and write the result to an output stream.
+        # 
+        # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertUrlToStream(url, out_stream)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "url", "html-to-image", "The supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a web page and write the result to a local file.
+        # 
+        # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertUrlToFile(url, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "html-to-image", "The string must not be empty.", "convert_url_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertUrlToStream(url, output_file)
+            output_file.close()
+        end
+
+        # Convert a local file.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty. The file name must have valid extension.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertFile(file)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-image", "The file must exist and not be empty.", "convert_file"), 470);
+            end
+            
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-image", "The file name must have valid extension.", "convert_file"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a local file and write the result to an output stream.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty. The file name must have valid extension.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertFileToStream(file, out_stream)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
+            end
+            
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-image", "The file name must have valid extension.", "convert_file_to_stream"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a local file and write the result to a local file.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty. The file name must have valid extension.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertFileToFile(file, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "html-to-image", "The string must not be empty.", "convert_file_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertFileToStream(file, output_file)
+            output_file.close()
+        end
+
+        # Convert a string.
+        # 
+        # * +text+ - The string content to convert. The string must not be empty.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertString(text)
+            if (!(!text.nil? && !text.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(text, "text", "html-to-image", "The string must not be empty.", "convert_string"), 470);
+            end
+            
+            @fields['text'] = text
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a string and write the output to an output stream.
+        # 
+        # * +text+ - The string content to convert. The string must not be empty.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertStringToStream(text, out_stream)
+            if (!(!text.nil? && !text.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(text, "text", "html-to-image", "The string must not be empty.", "convert_string_to_stream"), 470);
+            end
+            
+            @fields['text'] = text
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a string and write the output to a file.
+        # 
+        # * +text+ - The string content to convert. The string must not be empty.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertStringToFile(text, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "html-to-image", "The string must not be empty.", "convert_string_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertStringToStream(text, output_file)
+            output_file.close()
+        end
+
+        # Do not print the background graphics.
+        # 
+        # * +no_background+ - Set to true to disable the background graphics.
+        def setNoBackground(no_background)
+            @fields['no_background'] = no_background
+        end
+
+        # Do not execute JavaScript.
+        # 
+        # * +disable_javascript+ - Set to true to disable JavaScript in web pages.
+        def setDisableJavascript(disable_javascript)
+            @fields['disable_javascript'] = disable_javascript
+        end
+
+        # Do not load images.
+        # 
+        # * +disable_image_loading+ - Set to true to disable loading of images.
+        def setDisableImageLoading(disable_image_loading)
+            @fields['disable_image_loading'] = disable_image_loading
+        end
+
+        # Disable loading fonts from remote sources.
+        # 
+        # * +disable_remote_fonts+ - Set to true disable loading remote fonts.
+        def setDisableRemoteFonts(disable_remote_fonts)
+            @fields['disable_remote_fonts'] = disable_remote_fonts
+        end
+
+        # Set the default HTML content text encoding.
+        # 
+        # * +default_encoding+ - The text encoding of the HTML content.
+        def setDefaultEncoding(default_encoding)
+            @fields['default_encoding'] = default_encoding
+        end
+
+        # Set the HTTP authentication user name.
+        # 
+        # * +user_name+ - The user name.
+        def setHttpAuthUserName(user_name)
+            @fields['http_auth_user_name'] = user_name
+        end
+
+        # Set the HTTP authentication password.
+        # 
+        # * +password+ - The password.
+        def setHttpAuthPassword(password)
+            @fields['http_auth_password'] = password
+        end
+
+        # Set the HTTP authentication.
+        # 
+        # * +user_name+ - Set the HTTP authentication user name.
+        # * +password+ - Set the HTTP authentication password.
+        def setHttpAuth(user_name, password)
+            setHttpAuthUserName(user_name)
+            setHttpAuthPassword(password)
+        end
+
+        # Use the print version of the page if available (@media print).
+        # 
+        # * +use_print_media+ - Set to true to use the print version of the page.
+        def setUsePrintMedia(use_print_media)
+            @fields['use_print_media'] = use_print_media
+        end
+
+        # Do not send the X-Pdfcrowd HTTP header in Pdfcrowd HTTP requests.
+        # 
+        # * +no_xpdfcrowd_header+ - Set to true to disable sending X-Pdfcrowd HTTP header.
+        def setNoXpdfcrowdHeader(no_xpdfcrowd_header)
+            @fields['no_xpdfcrowd_header'] = no_xpdfcrowd_header
+        end
+
+        # Set cookies that are sent in Pdfcrowd HTTP requests.
+        # 
+        # * +cookies+ - The cookie string.
+        def setCookies(cookies)
+            @fields['cookies'] = cookies
+        end
+
+        # Do not allow insecure HTTPS connections.
+        # 
+        # * +verify_ssl_certificates+ - Set to true to enable SSL certificate verification.
+        def setVerifySslCertificates(verify_ssl_certificates)
+            @fields['verify_ssl_certificates'] = verify_ssl_certificates
+        end
+
+        # Abort the conversion if the main URL HTTP status code is greater than or equal to 400.
+        # 
+        # * +fail_on_error+ - Set to true to abort the conversion.
+        def setFailOnMainUrlError(fail_on_error)
+            @fields['fail_on_main_url_error'] = fail_on_error
+        end
+
+        # Abort the conversion if any of the sub-request HTTP status code is greater than or equal to 400.
+        # 
+        # * +fail_on_error+ - Set to true to abort the conversion.
+        def setFailOnAnyUrlError(fail_on_error)
+            @fields['fail_on_any_url_error'] = fail_on_error
+        end
+
+        # Run a custom JavaScript after the document is loaded. The script is Intended for post-load DOM manipulation (add/remove elements, update CSS, ...).
+        # 
+        # * +custom_javascript+ - String containing a JavaScript code. The string must not be empty.
+        def setCustomJavascript(custom_javascript)
+            if (!(!custom_javascript.nil? && !custom_javascript.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(custom_javascript, "custom_javascript", "html-to-image", "The string must not be empty.", "set_custom_javascript"), 470);
+            end
+            
+            @fields['custom_javascript'] = custom_javascript
+        end
+
+        # Set a custom HTTP header that is sent in Pdfcrowd HTTP requests.
+        # 
+        # * +custom_http_header+ - A string containing the header name and value separated by a colon.
+        def setCustomHttpHeader(custom_http_header)
+            unless /^.+:.+$/.match(custom_http_header)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(custom_http_header, "custom_http_header", "html-to-image", "A string containing the header name and value separated by a colon.", "set_custom_http_header"), 470);
+            end
+            
+            @fields['custom_http_header'] = custom_http_header
+        end
+
+        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. The maximum value is determined by your API license.
+        # 
+        # * +javascript_delay+ - The number of milliseconds to wait. Must be positive integer number or 0.
+        def setJavascriptDelay(javascript_delay)
+            if (!(Integer(javascript_delay) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(javascript_delay, "javascript_delay", "html-to-image", "Must be positive integer number or 0.", "set_javascript_delay"), 470);
+            end
+            
+            @fields['javascript_delay'] = javascript_delay
+        end
+
+        # Convert only the wanted element and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
+        # 
+        # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
+        def setElementToConvert(selectors)
+            if (!(!selectors.nil? && !selectors.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(selectors, "selectors", "html-to-image", "The string must not be empty.", "set_element_to_convert"), 470);
+            end
+            
+            @fields['element_to_convert'] = selectors
+        end
+
+        # Specify the DOM handling when only a part of the document is converted.
+        # 
+        # * +mode+ - Allowed values are cut-out, remove-siblings, hide-siblings.
+        def setElementToConvertMode(mode)
+            unless /(?i)^(cut-out|remove-siblings|hide-siblings)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "mode", "html-to-image", "Allowed values are cut-out, remove-siblings, hide-siblings.", "set_element_to_convert_mode"), 470);
+            end
+            
+            @fields['element_to_convert_mode'] = mode
+        end
+
+        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails.
+        # 
+        # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
+        def setWaitForElement(selectors)
+            if (!(!selectors.nil? && !selectors.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(selectors, "selectors", "html-to-image", "The string must not be empty.", "set_wait_for_element"), 470);
+            end
+            
+            @fields['wait_for_element'] = selectors
+        end
+
+        # Set the output image width in pixels.
+        # 
+        # * +screenshot_width+ - The value must be in a range 96-7680.
+        def setScreenshotWidth(screenshot_width)
+            if (!(Integer(screenshot_width) >= 96 && Integer(screenshot_width) <= 7680))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(screenshot_width, "screenshot_width", "html-to-image", "The value must be in a range 96-7680.", "set_screenshot_width"), 470);
+            end
+            
+            @fields['screenshot_width'] = screenshot_width
+        end
+
+        # Set the output image height in pixels. If it's not specified, actual document height is used.
+        # 
+        # * +screenshot_height+ - Must be positive integer number.
+        def setScreenshotHeight(screenshot_height)
+            if (!(Integer(screenshot_height) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(screenshot_height, "screenshot_height", "html-to-image", "Must be positive integer number.", "set_screenshot_height"), 470);
+            end
+            
+            @fields['screenshot_height'] = screenshot_height
+        end
+
+        # Turn on the debug logging.
+        # 
+        # * +debug_log+ - Set to true to enable the debug logging.
+        def setDebugLog(debug_log)
+            @fields['debug_log'] = debug_log
+        end
+
+        # Get the URL of the debug log for the last conversion.
+        # * *Returns* - The link to the debug log.
+        def getDebugLogUrl()
+            return @helper.getDebugLogUrl()
+        end
+
+        # Get the number of available conversion credits in your account.
+        # This number might not be exact if you run parallel conversions.
+        # Special value 999999 is returned if the number is not accessible.
+        # * *Returns* - The number of credits.
+        def getRemainingCreditCount()
+            return @helper.getRemainingCreditCount()
+        end
+
+        # Get the number of credits consumed by the last conversion.
+        # * *Returns* - The number of credits.
+        def getConsumedCreditCount()
+            return @helper.getConsumedCreditCount()
+        end
+
+        # Get the job id.
+        # * *Returns* - The unique job identifier.
+        def getJobId()
+            return @helper.getJobId()
+        end
+
+        # Get the size of the output in bytes.
+        # * *Returns* - The count of bytes.
+        def getOutputSize()
+            return @helper.getOutputSize()
+        end
+
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # 
+        # * +use_http+ - Set to true to use HTTP.
+        def setUseHttp(use_http)
+            @helper.setUseHttp(use_http)
+        end
+
+        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # 
+        # * +user_agent+ - The user agent string.
+        def setUserAgent(user_agent)
+            @helper.setUserAgent(user_agent)
+        end
+
+        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
+        # 
+        # * +host+ - The proxy hostname.
+        # * +port+ - The proxy port.
+        # * +user_name+ - The username.
+        # * +password+ - The password.
+        def setProxy(host, port, user_name, password)
+            @helper.setProxy(host, port, user_name, password)
+        end
+
+    end
+
+    # Conversion from one image format to another image format.
+    class ImageToImageClient
+        # Constructor for the Pdfcrowd API client.
+        # 
+        # * +user_name+ - Your username at Pdfcrowd.
+        # * +api_key+ - Your API key.
+        def initialize(user_name, api_key)
+            @helper = ConnectionHelper.new(user_name, api_key)
+            @fields = {
+                'input_format'=>'image',
+                'output_format'=>'png'
+            }
+            @file_id = 1
+            @files = {}
+            @raw_data = {}
+        end
+
+        # Convert an image.
+        # 
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "url", "image-to-image", "The supported protocols are http:// and https://.", "convert_url"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert an image and write the result to an output stream.
+        # 
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertUrlToStream(url, out_stream)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "url", "image-to-image", "The supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert an image and write the result to a local file.
+        # 
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertUrlToFile(url, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "image-to-image", "The string must not be empty.", "convert_url_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertUrlToStream(url, output_file)
+            output_file.close()
+        end
+
+        # Convert a local file.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertFile(file)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "image-to-image", "The file must exist and not be empty.", "convert_file"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a local file and write the result to an output stream.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertFileToStream(file, out_stream)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "image-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a local file and write the result to a local file.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertFileToFile(file, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "image-to-image", "The string must not be empty.", "convert_file_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertFileToStream(file, output_file)
+            output_file.close()
+        end
+
+        # Convert raw data.
+        # 
+        # * +data+ - Raw content to be converted.
+        # * *Returns* - Byte array with the output.
+        def convertRawData(data)
+            @raw_data['file'] = data
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert raw data and write the result to an output stream.
+        # 
+        # * +data+ - Raw content to be converted.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertRawDataToStream(data, out_stream)
+            @raw_data['file'] = data
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert raw data to a file.
+        # 
+        # * +data+ - Raw content to be converted.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertRawDataToFile(data, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "image-to-image", "The string must not be empty.", "convert_raw_data_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertRawDataToStream(data, output_file)
+            output_file.close()
+        end
+
+        # The format of output file.
+        # 
+        # * +output_format+ - Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.
+        def setOutputFormat(output_format)
+            unless /(?i)^(png|jpg|gif|tiff|bmp|ico|ppm|pgm|pbm|pnm|psb|pct|ras|tga|sgi|sun|webp)$/.match(output_format)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(output_format, "output_format", "image-to-image", "Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.", "set_output_format"), 470);
+            end
+            
+            @fields['output_format'] = output_format
+        end
+
+        # Resizes the image.
+        # 
+        # * +resize+ - The resize percentage or new image dimensions.
+        def setResize(resize)
+            @fields['resize'] = resize
+        end
+
+        # Rotates the image.
+        # 
+        # * +rotate+ - The rotation specified in degrees.
+        def setRotate(rotate)
+            @fields['rotate'] = rotate
+        end
+
+        # Turn on the debug logging.
+        # 
+        # * +debug_log+ - Set to true to enable the debug logging.
+        def setDebugLog(debug_log)
+            @fields['debug_log'] = debug_log
+        end
+
+        # Get the URL of the debug log for the last conversion.
+        # * *Returns* - The link to the debug log.
+        def getDebugLogUrl()
+            return @helper.getDebugLogUrl()
+        end
+
+        # Get the number of available conversion credits in your account.
+        # This number might not be exact if you run parallel conversions.
+        # Special value 999999 is returned if the number is not accessible.
+        # * *Returns* - The number of credits.
+        def getRemainingCreditCount()
+            return @helper.getRemainingCreditCount()
+        end
+
+        # Get the number of credits consumed by the last conversion.
+        # * *Returns* - The number of credits.
+        def getConsumedCreditCount()
+            return @helper.getConsumedCreditCount()
+        end
+
+        # Get the job id.
+        # * *Returns* - The unique job identifier.
+        def getJobId()
+            return @helper.getJobId()
+        end
+
+        # Get the size of the output in bytes.
+        # * *Returns* - The count of bytes.
+        def getOutputSize()
+            return @helper.getOutputSize()
+        end
+
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # 
+        # * +use_http+ - Set to true to use HTTP.
+        def setUseHttp(use_http)
+            @helper.setUseHttp(use_http)
+        end
+
+        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # 
+        # * +user_agent+ - The user agent string.
+        def setUserAgent(user_agent)
+            @helper.setUserAgent(user_agent)
+        end
+
+        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
+        # 
+        # * +host+ - The proxy hostname.
+        # * +port+ - The proxy port.
+        # * +user_name+ - The username.
+        # * +password+ - The password.
+        def setProxy(host, port, user_name, password)
+            @helper.setProxy(host, port, user_name, password)
+        end
+
+    end
+
+    # Conversion from PDF to PDF.
+    class PdfToPdfClient
+        # Constructor for the Pdfcrowd API client.
+        # 
+        # * +user_name+ - Your username at Pdfcrowd.
+        # * +api_key+ - Your API key.
+        def initialize(user_name, api_key)
+            @helper = ConnectionHelper.new(user_name, api_key)
+            @fields = {
+                'input_format'=>'pdf',
+                'output_format'=>'pdf'
+            }
+            @file_id = 1
+            @files = {}
+            @raw_data = {}
+        end
+
+        # Specifies the action to be performed on the input PDFs.
+        # 
+        # * +action+ - Allowed values are join, shuffle.
+        def setAction(action)
+            unless /(?i)^(join|shuffle)$/.match(action)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(action, "action", "pdf-to-pdf", "Allowed values are join, shuffle.", "set_action"), 470);
+            end
+            
+            @fields['action'] = action
+        end
+
+        # Perform an action on the input files.
+        # * *Returns* - Byte array containing the output PDF.
+        def convertFiles()
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Perform an action on the input files and write the output PDF to an output stream.
+        # 
+        # * +out_stream+ - The output stream that will contain the output PDF.
+        def convertFilesToStream(out_stream)
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Perform an action on the input files and write the output PDF to a file.
+        # 
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertFilesToFile(file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "pdf-to-pdf", "The string must not be empty.", "convert_files_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertFilesToStream(output_file)
+            output_file.close()
+        end
+
+        # Add a PDF file to the list of the input PDFs.
+        # 
+        # * +file_path+ - The file path to a local PDF file. The file must exist and not be empty.
+        def addPdfFile(file_path)
+            if (!(File.file?(file_path) && !File.zero?(file_path)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "pdf-to-pdf", "The file must exist and not be empty.", "add_pdf_file"), 470);
+            end
+            
+            @files['f_%s' % @file_id] = file_path
+            @file_id += 1
+        end
+
+        # Add in-memory raw PDF data to the list of the input PDFs.
+        # 
+        # * +pdf_raw_data+ - The raw PDF data. The input data must be PDF content.
+        def addPdfRawData(pdf_raw_data)
+            if (!(!pdf_raw_data.nil? && pdf_raw_data.length > 300 and pdf_raw_data[0...4] == '%PDF'))
+                raise Error.new(Pdfcrowd.create_invalid_value_message("raw PDF data", "pdf_raw_data", "pdf-to-pdf", "The input data must be PDF content.", "add_pdf_raw_data"), 470);
+            end
+            
+            @raw_data['f_%s' % @file_id] = pdf_raw_data
+            @file_id += 1
+        end
+
+        # Turn on the debug logging.
+        # 
+        # * +debug_log+ - Set to true to enable the debug logging.
+        def setDebugLog(debug_log)
+            @fields['debug_log'] = debug_log
+        end
+
+        # Get the URL of the debug log for the last conversion.
+        # * *Returns* - The link to the debug log.
+        def getDebugLogUrl()
+            return @helper.getDebugLogUrl()
+        end
+
+        # Get the number of available conversion credits in your account.
+        # This number might not be exact if you run parallel conversions.
+        # Special value 999999 is returned if the number is not accessible.
+        # * *Returns* - The number of credits.
+        def getRemainingCreditCount()
+            return @helper.getRemainingCreditCount()
+        end
+
+        # Get the number of credits consumed by the last conversion.
+        # * *Returns* - The number of credits.
+        def getConsumedCreditCount()
+            return @helper.getConsumedCreditCount()
+        end
+
+        # Get the job id.
+        # * *Returns* - The unique job identifier.
+        def getJobId()
+            return @helper.getJobId()
+        end
+
+        # Get the total number of pages in the output document.
+        # * *Returns* - The page count.
+        def getPageCount()
+            return @helper.getPageCount()
+        end
+
+        # Get the size of the output in bytes.
+        # * *Returns* - The count of bytes.
+        def getOutputSize()
+            return @helper.getOutputSize()
+        end
+
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # 
+        # * +use_http+ - Set to true to use HTTP.
+        def setUseHttp(use_http)
+            @helper.setUseHttp(use_http)
+        end
+
+        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # 
+        # * +user_agent+ - The user agent string.
+        def setUserAgent(user_agent)
+            @helper.setUserAgent(user_agent)
+        end
+
+        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
+        # 
+        # * +host+ - The proxy hostname.
+        # * +port+ - The proxy port.
+        # * +user_name+ - The username.
+        # * +password+ - The password.
+        def setProxy(host, port, user_name, password)
+            @helper.setProxy(host, port, user_name, password)
+        end
+
+    end
+
+    # Conversion from an image to PDF.
+    class ImageToPdfClient
+        # Constructor for the Pdfcrowd API client.
+        # 
+        # * +user_name+ - Your username at Pdfcrowd.
+        # * +api_key+ - Your API key.
+        def initialize(user_name, api_key)
+            @helper = ConnectionHelper.new(user_name, api_key)
+            @fields = {
+                'input_format'=>'image',
+                'output_format'=>'pdf'
+            }
+            @file_id = 1
+            @files = {}
+            @raw_data = {}
+        end
+
+        # Convert an image.
+        # 
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "url", "image-to-pdf", "The supported protocols are http:// and https://.", "convert_url"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert an image and write the result to an output stream.
+        # 
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertUrlToStream(url, out_stream)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "url", "image-to-pdf", "The supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert an image and write the result to a local file.
+        # 
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertUrlToFile(url, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "image-to-pdf", "The string must not be empty.", "convert_url_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertUrlToStream(url, output_file)
+            output_file.close()
+        end
+
+        # Convert a local file.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertFile(file)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "image-to-pdf", "The file must exist and not be empty.", "convert_file"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a local file and write the result to an output stream.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertFileToStream(file, out_stream)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "image-to-pdf", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a local file and write the result to a local file.
+        # 
+        # * +file+ - The path to a local file to convert.
+        # The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). Specifying an archive allows sending external assets such as images, stylesheets, etc. The file must exist and not be empty.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertFileToFile(file, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "image-to-pdf", "The string must not be empty.", "convert_file_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertFileToStream(file, output_file)
+            output_file.close()
+        end
+
+        # Convert raw data.
+        # 
+        # * +data+ - Raw content to be converted.
+        # * *Returns* - Byte array with the output.
+        def convertRawData(data)
+            @raw_data['file'] = data
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert raw data and write the result to an output stream.
+        # 
+        # * +data+ - Raw content to be converted.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertRawDataToStream(data, out_stream)
+            @raw_data['file'] = data
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert raw data to a file.
+        # 
+        # * +data+ - Raw content to be converted.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertRawDataToFile(data, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "image-to-pdf", "The string must not be empty.", "convert_raw_data_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            convertRawDataToStream(data, output_file)
+            output_file.close()
+        end
+
+        # Resizes the image.
+        # 
+        # * +resize+ - The resize percentage or new image dimensions.
+        def setResize(resize)
+            @fields['resize'] = resize
+        end
+
+        # Rotates the image.
+        # 
+        # * +rotate+ - The rotation specified in degrees.
+        def setRotate(rotate)
+            @fields['rotate'] = rotate
+        end
+
+        # Turn on the debug logging.
+        # 
+        # * +debug_log+ - Set to true to enable the debug logging.
+        def setDebugLog(debug_log)
+            @fields['debug_log'] = debug_log
+        end
+
+        # Get the URL of the debug log for the last conversion.
+        # * *Returns* - The link to the debug log.
+        def getDebugLogUrl()
+            return @helper.getDebugLogUrl()
+        end
+
+        # Get the number of available conversion credits in your account.
+        # This number might not be exact if you run parallel conversions.
+        # Special value 999999 is returned if the number is not accessible.
+        # * *Returns* - The number of credits.
+        def getRemainingCreditCount()
+            return @helper.getRemainingCreditCount()
+        end
+
+        # Get the number of credits consumed by the last conversion.
+        # * *Returns* - The number of credits.
+        def getConsumedCreditCount()
+            return @helper.getConsumedCreditCount()
+        end
+
+        # Get the job id.
+        # * *Returns* - The unique job identifier.
+        def getJobId()
+            return @helper.getJobId()
+        end
+
+        # Get the size of the output in bytes.
+        # * *Returns* - The count of bytes.
+        def getOutputSize()
+            return @helper.getOutputSize()
+        end
+
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # 
+        # * +use_http+ - Set to true to use HTTP.
+        def setUseHttp(use_http)
+            @helper.setUseHttp(use_http)
+        end
+
+        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # 
+        # * +user_agent+ - The user agent string.
+        def setUserAgent(user_agent)
+            @helper.setUserAgent(user_agent)
+        end
+
+        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
+        # 
+        # * +host+ - The proxy hostname.
+        # * +port+ - The proxy port.
+        # * +user_name+ - The username.
+        # * +password+ - The password.
+        def setProxy(host, port, user_name, password)
+            @helper.setProxy(host, port, user_name, password)
+        end
+
+    end
 
 end
