@@ -5,10 +5,10 @@ Gem::Specification.new do |spec|
   spec.version = '4.0'
   spec.name = 'pdfcrowd'
   spec.author = 'Pdfcrowd Team'
-  spec.email = 'info@pdfcrowd.com'
-  spec.homepage = 'https://pdfcrowd.com/html-to-pdf-api/'
+  spec.email = 'support@pdfcrowd.com'
+  spec.homepage = 'https://pdfcrowd.com/doc/api/'
   spec.files = ["lib/pdfcrowd.rb"]
-  spec.summary = 'A client for the Pdfcrowd HTML to PDF API.'
-  spec.description = 'It lets you easily convert web pages and raw HTML code to PDF in your Ruby applications.'
+  spec.summary = 'A client for the Pdfcrowd API.'
+  spec.description = 'The Pdfcrowd API lets you easily convert between HTML, PDF and various image formats.'
   spec.licenses    = ['MIT']
 end
