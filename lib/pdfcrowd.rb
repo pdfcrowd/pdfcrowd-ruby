@@ -529,7 +529,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.1'
+    CLIENT_VERSION = '4.2'
 
     def self.float_to_string(value)
         value.to_s.sub(',', '.')
@@ -544,7 +544,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.1 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.2 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -2400,27 +2400,27 @@ module Pdfcrowd
 
         # Perform an action on the input files.
         # * *Returns* - Byte array containing the output PDF.
-        def convertFiles()
+        def convert()
             @helper.post(@fields, @files, @raw_data)
         end
 
         # Perform an action on the input files and write the output PDF to an output stream.
         # 
         # * +out_stream+ - The output stream that will contain the output PDF.
-        def convertFilesToStream(out_stream)
+        def convertToStream(out_stream)
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
         # Perform an action on the input files and write the output PDF to a file.
         # 
         # * +file_path+ - The output file path. The string must not be empty.
-        def convertFilesToFile(file_path)
+        def convertToFile(file_path)
             if (!(!file_path.nil? && !file_path.empty?))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "pdf-to-pdf", "The string must not be empty.", "convert_files_to_file"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "file_path", "pdf-to-pdf", "The string must not be empty.", "convert_to_file"), 470);
             end
             
             output_file = open(file_path, "wb")
-            convertFilesToStream(output_file)
+            convertToStream(output_file)
             output_file.close()
         end
 
@@ -2438,7 +2438,7 @@ module Pdfcrowd
             self
         end
 
-        # Add in-memory raw PDF data to the list of the input PDFs.
+        # Add in-memory raw PDF data to the list of the input PDFs.Typical usage is for adding PDF created by another Pdfcrowd converter. Example in PHP: $clientPdf2Pdf->addPdfRawData($clientHtml2Pdf->convertUrl('http://www.example.com'));
         # 
         # * +pdf_raw_data+ - The raw PDF data. The input data must be PDF content.
         # * *Returns* - The converter object.
