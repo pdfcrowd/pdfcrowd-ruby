@@ -295,7 +295,7 @@ module Pdfcrowd
     end
 
     def setWatermark(url, offset_x=0, offset_y=0)
-        @fields["watermark_url"] = value
+        @fields["watermark_url"] = url
         @fields["watermark_offset_x"] = offset_x
         @fields["watermark_offset_y"] = offset_y
     end
@@ -912,13 +912,13 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page height.
+        # Set the output page height. Use -1 for a single page PDF.
         # 
-        # * +page_height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +page_height+ - Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setPageHeight(page_height)
-            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(page_height)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(page_height, "page_height", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_page_height"), 470);
+            unless /(?i)^\-1$|^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(page_height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_height, "page_height", "html-to-pdf", "Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_page_height"), 470);
             end
             
             @fields['page_height'] = page_height
@@ -928,7 +928,7 @@ module Pdfcrowd
         # Set the output page dimensions.
         # 
         # * +width+ - Set the output page width. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
-        # * +height+ - Set the output page height. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +height+ - Set the output page height. Use -1 for a single page PDF. Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setPageDimensions(width, height)
             setPageWidth(width)
@@ -1634,7 +1634,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies number of retries after HTTP status code 502 was received. The status 502 occurs seldom due to network problems. This feature can be disabled by setting to 0.
+        # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         # 
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
@@ -2115,7 +2115,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies number of retries after HTTP status code 502 was received. The status 502 occurs seldom due to network problems. This feature can be disabled by setting to 0.
+        # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         # 
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
@@ -2357,7 +2357,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies number of retries after HTTP status code 502 was received. The status 502 occurs seldom due to network problems. This feature can be disabled by setting to 0.
+        # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         # 
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
@@ -2529,7 +2529,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies number of retries after HTTP status code 502 was received. The status 502 occurs seldom due to network problems. This feature can be disabled by setting to 0.
+        # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         # 
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
@@ -2758,7 +2758,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies number of retries after HTTP status code 502 was received. The status 502 occurs seldom due to network problems. This feature can be disabled by setting to 0.
+        # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         # 
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
