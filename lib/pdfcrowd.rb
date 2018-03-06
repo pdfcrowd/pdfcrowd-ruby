@@ -23,6 +23,7 @@
 
 require 'net/http'
 require 'cgi'
+require 'fileutils'
 
 # ======================================
 # === PDFCrowd legacy version client ===
@@ -529,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.2'
+    CLIENT_VERSION = '4.3'
 
     def self.float_to_string(value)
         value.to_s.sub(',', '.')
@@ -544,7 +545,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.2 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.3 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -794,8 +795,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertUrlToStream(url, output_file)
-            output_file.close()
+            begin
+                convertUrlToStream(url, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Convert a local file.
@@ -842,8 +849,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertFileToStream(file, output_file)
-            output_file.close()
+            begin
+                convertFileToStream(file, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Convert a string.
@@ -882,8 +895,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertStringToStream(text, output_file)
-            output_file.close()
+            begin
+                convertStringToStream(text, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Set the output page size.
@@ -899,7 +918,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page width.
+        # Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF.
         # 
         # * +page_width+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
@@ -912,7 +931,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page height. Use -1 for a single page PDF.
+        # Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF.
         # 
         # * +page_height+ - Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
@@ -927,8 +946,8 @@ module Pdfcrowd
 
         # Set the output page dimensions.
         # 
-        # * +width+ - Set the output page width. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
-        # * +height+ - Set the output page height. Use -1 for a single page PDF. Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +width+ - Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +height+ - Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setPageDimensions(width, height)
             setPageWidth(width)
@@ -1379,7 +1398,7 @@ module Pdfcrowd
             self
         end
 
-        # Convert only the specified element and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
+        # Convert only the specified element from the main document and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
         # 
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
@@ -1405,7 +1424,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails.
+        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails.
         # 
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
@@ -1557,7 +1576,171 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging.
+        # Set the title of the PDF.
+        # 
+        # * +title+ - The title.
+        # * *Returns* - The converter object.
+        def setTitle(title)
+            @fields['title'] = title
+            self
+        end
+
+        # Set the subject of the PDF.
+        # 
+        # * +subject+ - The subject.
+        # * *Returns* - The converter object.
+        def setSubject(subject)
+            @fields['subject'] = subject
+            self
+        end
+
+        # Set the author of the PDF.
+        # 
+        # * +author+ - The author.
+        # * *Returns* - The converter object.
+        def setAuthor(author)
+            @fields['author'] = author
+            self
+        end
+
+        # Associate keywords with the document.
+        # 
+        # * +keywords+ - The string with the keywords.
+        # * *Returns* - The converter object.
+        def setKeywords(keywords)
+            @fields['keywords'] = keywords
+            self
+        end
+
+        # Specify the page layout to be used when the document is opened.
+        # 
+        # * +page_layout+ - Allowed values are single-page, one-column, two-column-left, two-column-right.
+        # * *Returns* - The converter object.
+        def setPageLayout(page_layout)
+            unless /(?i)^(single-page|one-column|two-column-left|two-column-right)$/.match(page_layout)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_layout, "page_layout", "html-to-pdf", "Allowed values are single-page, one-column, two-column-left, two-column-right.", "set_page_layout"), 470);
+            end
+            
+            @fields['page_layout'] = page_layout
+            self
+        end
+
+        # Specify how the document should be displayed when opened.
+        # 
+        # * +page_mode+ - Allowed values are full-screen, thumbnails, outlines.
+        # * *Returns* - The converter object.
+        def setPageMode(page_mode)
+            unless /(?i)^(full-screen|thumbnails|outlines)$/.match(page_mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_mode, "page_mode", "html-to-pdf", "Allowed values are full-screen, thumbnails, outlines.", "set_page_mode"), 470);
+            end
+            
+            @fields['page_mode'] = page_mode
+            self
+        end
+
+        # Specify how the page should be displayed when opened.
+        # 
+        # * +initial_zoom_type+ - Allowed values are fit-width, fit-height, fit-page.
+        # * *Returns* - The converter object.
+        def setInitialZoomType(initial_zoom_type)
+            unless /(?i)^(fit-width|fit-height|fit-page)$/.match(initial_zoom_type)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(initial_zoom_type, "initial_zoom_type", "html-to-pdf", "Allowed values are fit-width, fit-height, fit-page.", "set_initial_zoom_type"), 470);
+            end
+            
+            @fields['initial_zoom_type'] = initial_zoom_type
+            self
+        end
+
+        # Display the specified page when the document is opened.
+        # 
+        # * +initial_page+ - Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setInitialPage(initial_page)
+            if (!(Integer(initial_page) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(initial_page, "initial_page", "html-to-pdf", "Must be a positive integer number.", "set_initial_page"), 470);
+            end
+            
+            @fields['initial_page'] = initial_page
+            self
+        end
+
+        # Specify the initial page zoom in percents when the document is opened.
+        # 
+        # * +initial_zoom+ - Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setInitialZoom(initial_zoom)
+            if (!(Integer(initial_zoom) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(initial_zoom, "initial_zoom", "html-to-pdf", "Must be a positive integer number.", "set_initial_zoom"), 470);
+            end
+            
+            @fields['initial_zoom'] = initial_zoom
+            self
+        end
+
+        # Specify whether to hide the viewer application's tool bars when the document is active.
+        # 
+        # * +hide_toolbar+ - Set to true to hide tool bars.
+        # * *Returns* - The converter object.
+        def setHideToolbar(hide_toolbar)
+            @fields['hide_toolbar'] = hide_toolbar
+            self
+        end
+
+        # Specify whether to hide the viewer application's menu bar when the document is active.
+        # 
+        # * +hide_menubar+ - Set to true to hide the menu bar.
+        # * *Returns* - The converter object.
+        def setHideMenubar(hide_menubar)
+            @fields['hide_menubar'] = hide_menubar
+            self
+        end
+
+        # Specify whether to hide user interface elements in the document's window (such as scroll bars and navigation controls), leaving only the document's contents displayed.
+        # 
+        # * +hide_window_ui+ - Set to true to hide ui elements.
+        # * *Returns* - The converter object.
+        def setHideWindowUi(hide_window_ui)
+            @fields['hide_window_ui'] = hide_window_ui
+            self
+        end
+
+        # Specify whether to resize the document's window to fit the size of the first displayed page.
+        # 
+        # * +fit_window+ - Set to true to resize the window.
+        # * *Returns* - The converter object.
+        def setFitWindow(fit_window)
+            @fields['fit_window'] = fit_window
+            self
+        end
+
+        # Specify whether to position the document's window in the center of the screen.
+        # 
+        # * +center_window+ - Set to true to center the window.
+        # * *Returns* - The converter object.
+        def setCenterWindow(center_window)
+            @fields['center_window'] = center_window
+            self
+        end
+
+        # Specify whether the window's title bar should display the document title. If false , the title bar should instead display the name of the PDF file containing the document.
+        # 
+        # * +display_title+ - Set to true to display the title.
+        # * *Returns* - The converter object.
+        def setDisplayTitle(display_title)
+            @fields['display_title'] = display_title
+            self
+        end
+
+        # Set the predominant reading order for text to right-to-left. This option has no direct effect on the document's contents or page numbering but can be used to determine the relative positioning of pages when displayed side by side or printed n-up
+        # 
+        # * +right_to_left+ - Set to true to set right-to-left reading order.
+        # * *Returns* - The converter object.
+        def setRightToLeft(right_to_left)
+            @fields['right_to_left'] = right_to_left
+            self
+        end
+
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
         # 
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
@@ -1711,8 +1894,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertUrlToStream(url, output_file)
-            output_file.close()
+            begin
+                convertUrlToStream(url, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Convert a local file.
@@ -1759,8 +1948,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertFileToStream(file, output_file)
-            output_file.close()
+            begin
+                convertFileToStream(file, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Convert a string.
@@ -1799,8 +1994,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertStringToStream(text, output_file)
-            output_file.close()
+            begin
+                convertStringToStream(text, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Do not print the background graphics.
@@ -1979,7 +2180,7 @@ module Pdfcrowd
             self
         end
 
-        # Convert only the specified element and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
+        # Convert only the specified element from the main document and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
         # 
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
@@ -2005,7 +2206,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails.
+        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails.
         # 
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
@@ -2044,7 +2245,7 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging.
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
         # 
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
@@ -2179,8 +2380,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertUrlToStream(url, output_file)
-            output_file.close()
+            begin
+                convertUrlToStream(url, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Convert a local file.
@@ -2219,8 +2426,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertFileToStream(file, output_file)
-            output_file.close()
+            begin
+                convertFileToStream(file, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Convert raw data.
@@ -2251,8 +2464,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertRawDataToStream(data, output_file)
-            output_file.close()
+            begin
+                convertRawDataToStream(data, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # The format of the output file.
@@ -2286,7 +2505,7 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging.
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
         # 
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
@@ -2452,7 +2671,7 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging.
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
         # 
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
@@ -2593,8 +2812,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertUrlToStream(url, output_file)
-            output_file.close()
+            begin
+                convertUrlToStream(url, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Convert a local file.
@@ -2633,8 +2858,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertFileToStream(file, output_file)
-            output_file.close()
+            begin
+                convertFileToStream(file, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Convert raw data.
@@ -2665,8 +2896,14 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertRawDataToStream(data, output_file)
-            output_file.close()
+            begin
+                convertRawDataToStream(data, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
         end
 
         # Resize the image.
@@ -2687,7 +2924,7 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging.
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
         # 
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
