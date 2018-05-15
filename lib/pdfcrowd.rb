@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.3'
+    CLIENT_VERSION = '4.3.1'
 
     def self.float_to_string(value)
         value.to_s.sub(',', '.')
@@ -545,13 +545,16 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.3 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.3.1 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
 
         def post(fields, files, raw_data, out_stream = nil)
-            return (files.empty? and raw_data.empty?) ? post_url_encoded(fields, out_stream) : post_multipart(fields, files, raw_data, out_stream)
+            request = ConnectionHelper.create_request()
+            request.body = ConnectionHelper.encode_multipart_post_data(fields, files, raw_data)
+            request.content_type = 'multipart/form-data; boundary=' + MULTIPART_BOUNDARY
+            do_post(request, out_stream)
         end
 
         def setUseHttp(use_http)
@@ -607,21 +610,6 @@ module Pdfcrowd
             @page_count = 0
             @output_size = 0
             @retry = 0
-        end
-
-        def post_url_encoded(fields, out_stream)
-            request = ConnectionHelper.create_request()
-            data = {}
-            fields.each { |key, value| data[key] = value.to_s if value }
-            request.set_form_data(data)
-            do_post(request, out_stream)
-        end
-
-        def post_multipart(fields, files, raw_data, out_stream)
-            request = ConnectionHelper.create_request()
-            request.body = ConnectionHelper.encode_multipart_post_data(fields, files, raw_data)
-            request.content_type = 'multipart/form-data; boundary=' + MULTIPART_BOUNDARY
-            do_post(request, out_stream)
         end
 
         def self.create_request()
@@ -1294,7 +1282,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the HTTP authentication.
+        # Set credentials to access HTTP base authentication protected websites.
         # 
         # * +user_name+ - Set the HTTP authentication user name.
         # * +password+ - Set the HTTP authentication password.
@@ -2076,7 +2064,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the HTTP authentication.
+        # Set credentials to access HTTP base authentication protected websites.
         # 
         # * +user_name+ - Set the HTTP authentication user name.
         # * +password+ - Set the HTTP authentication password.
