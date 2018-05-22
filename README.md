@@ -13,18 +13,15 @@ The recommended installation method is via
 [RubyGems](https://rubygems.org/gems/pdfcrowd):
 
     gem install pdfcrowd
-    
+
 Or you can build and install the gem manually:
 
     git clone git@github.com:pdfcrowd/pdfcrowd-ruby.git
     cd pdfcrowd-ruby/
     make gem
-    gem install pdfcrowd-*.gem   
-    
+    gem install pdfcrowd-*.gem
+
 ## Documentation
 
-* Current stable API
-  * API Home:  <https://pdfcrowd.com/html-to-pdf-api/>
-  * API Reference:  <https://pdfcrowd.com/web-html-to-pdf-ruby/>
-* New API (Beta)
-  * API Home:  <https://pdfcrowd.com/doc/api/>
+* API Home:  <https://pdfcrowd.com/doc/api/>
+* API Reference:  <https://pdfcrowd.com/doc/api/html-to-pdf/ruby/>
