@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.3.1'
+    CLIENT_VERSION = '4.3.2'
 
     def self.float_to_string(value)
         value.to_s.sub(',', '.')
@@ -545,7 +545,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.3.1 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.3.2 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1498,6 +1498,15 @@ module Pdfcrowd
             end
             
             @fields['header_footer_scale_factor'] = header_footer_scale_factor
+            self
+        end
+
+        # Disable the intelligent shrinking strategy that tries to optimally fit the HTML contents to a PDF page.
+        # 
+        # * +disable_smart_shrinking+ - Set to true to disable the intelligent shrinking strategy.
+        # * *Returns* - The converter object.
+        def setDisableSmartShrinking(disable_smart_shrinking)
+            @fields['disable_smart_shrinking'] = disable_smart_shrinking
             self
         end
 
