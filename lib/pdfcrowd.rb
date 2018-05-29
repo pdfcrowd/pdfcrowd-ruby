@@ -717,6 +717,10 @@ module Pdfcrowd
                     raise Error.new("#{why}\n")
                 rescue Timeout::Error => why
                     raise Error.new("Operation timed out\n")
+                rescue OpenSSL::SSL::SSLError => why
+                    raise Error.new("There was a problem connecting to Pdfcrowd servers over HTTPS:\n#{why}" +
+                                    "\nYou can still use the API over HTTP, you just need to add the following line right after Pdfcrowd client initialization:\nself.setUseHttp(true)",
+                                    481)
                 end
             end
         end
