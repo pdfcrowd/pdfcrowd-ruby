@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.3.2'
+    CLIENT_VERSION = '4.3.3'
 
     def self.float_to_string(value)
         value.to_s.sub(',', '.')
@@ -545,7 +545,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.3.2 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.3.3 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
