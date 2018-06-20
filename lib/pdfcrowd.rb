@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.3.3'
+    CLIENT_VERSION = '4.3.5'
 
     def self.float_to_string(value)
         value.to_s.sub(',', '.')
@@ -545,7 +545,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.3.3 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.3.5 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1788,6 +1788,15 @@ module Pdfcrowd
             return @helper.getOutputSize()
         end
 
+        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
+        # 
+        # * +tag+ - A string with the custom tag.
+        # * *Returns* - The converter object.
+        def setTag(tag)
+            @fields['tag'] = tag
+            self
+        end
+
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
         # 
         # * +use_http+ - Set to true to use HTTP.
@@ -2287,6 +2296,15 @@ module Pdfcrowd
             return @helper.getOutputSize()
         end
 
+        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
+        # 
+        # * +tag+ - A string with the custom tag.
+        # * *Returns* - The converter object.
+        def setTag(tag)
+            @fields['tag'] = tag
+            self
+        end
+
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
         # 
         # * +use_http+ - Set to true to use HTTP.
@@ -2547,6 +2565,15 @@ module Pdfcrowd
             return @helper.getOutputSize()
         end
 
+        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
+        # 
+        # * +tag+ - A string with the custom tag.
+        # * *Returns* - The converter object.
+        def setTag(tag)
+            @fields['tag'] = tag
+            self
+        end
+
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
         # 
         # * +use_http+ - Set to true to use HTTP.
@@ -2717,6 +2744,15 @@ module Pdfcrowd
         # * *Returns* - The count of bytes.
         def getOutputSize()
             return @helper.getOutputSize()
+        end
+
+        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
+        # 
+        # * +tag+ - A string with the custom tag.
+        # * *Returns* - The converter object.
+        def setTag(tag)
+            @fields['tag'] = tag
+            self
         end
 
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
@@ -2964,6 +3000,15 @@ module Pdfcrowd
         # * *Returns* - The count of bytes.
         def getOutputSize()
             return @helper.getOutputSize()
+        end
+
+        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
+        # 
+        # * +tag+ - A string with the custom tag.
+        # * *Returns* - The converter object.
+        def setTag(tag)
+            @fields['tag'] = tag
+            self
         end
 
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
