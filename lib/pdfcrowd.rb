@@ -1,5 +1,5 @@
-# Copyright (C) 2009-2016 pdfcrowd.com
-# 
+# Copyright (C) 2009-2018 pdfcrowd.com
+#
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
 # files (the "Software"), to deal in the Software without
@@ -8,10 +8,10 @@
 # copies of the Software, and to permit persons to whom the
 # Software is furnished to do so, subject to the following
 # conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 # OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -532,10 +532,6 @@ module Pdfcrowd
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
     CLIENT_VERSION = '4.3.5'
 
-    def self.float_to_string(value)
-        value.to_s.sub(',', '.')
-    end
-
     class ConnectionHelper
         def initialize(user_name, api_key)
             @user_name = user_name
@@ -737,7 +733,7 @@ module Pdfcrowd
     # Conversion from HTML to PDF.
     class HtmlToPdfClient
         # Constructor for the Pdfcrowd API client.
-        # 
+        #
         # * +user_name+ - Your username at Pdfcrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
@@ -752,7 +748,7 @@ module Pdfcrowd
         end
 
         # Convert a web page.
-        # 
+        #
         # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
         # * *Returns* - Byte array containing the conversion output.
         def convertUrl(url)
@@ -765,7 +761,7 @@ module Pdfcrowd
         end
 
         # Convert a web page and write the result to an output stream.
-        # 
+        #
         # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertUrlToStream(url, out_stream)
@@ -778,7 +774,7 @@ module Pdfcrowd
         end
 
         # Convert a web page and write the result to a local file.
-        # 
+        #
         # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertUrlToFile(url, file_path)
@@ -798,7 +794,7 @@ module Pdfcrowd
         end
 
         # Convert a local file.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
         # * *Returns* - Byte array containing the conversion output.
         def convertFile(file)
@@ -815,7 +811,7 @@ module Pdfcrowd
         end
 
         # Convert a local file and write the result to an output stream.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertFileToStream(file, out_stream)
@@ -832,7 +828,7 @@ module Pdfcrowd
         end
 
         # Convert a local file and write the result to a local file.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertFileToFile(file, file_path)
@@ -852,7 +848,7 @@ module Pdfcrowd
         end
 
         # Convert a string.
-        # 
+        #
         # * +text+ - The string content to convert. The string must not be empty.
         # * *Returns* - Byte array containing the conversion output.
         def convertString(text)
@@ -865,7 +861,7 @@ module Pdfcrowd
         end
 
         # Convert a string and write the output to an output stream.
-        # 
+        #
         # * +text+ - The string content to convert. The string must not be empty.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertStringToStream(text, out_stream)
@@ -878,7 +874,7 @@ module Pdfcrowd
         end
 
         # Convert a string and write the output to a file.
-        # 
+        #
         # * +text+ - The string content to convert. The string must not be empty.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertStringToFile(text, file_path)
@@ -898,7 +894,7 @@ module Pdfcrowd
         end
 
         # Set the output page size.
-        # 
+        #
         # * +page_size+ - Allowed values are A2, A3, A4, A5, A6, Letter.
         # * *Returns* - The converter object.
         def setPageSize(page_size)
@@ -911,7 +907,7 @@ module Pdfcrowd
         end
 
         # Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF.
-        # 
+        #
         # * +page_width+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setPageWidth(page_width)
@@ -924,7 +920,7 @@ module Pdfcrowd
         end
 
         # Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF.
-        # 
+        #
         # * +page_height+ - Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setPageHeight(page_height)
@@ -937,7 +933,7 @@ module Pdfcrowd
         end
 
         # Set the output page dimensions.
-        # 
+        #
         # * +width+ - Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * +height+ - Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
@@ -948,7 +944,7 @@ module Pdfcrowd
         end
 
         # Set the output page orientation.
-        # 
+        #
         # * +orientation+ - Allowed values are landscape, portrait.
         # * *Returns* - The converter object.
         def setOrientation(orientation)
@@ -961,7 +957,7 @@ module Pdfcrowd
         end
 
         # Set the output page top margin.
-        # 
+        #
         # * +margin_top+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setMarginTop(margin_top)
@@ -974,7 +970,7 @@ module Pdfcrowd
         end
 
         # Set the output page right margin.
-        # 
+        #
         # * +margin_right+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setMarginRight(margin_right)
@@ -987,7 +983,7 @@ module Pdfcrowd
         end
 
         # Set the output page bottom margin.
-        # 
+        #
         # * +margin_bottom+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setMarginBottom(margin_bottom)
@@ -1000,7 +996,7 @@ module Pdfcrowd
         end
 
         # Set the output page left margin.
-        # 
+        #
         # * +margin_left+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setMarginLeft(margin_left)
@@ -1013,7 +1009,7 @@ module Pdfcrowd
         end
 
         # Disable margins.
-        # 
+        #
         # * +no_margins+ - Set to true to disable margins.
         # * *Returns* - The converter object.
         def setNoMargins(no_margins)
@@ -1022,7 +1018,7 @@ module Pdfcrowd
         end
 
         # Set the output page margins.
-        # 
+        #
         # * +top+ - Set the output page top margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * +right+ - Set the output page right margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * +bottom+ - Set the output page bottom margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
@@ -1037,7 +1033,7 @@ module Pdfcrowd
         end
 
         # Load an HTML code from the specified URL and use it as the page header. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals Arabic numerals are used by default. Roman numerals can be generated by the roman and roman-lowercase values Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL, allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
-        # 
+        #
         # * +header_url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
         def setHeaderUrl(header_url)
@@ -1050,7 +1046,7 @@ module Pdfcrowd
         end
 
         # Use the specified HTML code as the page header. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals Arabic numerals are used by default. Roman numerals can be generated by the roman and roman-lowercase values Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL, allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
-        # 
+        #
         # * +header_html+ - The string must not be empty.
         # * *Returns* - The converter object.
         def setHeaderHtml(header_html)
@@ -1063,7 +1059,7 @@ module Pdfcrowd
         end
 
         # Set the header height.
-        # 
+        #
         # * +header_height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setHeaderHeight(header_height)
@@ -1076,7 +1072,7 @@ module Pdfcrowd
         end
 
         # Load an HTML code from the specified URL and use it as the page footer. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals Arabic numerals are used by default. Roman numerals can be generated by the roman and roman-lowercase values Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL, allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
-        # 
+        #
         # * +footer_url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
         def setFooterUrl(footer_url)
@@ -1089,7 +1085,7 @@ module Pdfcrowd
         end
 
         # Use the specified HTML as the page footer. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals Arabic numerals are used by default. Roman numerals can be generated by the roman and roman-lowercase values Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL, allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
-        # 
+        #
         # * +footer_html+ - The string must not be empty.
         # * *Returns* - The converter object.
         def setFooterHtml(footer_html)
@@ -1102,7 +1098,7 @@ module Pdfcrowd
         end
 
         # Set the footer height.
-        # 
+        #
         # * +footer_height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
         def setFooterHeight(footer_height)
@@ -1115,7 +1111,7 @@ module Pdfcrowd
         end
 
         # Set the page range to print.
-        # 
+        #
         # * +pages+ - A comma seperated list of page numbers or ranges.
         # * *Returns* - The converter object.
         def setPrintPageRange(pages)
@@ -1128,7 +1124,7 @@ module Pdfcrowd
         end
 
         # Apply the first page of the watermark PDF to every page of the output PDF.
-        # 
+        #
         # * +page_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setPageWatermark(page_watermark)
@@ -1141,7 +1137,7 @@ module Pdfcrowd
         end
 
         # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
-        # 
+        #
         # * +multipage_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setMultipageWatermark(multipage_watermark)
@@ -1154,7 +1150,7 @@ module Pdfcrowd
         end
 
         # Apply the first page of the specified PDF to the background of every page of the output PDF.
-        # 
+        #
         # * +page_background+ - The file path to a local background PDF file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setPageBackground(page_background)
@@ -1167,7 +1163,7 @@ module Pdfcrowd
         end
 
         # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
-        # 
+        #
         # * +multipage_background+ - The file path to a local background PDF file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setMultipageBackground(multipage_background)
@@ -1180,7 +1176,7 @@ module Pdfcrowd
         end
 
         # The page header is not printed on the specified pages.
-        # 
+        #
         # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma seperated list of page numbers.
         # * *Returns* - The converter object.
         def setExcludeHeaderOnPages(pages)
@@ -1193,7 +1189,7 @@ module Pdfcrowd
         end
 
         # The page footer is not printed on the specified pages.
-        # 
+        #
         # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma seperated list of page numbers.
         # * *Returns* - The converter object.
         def setExcludeFooterOnPages(pages)
@@ -1206,7 +1202,7 @@ module Pdfcrowd
         end
 
         # Set an offset between physical and logical page numbers.
-        # 
+        #
         # * +offset+ - Integer specifying page offset.
         # * *Returns* - The converter object.
         def setPageNumberingOffset(offset)
@@ -1215,7 +1211,7 @@ module Pdfcrowd
         end
 
         # Do not print the background graphics.
-        # 
+        #
         # * +no_background+ - Set to true to disable the background graphics.
         # * *Returns* - The converter object.
         def setNoBackground(no_background)
@@ -1224,7 +1220,7 @@ module Pdfcrowd
         end
 
         # Do not execute JavaScript.
-        # 
+        #
         # * +disable_javascript+ - Set to true to disable JavaScript in web pages.
         # * *Returns* - The converter object.
         def setDisableJavascript(disable_javascript)
@@ -1233,7 +1229,7 @@ module Pdfcrowd
         end
 
         # Do not load images.
-        # 
+        #
         # * +disable_image_loading+ - Set to true to disable loading of images.
         # * *Returns* - The converter object.
         def setDisableImageLoading(disable_image_loading)
@@ -1242,7 +1238,7 @@ module Pdfcrowd
         end
 
         # Disable loading fonts from remote sources.
-        # 
+        #
         # * +disable_remote_fonts+ - Set to true disable loading remote fonts.
         # * *Returns* - The converter object.
         def setDisableRemoteFonts(disable_remote_fonts)
@@ -1251,7 +1247,7 @@ module Pdfcrowd
         end
 
         # Try to block ads. Enabling this option can produce smaller output and speed up the conversion.
-        # 
+        #
         # * +block_ads+ - Set to true to block ads in web pages.
         # * *Returns* - The converter object.
         def setBlockAds(block_ads)
@@ -1260,7 +1256,7 @@ module Pdfcrowd
         end
 
         # Set the default HTML content text encoding.
-        # 
+        #
         # * +default_encoding+ - The text encoding of the HTML content.
         # * *Returns* - The converter object.
         def setDefaultEncoding(default_encoding)
@@ -1269,7 +1265,7 @@ module Pdfcrowd
         end
 
         # Set the HTTP authentication user name.
-        # 
+        #
         # * +user_name+ - The user name.
         # * *Returns* - The converter object.
         def setHttpAuthUserName(user_name)
@@ -1278,7 +1274,7 @@ module Pdfcrowd
         end
 
         # Set the HTTP authentication password.
-        # 
+        #
         # * +password+ - The password.
         # * *Returns* - The converter object.
         def setHttpAuthPassword(password)
@@ -1287,7 +1283,7 @@ module Pdfcrowd
         end
 
         # Set credentials to access HTTP base authentication protected websites.
-        # 
+        #
         # * +user_name+ - Set the HTTP authentication user name.
         # * +password+ - Set the HTTP authentication password.
         # * *Returns* - The converter object.
@@ -1298,7 +1294,7 @@ module Pdfcrowd
         end
 
         # Use the print version of the page if available (@media print).
-        # 
+        #
         # * +use_print_media+ - Set to true to use the print version of the page.
         # * *Returns* - The converter object.
         def setUsePrintMedia(use_print_media)
@@ -1307,7 +1303,7 @@ module Pdfcrowd
         end
 
         # Do not send the X-Pdfcrowd HTTP header in Pdfcrowd HTTP requests.
-        # 
+        #
         # * +no_xpdfcrowd_header+ - Set to true to disable sending X-Pdfcrowd HTTP header.
         # * *Returns* - The converter object.
         def setNoXpdfcrowdHeader(no_xpdfcrowd_header)
@@ -1316,7 +1312,7 @@ module Pdfcrowd
         end
 
         # Set cookies that are sent in Pdfcrowd HTTP requests.
-        # 
+        #
         # * +cookies+ - The cookie string.
         # * *Returns* - The converter object.
         def setCookies(cookies)
@@ -1325,7 +1321,7 @@ module Pdfcrowd
         end
 
         # Do not allow insecure HTTPS connections.
-        # 
+        #
         # * +verify_ssl_certificates+ - Set to true to enable SSL certificate verification.
         # * *Returns* - The converter object.
         def setVerifySslCertificates(verify_ssl_certificates)
@@ -1334,7 +1330,7 @@ module Pdfcrowd
         end
 
         # Abort the conversion if the main URL HTTP status code is greater than or equal to 400.
-        # 
+        #
         # * +fail_on_error+ - Set to true to abort the conversion.
         # * *Returns* - The converter object.
         def setFailOnMainUrlError(fail_on_error)
@@ -1342,8 +1338,8 @@ module Pdfcrowd
             self
         end
 
-        # Abort the conversion if any of the sub-request HTTP status code is greater than or equal to 400.
-        # 
+        # Abort the conversion if any of the sub-request HTTP status code is greater than or equal to 400 or if some sub-requests are still pending. See details in a debug log.
+        #
         # * +fail_on_error+ - Set to true to abort the conversion.
         # * *Returns* - The converter object.
         def setFailOnAnyUrlError(fail_on_error)
@@ -1352,7 +1348,7 @@ module Pdfcrowd
         end
 
         # Run a custom JavaScript after the document is loaded. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...).
-        # 
+        #
         # * +custom_javascript+ - String containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
         def setCustomJavascript(custom_javascript)
@@ -1365,7 +1361,7 @@ module Pdfcrowd
         end
 
         # Set a custom HTTP header that is sent in Pdfcrowd HTTP requests.
-        # 
+        #
         # * +custom_http_header+ - A string containing the header name and value separated by a colon.
         # * *Returns* - The converter object.
         def setCustomHttpHeader(custom_http_header)
@@ -1378,7 +1374,7 @@ module Pdfcrowd
         end
 
         # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. The maximum value is determined by your API license.
-        # 
+        #
         # * +javascript_delay+ - The number of milliseconds to wait. Must be a positive integer number or 0.
         # * *Returns* - The converter object.
         def setJavascriptDelay(javascript_delay)
@@ -1391,7 +1387,7 @@ module Pdfcrowd
         end
 
         # Convert only the specified element from the main document and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
-        # 
+        #
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
         def setElementToConvert(selectors)
@@ -1404,7 +1400,7 @@ module Pdfcrowd
         end
 
         # Specify the DOM handling when only a part of the document is converted.
-        # 
+        #
         # * +mode+ - Allowed values are cut-out, remove-siblings, hide-siblings.
         # * *Returns* - The converter object.
         def setElementToConvertMode(mode)
@@ -1416,8 +1412,8 @@ module Pdfcrowd
             self
         end
 
-        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails.
-        # 
+        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails. Your API license defines the maximum wait time by "Max Delay" parameter.
+        #
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
         def setWaitForElement(selectors)
@@ -1430,7 +1426,7 @@ module Pdfcrowd
         end
 
         # Set the viewport width in pixels. The viewport is the user's visible area of the page.
-        # 
+        #
         # * +viewport_width+ - The value must be in a range 96-7680.
         # * *Returns* - The converter object.
         def setViewportWidth(viewport_width)
@@ -1443,7 +1439,7 @@ module Pdfcrowd
         end
 
         # Set the viewport height in pixels. The viewport is the user's visible area of the page.
-        # 
+        #
         # * +viewport_height+ - Must be a positive integer number.
         # * *Returns* - The converter object.
         def setViewportHeight(viewport_height)
@@ -1456,7 +1452,7 @@ module Pdfcrowd
         end
 
         # Set the viewport size. The viewport is the user's visible area of the page.
-        # 
+        #
         # * +width+ - Set the viewport width in pixels. The viewport is the user's visible area of the page. The value must be in a range 96-7680.
         # * +height+ - Set the viewport height in pixels. The viewport is the user's visible area of the page. Must be a positive integer number.
         # * *Returns* - The converter object.
@@ -1467,7 +1463,7 @@ module Pdfcrowd
         end
 
         # Sets the rendering mode.
-        # 
+        #
         # * +rendering_mode+ - The rendering mode. Allowed values are default, viewport.
         # * *Returns* - The converter object.
         def setRenderingMode(rendering_mode)
@@ -1480,7 +1476,7 @@ module Pdfcrowd
         end
 
         # Set the scaling factor (zoom) for the main page area.
-        # 
+        #
         # * +scale_factor+ - The scale factor. The value must be in a range 10-500.
         # * *Returns* - The converter object.
         def setScaleFactor(scale_factor)
@@ -1493,7 +1489,7 @@ module Pdfcrowd
         end
 
         # Set the scaling factor (zoom) for the header and footer.
-        # 
+        #
         # * +header_footer_scale_factor+ - The scale factor. The value must be in a range 10-500.
         # * *Returns* - The converter object.
         def setHeaderFooterScaleFactor(header_footer_scale_factor)
@@ -1506,7 +1502,7 @@ module Pdfcrowd
         end
 
         # Disable the intelligent shrinking strategy that tries to optimally fit the HTML contents to a PDF page.
-        # 
+        #
         # * +disable_smart_shrinking+ - Set to true to disable the intelligent shrinking strategy.
         # * *Returns* - The converter object.
         def setDisableSmartShrinking(disable_smart_shrinking)
@@ -1515,7 +1511,7 @@ module Pdfcrowd
         end
 
         # Create linearized PDF. This is also known as Fast Web View.
-        # 
+        #
         # * +linearize+ - Set to true to create linearized PDF.
         # * *Returns* - The converter object.
         def setLinearize(linearize)
@@ -1524,7 +1520,7 @@ module Pdfcrowd
         end
 
         # Encrypt the PDF. This prevents search engines from indexing the contents.
-        # 
+        #
         # * +encrypt+ - Set to true to enable PDF encryption.
         # * *Returns* - The converter object.
         def setEncrypt(encrypt)
@@ -1533,7 +1529,7 @@ module Pdfcrowd
         end
 
         # Protect the PDF with a user password. When a PDF has a user password, it must be supplied in order to view the document and to perform operations allowed by the access permissions.
-        # 
+        #
         # * +user_password+ - The user password.
         # * *Returns* - The converter object.
         def setUserPassword(user_password)
@@ -1542,7 +1538,7 @@ module Pdfcrowd
         end
 
         # Protect the PDF with an owner password. Supplying an owner password grants unlimited access to the PDF including changing the passwords and access permissions.
-        # 
+        #
         # * +owner_password+ - The owner password.
         # * *Returns* - The converter object.
         def setOwnerPassword(owner_password)
@@ -1551,7 +1547,7 @@ module Pdfcrowd
         end
 
         # Disallow printing of the output PDF.
-        # 
+        #
         # * +no_print+ - Set to true to set the no-print flag in the output PDF.
         # * *Returns* - The converter object.
         def setNoPrint(no_print)
@@ -1560,7 +1556,7 @@ module Pdfcrowd
         end
 
         # Disallow modification of the ouput PDF.
-        # 
+        #
         # * +no_modify+ - Set to true to set the read-only only flag in the output PDF.
         # * *Returns* - The converter object.
         def setNoModify(no_modify)
@@ -1569,7 +1565,7 @@ module Pdfcrowd
         end
 
         # Disallow text and graphics extraction from the output PDF.
-        # 
+        #
         # * +no_copy+ - Set to true to set the no-copy flag in the output PDF.
         # * *Returns* - The converter object.
         def setNoCopy(no_copy)
@@ -1578,7 +1574,7 @@ module Pdfcrowd
         end
 
         # Set the title of the PDF.
-        # 
+        #
         # * +title+ - The title.
         # * *Returns* - The converter object.
         def setTitle(title)
@@ -1587,7 +1583,7 @@ module Pdfcrowd
         end
 
         # Set the subject of the PDF.
-        # 
+        #
         # * +subject+ - The subject.
         # * *Returns* - The converter object.
         def setSubject(subject)
@@ -1596,7 +1592,7 @@ module Pdfcrowd
         end
 
         # Set the author of the PDF.
-        # 
+        #
         # * +author+ - The author.
         # * *Returns* - The converter object.
         def setAuthor(author)
@@ -1605,7 +1601,7 @@ module Pdfcrowd
         end
 
         # Associate keywords with the document.
-        # 
+        #
         # * +keywords+ - The string with the keywords.
         # * *Returns* - The converter object.
         def setKeywords(keywords)
@@ -1614,7 +1610,7 @@ module Pdfcrowd
         end
 
         # Specify the page layout to be used when the document is opened.
-        # 
+        #
         # * +page_layout+ - Allowed values are single-page, one-column, two-column-left, two-column-right.
         # * *Returns* - The converter object.
         def setPageLayout(page_layout)
@@ -1627,7 +1623,7 @@ module Pdfcrowd
         end
 
         # Specify how the document should be displayed when opened.
-        # 
+        #
         # * +page_mode+ - Allowed values are full-screen, thumbnails, outlines.
         # * *Returns* - The converter object.
         def setPageMode(page_mode)
@@ -1640,7 +1636,7 @@ module Pdfcrowd
         end
 
         # Specify how the page should be displayed when opened.
-        # 
+        #
         # * +initial_zoom_type+ - Allowed values are fit-width, fit-height, fit-page.
         # * *Returns* - The converter object.
         def setInitialZoomType(initial_zoom_type)
@@ -1653,7 +1649,7 @@ module Pdfcrowd
         end
 
         # Display the specified page when the document is opened.
-        # 
+        #
         # * +initial_page+ - Must be a positive integer number.
         # * *Returns* - The converter object.
         def setInitialPage(initial_page)
@@ -1666,7 +1662,7 @@ module Pdfcrowd
         end
 
         # Specify the initial page zoom in percents when the document is opened.
-        # 
+        #
         # * +initial_zoom+ - Must be a positive integer number.
         # * *Returns* - The converter object.
         def setInitialZoom(initial_zoom)
@@ -1679,7 +1675,7 @@ module Pdfcrowd
         end
 
         # Specify whether to hide the viewer application's tool bars when the document is active.
-        # 
+        #
         # * +hide_toolbar+ - Set to true to hide tool bars.
         # * *Returns* - The converter object.
         def setHideToolbar(hide_toolbar)
@@ -1688,7 +1684,7 @@ module Pdfcrowd
         end
 
         # Specify whether to hide the viewer application's menu bar when the document is active.
-        # 
+        #
         # * +hide_menubar+ - Set to true to hide the menu bar.
         # * *Returns* - The converter object.
         def setHideMenubar(hide_menubar)
@@ -1697,7 +1693,7 @@ module Pdfcrowd
         end
 
         # Specify whether to hide user interface elements in the document's window (such as scroll bars and navigation controls), leaving only the document's contents displayed.
-        # 
+        #
         # * +hide_window_ui+ - Set to true to hide ui elements.
         # * *Returns* - The converter object.
         def setHideWindowUi(hide_window_ui)
@@ -1706,7 +1702,7 @@ module Pdfcrowd
         end
 
         # Specify whether to resize the document's window to fit the size of the first displayed page.
-        # 
+        #
         # * +fit_window+ - Set to true to resize the window.
         # * *Returns* - The converter object.
         def setFitWindow(fit_window)
@@ -1715,7 +1711,7 @@ module Pdfcrowd
         end
 
         # Specify whether to position the document's window in the center of the screen.
-        # 
+        #
         # * +center_window+ - Set to true to center the window.
         # * *Returns* - The converter object.
         def setCenterWindow(center_window)
@@ -1724,7 +1720,7 @@ module Pdfcrowd
         end
 
         # Specify whether the window's title bar should display the document title. If false , the title bar should instead display the name of the PDF file containing the document.
-        # 
+        #
         # * +display_title+ - Set to true to display the title.
         # * *Returns* - The converter object.
         def setDisplayTitle(display_title)
@@ -1733,7 +1729,7 @@ module Pdfcrowd
         end
 
         # Set the predominant reading order for text to right-to-left. This option has no direct effect on the document's contents or page numbering but can be used to determine the relative positioning of pages when displayed side by side or printed n-up
-        # 
+        #
         # * +right_to_left+ - Set to true to set right-to-left reading order.
         # * *Returns* - The converter object.
         def setRightToLeft(right_to_left)
@@ -1741,8 +1737,8 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
-        # 
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
+        #
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
         def setDebugLog(debug_log)
@@ -1789,7 +1785,7 @@ module Pdfcrowd
         end
 
         # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        # 
+        #
         # * +tag+ - A string with the custom tag.
         # * *Returns* - The converter object.
         def setTag(tag)
@@ -1798,7 +1794,7 @@ module Pdfcrowd
         end
 
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
-        # 
+        #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
         def setUseHttp(use_http)
@@ -1807,7 +1803,7 @@ module Pdfcrowd
         end
 
         # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
-        # 
+        #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
         def setUserAgent(user_agent)
@@ -1816,7 +1812,7 @@ module Pdfcrowd
         end
 
         # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        # 
+        #
         # * +host+ - The proxy hostname.
         # * +port+ - The proxy port.
         # * +user_name+ - The username.
@@ -1828,7 +1824,7 @@ module Pdfcrowd
         end
 
         # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        # 
+        #
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
         def setRetryCount(retry_count)
@@ -1841,7 +1837,7 @@ module Pdfcrowd
     # Conversion from HTML to image.
     class HtmlToImageClient
         # Constructor for the Pdfcrowd API client.
-        # 
+        #
         # * +user_name+ - Your username at Pdfcrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
@@ -1856,7 +1852,7 @@ module Pdfcrowd
         end
 
         # The format of the output file.
-        # 
+        #
         # * +output_format+ - Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.
         # * *Returns* - The converter object.
         def setOutputFormat(output_format)
@@ -1869,7 +1865,7 @@ module Pdfcrowd
         end
 
         # Convert a web page.
-        # 
+        #
         # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
         # * *Returns* - Byte array containing the conversion output.
         def convertUrl(url)
@@ -1882,7 +1878,7 @@ module Pdfcrowd
         end
 
         # Convert a web page and write the result to an output stream.
-        # 
+        #
         # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertUrlToStream(url, out_stream)
@@ -1895,7 +1891,7 @@ module Pdfcrowd
         end
 
         # Convert a web page and write the result to a local file.
-        # 
+        #
         # * +url+ - The address of the web page to convert. The supported protocols are http:// and https://.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertUrlToFile(url, file_path)
@@ -1915,7 +1911,7 @@ module Pdfcrowd
         end
 
         # Convert a local file.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
         # * *Returns* - Byte array containing the conversion output.
         def convertFile(file)
@@ -1932,7 +1928,7 @@ module Pdfcrowd
         end
 
         # Convert a local file and write the result to an output stream.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertFileToStream(file, out_stream)
@@ -1949,7 +1945,7 @@ module Pdfcrowd
         end
 
         # Convert a local file and write the result to a local file.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertFileToFile(file, file_path)
@@ -1969,7 +1965,7 @@ module Pdfcrowd
         end
 
         # Convert a string.
-        # 
+        #
         # * +text+ - The string content to convert. The string must not be empty.
         # * *Returns* - Byte array containing the conversion output.
         def convertString(text)
@@ -1982,7 +1978,7 @@ module Pdfcrowd
         end
 
         # Convert a string and write the output to an output stream.
-        # 
+        #
         # * +text+ - The string content to convert. The string must not be empty.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertStringToStream(text, out_stream)
@@ -1995,7 +1991,7 @@ module Pdfcrowd
         end
 
         # Convert a string and write the output to a file.
-        # 
+        #
         # * +text+ - The string content to convert. The string must not be empty.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertStringToFile(text, file_path)
@@ -2015,7 +2011,7 @@ module Pdfcrowd
         end
 
         # Do not print the background graphics.
-        # 
+        #
         # * +no_background+ - Set to true to disable the background graphics.
         # * *Returns* - The converter object.
         def setNoBackground(no_background)
@@ -2024,7 +2020,7 @@ module Pdfcrowd
         end
 
         # Do not execute JavaScript.
-        # 
+        #
         # * +disable_javascript+ - Set to true to disable JavaScript in web pages.
         # * *Returns* - The converter object.
         def setDisableJavascript(disable_javascript)
@@ -2033,7 +2029,7 @@ module Pdfcrowd
         end
 
         # Do not load images.
-        # 
+        #
         # * +disable_image_loading+ - Set to true to disable loading of images.
         # * *Returns* - The converter object.
         def setDisableImageLoading(disable_image_loading)
@@ -2042,7 +2038,7 @@ module Pdfcrowd
         end
 
         # Disable loading fonts from remote sources.
-        # 
+        #
         # * +disable_remote_fonts+ - Set to true disable loading remote fonts.
         # * *Returns* - The converter object.
         def setDisableRemoteFonts(disable_remote_fonts)
@@ -2051,7 +2047,7 @@ module Pdfcrowd
         end
 
         # Try to block ads. Enabling this option can produce smaller output and speed up the conversion.
-        # 
+        #
         # * +block_ads+ - Set to true to block ads in web pages.
         # * *Returns* - The converter object.
         def setBlockAds(block_ads)
@@ -2060,7 +2056,7 @@ module Pdfcrowd
         end
 
         # Set the default HTML content text encoding.
-        # 
+        #
         # * +default_encoding+ - The text encoding of the HTML content.
         # * *Returns* - The converter object.
         def setDefaultEncoding(default_encoding)
@@ -2069,7 +2065,7 @@ module Pdfcrowd
         end
 
         # Set the HTTP authentication user name.
-        # 
+        #
         # * +user_name+ - The user name.
         # * *Returns* - The converter object.
         def setHttpAuthUserName(user_name)
@@ -2078,7 +2074,7 @@ module Pdfcrowd
         end
 
         # Set the HTTP authentication password.
-        # 
+        #
         # * +password+ - The password.
         # * *Returns* - The converter object.
         def setHttpAuthPassword(password)
@@ -2087,7 +2083,7 @@ module Pdfcrowd
         end
 
         # Set credentials to access HTTP base authentication protected websites.
-        # 
+        #
         # * +user_name+ - Set the HTTP authentication user name.
         # * +password+ - Set the HTTP authentication password.
         # * *Returns* - The converter object.
@@ -2098,7 +2094,7 @@ module Pdfcrowd
         end
 
         # Use the print version of the page if available (@media print).
-        # 
+        #
         # * +use_print_media+ - Set to true to use the print version of the page.
         # * *Returns* - The converter object.
         def setUsePrintMedia(use_print_media)
@@ -2107,7 +2103,7 @@ module Pdfcrowd
         end
 
         # Do not send the X-Pdfcrowd HTTP header in Pdfcrowd HTTP requests.
-        # 
+        #
         # * +no_xpdfcrowd_header+ - Set to true to disable sending X-Pdfcrowd HTTP header.
         # * *Returns* - The converter object.
         def setNoXpdfcrowdHeader(no_xpdfcrowd_header)
@@ -2116,7 +2112,7 @@ module Pdfcrowd
         end
 
         # Set cookies that are sent in Pdfcrowd HTTP requests.
-        # 
+        #
         # * +cookies+ - The cookie string.
         # * *Returns* - The converter object.
         def setCookies(cookies)
@@ -2125,7 +2121,7 @@ module Pdfcrowd
         end
 
         # Do not allow insecure HTTPS connections.
-        # 
+        #
         # * +verify_ssl_certificates+ - Set to true to enable SSL certificate verification.
         # * *Returns* - The converter object.
         def setVerifySslCertificates(verify_ssl_certificates)
@@ -2134,7 +2130,7 @@ module Pdfcrowd
         end
 
         # Abort the conversion if the main URL HTTP status code is greater than or equal to 400.
-        # 
+        #
         # * +fail_on_error+ - Set to true to abort the conversion.
         # * *Returns* - The converter object.
         def setFailOnMainUrlError(fail_on_error)
@@ -2142,8 +2138,8 @@ module Pdfcrowd
             self
         end
 
-        # Abort the conversion if any of the sub-request HTTP status code is greater than or equal to 400.
-        # 
+        # Abort the conversion if any of the sub-request HTTP status code is greater than or equal to 400 or if some sub-requests are still pending. See details in a debug log.
+        #
         # * +fail_on_error+ - Set to true to abort the conversion.
         # * *Returns* - The converter object.
         def setFailOnAnyUrlError(fail_on_error)
@@ -2152,7 +2148,7 @@ module Pdfcrowd
         end
 
         # Run a custom JavaScript after the document is loaded. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...).
-        # 
+        #
         # * +custom_javascript+ - String containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
         def setCustomJavascript(custom_javascript)
@@ -2165,7 +2161,7 @@ module Pdfcrowd
         end
 
         # Set a custom HTTP header that is sent in Pdfcrowd HTTP requests.
-        # 
+        #
         # * +custom_http_header+ - A string containing the header name and value separated by a colon.
         # * *Returns* - The converter object.
         def setCustomHttpHeader(custom_http_header)
@@ -2178,7 +2174,7 @@ module Pdfcrowd
         end
 
         # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. The maximum value is determined by your API license.
-        # 
+        #
         # * +javascript_delay+ - The number of milliseconds to wait. Must be a positive integer number or 0.
         # * *Returns* - The converter object.
         def setJavascriptDelay(javascript_delay)
@@ -2191,7 +2187,7 @@ module Pdfcrowd
         end
 
         # Convert only the specified element from the main document and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
-        # 
+        #
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
         def setElementToConvert(selectors)
@@ -2204,7 +2200,7 @@ module Pdfcrowd
         end
 
         # Specify the DOM handling when only a part of the document is converted.
-        # 
+        #
         # * +mode+ - Allowed values are cut-out, remove-siblings, hide-siblings.
         # * *Returns* - The converter object.
         def setElementToConvertMode(mode)
@@ -2216,8 +2212,8 @@ module Pdfcrowd
             self
         end
 
-        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails.
-        # 
+        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails. Your API license defines the maximum wait time by "Max Delay" parameter.
+        #
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
         def setWaitForElement(selectors)
@@ -2230,7 +2226,7 @@ module Pdfcrowd
         end
 
         # Set the output image width in pixels.
-        # 
+        #
         # * +screenshot_width+ - The value must be in a range 96-7680.
         # * *Returns* - The converter object.
         def setScreenshotWidth(screenshot_width)
@@ -2243,7 +2239,7 @@ module Pdfcrowd
         end
 
         # Set the output image height in pixels. If it's not specified, actual document height is used.
-        # 
+        #
         # * +screenshot_height+ - Must be a positive integer number.
         # * *Returns* - The converter object.
         def setScreenshotHeight(screenshot_height)
@@ -2255,8 +2251,8 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
-        # 
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
+        #
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
         def setDebugLog(debug_log)
@@ -2297,7 +2293,7 @@ module Pdfcrowd
         end
 
         # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        # 
+        #
         # * +tag+ - A string with the custom tag.
         # * *Returns* - The converter object.
         def setTag(tag)
@@ -2306,7 +2302,7 @@ module Pdfcrowd
         end
 
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
-        # 
+        #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
         def setUseHttp(use_http)
@@ -2315,7 +2311,7 @@ module Pdfcrowd
         end
 
         # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
-        # 
+        #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
         def setUserAgent(user_agent)
@@ -2324,7 +2320,7 @@ module Pdfcrowd
         end
 
         # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        # 
+        #
         # * +host+ - The proxy hostname.
         # * +port+ - The proxy port.
         # * +user_name+ - The username.
@@ -2336,7 +2332,7 @@ module Pdfcrowd
         end
 
         # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        # 
+        #
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
         def setRetryCount(retry_count)
@@ -2349,7 +2345,7 @@ module Pdfcrowd
     # Conversion from one image format to another image format.
     class ImageToImageClient
         # Constructor for the Pdfcrowd API client.
-        # 
+        #
         # * +user_name+ - Your username at Pdfcrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
@@ -2364,7 +2360,7 @@ module Pdfcrowd
         end
 
         # Convert an image.
-        # 
+        #
         # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
         # * *Returns* - Byte array containing the conversion output.
         def convertUrl(url)
@@ -2377,7 +2373,7 @@ module Pdfcrowd
         end
 
         # Convert an image and write the result to an output stream.
-        # 
+        #
         # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertUrlToStream(url, out_stream)
@@ -2390,7 +2386,7 @@ module Pdfcrowd
         end
 
         # Convert an image and write the result to a local file.
-        # 
+        #
         # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertUrlToFile(url, file_path)
@@ -2410,7 +2406,7 @@ module Pdfcrowd
         end
 
         # Convert a local file.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). The file must exist and not be empty.
         # * *Returns* - Byte array containing the conversion output.
         def convertFile(file)
@@ -2423,7 +2419,7 @@ module Pdfcrowd
         end
 
         # Convert a local file and write the result to an output stream.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). The file must exist and not be empty.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertFileToStream(file, out_stream)
@@ -2436,7 +2432,7 @@ module Pdfcrowd
         end
 
         # Convert a local file and write the result to a local file.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). The file must exist and not be empty.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertFileToFile(file, file_path)
@@ -2456,7 +2452,7 @@ module Pdfcrowd
         end
 
         # Convert raw data.
-        # 
+        #
         # * +data+ - The raw content to be converted.
         # * *Returns* - Byte array with the output.
         def convertRawData(data)
@@ -2465,7 +2461,7 @@ module Pdfcrowd
         end
 
         # Convert raw data and write the result to an output stream.
-        # 
+        #
         # * +data+ - The raw content to be converted.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertRawDataToStream(data, out_stream)
@@ -2474,7 +2470,7 @@ module Pdfcrowd
         end
 
         # Convert raw data to a file.
-        # 
+        #
         # * +data+ - The raw content to be converted.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertRawDataToFile(data, file_path)
@@ -2494,7 +2490,7 @@ module Pdfcrowd
         end
 
         # The format of the output file.
-        # 
+        #
         # * +output_format+ - Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.
         # * *Returns* - The converter object.
         def setOutputFormat(output_format)
@@ -2507,7 +2503,7 @@ module Pdfcrowd
         end
 
         # Resize the image.
-        # 
+        #
         # * +resize+ - The resize percentage or new image dimensions.
         # * *Returns* - The converter object.
         def setResize(resize)
@@ -2516,7 +2512,7 @@ module Pdfcrowd
         end
 
         # Rotate the image.
-        # 
+        #
         # * +rotate+ - The rotation specified in degrees.
         # * *Returns* - The converter object.
         def setRotate(rotate)
@@ -2524,8 +2520,8 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
-        # 
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
+        #
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
         def setDebugLog(debug_log)
@@ -2566,7 +2562,7 @@ module Pdfcrowd
         end
 
         # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        # 
+        #
         # * +tag+ - A string with the custom tag.
         # * *Returns* - The converter object.
         def setTag(tag)
@@ -2575,7 +2571,7 @@ module Pdfcrowd
         end
 
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
-        # 
+        #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
         def setUseHttp(use_http)
@@ -2584,7 +2580,7 @@ module Pdfcrowd
         end
 
         # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
-        # 
+        #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
         def setUserAgent(user_agent)
@@ -2593,7 +2589,7 @@ module Pdfcrowd
         end
 
         # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        # 
+        #
         # * +host+ - The proxy hostname.
         # * +port+ - The proxy port.
         # * +user_name+ - The username.
@@ -2605,7 +2601,7 @@ module Pdfcrowd
         end
 
         # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        # 
+        #
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
         def setRetryCount(retry_count)
@@ -2618,7 +2614,7 @@ module Pdfcrowd
     # Conversion from PDF to PDF.
     class PdfToPdfClient
         # Constructor for the Pdfcrowd API client.
-        # 
+        #
         # * +user_name+ - Your username at Pdfcrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
@@ -2633,7 +2629,7 @@ module Pdfcrowd
         end
 
         # Specifies the action to be performed on the input PDFs.
-        # 
+        #
         # * +action+ - Allowed values are join, shuffle.
         # * *Returns* - The converter object.
         def setAction(action)
@@ -2652,14 +2648,14 @@ module Pdfcrowd
         end
 
         # Perform an action on the input files and write the output PDF to an output stream.
-        # 
+        #
         # * +out_stream+ - The output stream that will contain the output PDF.
         def convertToStream(out_stream)
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
         # Perform an action on the input files and write the output PDF to a file.
-        # 
+        #
         # * +file_path+ - The output file path. The string must not be empty.
         def convertToFile(file_path)
             if (!(!file_path.nil? && !file_path.empty?))
@@ -2672,7 +2668,7 @@ module Pdfcrowd
         end
 
         # Add a PDF file to the list of the input PDFs.
-        # 
+        #
         # * +file_path+ - The file path to a local PDF file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def addPdfFile(file_path)
@@ -2686,7 +2682,7 @@ module Pdfcrowd
         end
 
         # Add in-memory raw PDF data to the list of the input PDFs.Typical usage is for adding PDF created by another Pdfcrowd converter. Example in PHP: $clientPdf2Pdf->addPdfRawData($clientHtml2Pdf->convertUrl('http://www.example.com'));
-        # 
+        #
         # * +pdf_raw_data+ - The raw PDF data. The input data must be PDF content.
         # * *Returns* - The converter object.
         def addPdfRawData(pdf_raw_data)
@@ -2699,8 +2695,8 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
-        # 
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
+        #
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
         def setDebugLog(debug_log)
@@ -2747,7 +2743,7 @@ module Pdfcrowd
         end
 
         # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        # 
+        #
         # * +tag+ - A string with the custom tag.
         # * *Returns* - The converter object.
         def setTag(tag)
@@ -2756,7 +2752,7 @@ module Pdfcrowd
         end
 
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
-        # 
+        #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
         def setUseHttp(use_http)
@@ -2765,7 +2761,7 @@ module Pdfcrowd
         end
 
         # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
-        # 
+        #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
         def setUserAgent(user_agent)
@@ -2774,7 +2770,7 @@ module Pdfcrowd
         end
 
         # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        # 
+        #
         # * +host+ - The proxy hostname.
         # * +port+ - The proxy port.
         # * +user_name+ - The username.
@@ -2786,7 +2782,7 @@ module Pdfcrowd
         end
 
         # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        # 
+        #
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
         def setRetryCount(retry_count)
@@ -2799,7 +2795,7 @@ module Pdfcrowd
     # Conversion from an image to PDF.
     class ImageToPdfClient
         # Constructor for the Pdfcrowd API client.
-        # 
+        #
         # * +user_name+ - Your username at Pdfcrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
@@ -2814,7 +2810,7 @@ module Pdfcrowd
         end
 
         # Convert an image.
-        # 
+        #
         # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
         # * *Returns* - Byte array containing the conversion output.
         def convertUrl(url)
@@ -2827,7 +2823,7 @@ module Pdfcrowd
         end
 
         # Convert an image and write the result to an output stream.
-        # 
+        #
         # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertUrlToStream(url, out_stream)
@@ -2840,7 +2836,7 @@ module Pdfcrowd
         end
 
         # Convert an image and write the result to a local file.
-        # 
+        #
         # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertUrlToFile(url, file_path)
@@ -2860,7 +2856,7 @@ module Pdfcrowd
         end
 
         # Convert a local file.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). The file must exist and not be empty.
         # * *Returns* - Byte array containing the conversion output.
         def convertFile(file)
@@ -2873,7 +2869,7 @@ module Pdfcrowd
         end
 
         # Convert a local file and write the result to an output stream.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). The file must exist and not be empty.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertFileToStream(file, out_stream)
@@ -2886,7 +2882,7 @@ module Pdfcrowd
         end
 
         # Convert a local file and write the result to a local file.
-        # 
+        #
         # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). The file must exist and not be empty.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertFileToFile(file, file_path)
@@ -2906,7 +2902,7 @@ module Pdfcrowd
         end
 
         # Convert raw data.
-        # 
+        #
         # * +data+ - The raw content to be converted.
         # * *Returns* - Byte array with the output.
         def convertRawData(data)
@@ -2915,7 +2911,7 @@ module Pdfcrowd
         end
 
         # Convert raw data and write the result to an output stream.
-        # 
+        #
         # * +data+ - The raw content to be converted.
         # * +out_stream+ - The output stream that will contain the conversion output.
         def convertRawDataToStream(data, out_stream)
@@ -2924,7 +2920,7 @@ module Pdfcrowd
         end
 
         # Convert raw data to a file.
-        # 
+        #
         # * +data+ - The raw content to be converted.
         # * +file_path+ - The output file path. The string must not be empty.
         def convertRawDataToFile(data, file_path)
@@ -2944,7 +2940,7 @@ module Pdfcrowd
         end
 
         # Resize the image.
-        # 
+        #
         # * +resize+ - The resize percentage or new image dimensions.
         # * *Returns* - The converter object.
         def setResize(resize)
@@ -2953,7 +2949,7 @@ module Pdfcrowd
         end
 
         # Rotate the image.
-        # 
+        #
         # * +rotate+ - The rotation specified in degrees.
         # * *Returns* - The converter object.
         def setRotate(rotate)
@@ -2961,8 +2957,8 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method.
-        # 
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
+        #
         # * +debug_log+ - Set to true to enable the debug logging.
         # * *Returns* - The converter object.
         def setDebugLog(debug_log)
@@ -3003,7 +2999,7 @@ module Pdfcrowd
         end
 
         # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        # 
+        #
         # * +tag+ - A string with the custom tag.
         # * *Returns* - The converter object.
         def setTag(tag)
@@ -3012,7 +3008,7 @@ module Pdfcrowd
         end
 
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
-        # 
+        #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
         def setUseHttp(use_http)
@@ -3021,7 +3017,7 @@ module Pdfcrowd
         end
 
         # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
-        # 
+        #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
         def setUserAgent(user_agent)
@@ -3030,7 +3026,7 @@ module Pdfcrowd
         end
 
         # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        # 
+        #
         # * +host+ - The proxy hostname.
         # * +port+ - The proxy port.
         # * +user_name+ - The username.
@@ -3042,7 +3038,7 @@ module Pdfcrowd
         end
 
         # Specifies the number of retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        # 
+        #
         # * +retry_count+ - Number of retries wanted.
         # * *Returns* - The converter object.
         def setRetryCount(retry_count)

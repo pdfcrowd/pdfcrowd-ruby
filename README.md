@@ -25,3 +25,7 @@ Or you can build and install the gem manually:
 
 * API Home:  <https://pdfcrowd.com/doc/api/>
 * API Reference:  <https://pdfcrowd.com/doc/api/html-to-pdf/ruby/>
+
+## License
+
+This project is licensed under the MIT License.
