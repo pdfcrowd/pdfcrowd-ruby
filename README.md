@@ -28,4 +28,4 @@ Or you can build and install the gem manually:
 
 ## License
 
-This project is licensed under the MIT License.
+This client library is licensed under the MIT License.
