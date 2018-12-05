@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.3.5'
+    CLIENT_VERSION = '4.4.1'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.3.5 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.4.1 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1120,6 +1120,19 @@ module Pdfcrowd
             end
             
             @fields['print_page_range'] = pages
+            self
+        end
+
+        # The page background color in RGB or RGBA hexadecimal format. The color fills the entire page regardless of the margins.
+        #
+        # * +page_background_color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
+        # * *Returns* - The converter object.
+        def setPageBackgroundColor(page_background_color)
+            unless /^[0-9a-fA-F]{6,8}$/.match(page_background_color)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background_color, "page_background_color", "html-to-pdf", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_page_background_color"), 470);
+            end
+            
+            @fields['page_background_color'] = page_background_color
             self
         end
 
@@ -1793,6 +1806,54 @@ module Pdfcrowd
             self
         end
 
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +http_proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpProxy(http_proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(http_proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(http_proxy, "http_proxy", "html-to-pdf", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
+            end
+            
+            @fields['http_proxy'] = http_proxy
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +https_proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpsProxy(https_proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(https_proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(https_proxy, "https_proxy", "html-to-pdf", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
+            end
+            
+            @fields['https_proxy'] = https_proxy
+            self
+        end
+
+        # A client certificate to authenticate Pdfcrowd converter on your web server. The certificate is used for two-way SSL/TLS authentication and adds extra security.
+        #
+        # * +client_certificate+ - The file must be in PKCS12 format. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setClientCertificate(client_certificate)
+            if (!(File.file?(client_certificate) && !File.zero?(client_certificate)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(client_certificate, "client_certificate", "html-to-pdf", "The file must exist and not be empty.", "set_client_certificate"), 470);
+            end
+            
+            @files['client_certificate'] = client_certificate
+            self
+        end
+
+        # A password for PKCS12 file with a client certificate if it's needed.
+        #
+        # * +client_certificate_password+ -
+        # * *Returns* - The converter object.
+        def setClientCertificatePassword(client_certificate_password)
+            @fields['client_certificate_password'] = client_certificate_password
+            self
+        end
+
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
         #
         # * +use_http+ - Set to true to use HTTP.
@@ -2301,6 +2362,54 @@ module Pdfcrowd
             self
         end
 
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +http_proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpProxy(http_proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(http_proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(http_proxy, "http_proxy", "html-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
+            end
+            
+            @fields['http_proxy'] = http_proxy
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +https_proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpsProxy(https_proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(https_proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(https_proxy, "https_proxy", "html-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
+            end
+            
+            @fields['https_proxy'] = https_proxy
+            self
+        end
+
+        # A client certificate to authenticate Pdfcrowd converter on your web server. The certificate is used for two-way SSL/TLS authentication and adds extra security.
+        #
+        # * +client_certificate+ - The file must be in PKCS12 format. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setClientCertificate(client_certificate)
+            if (!(File.file?(client_certificate) && !File.zero?(client_certificate)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(client_certificate, "client_certificate", "html-to-image", "The file must exist and not be empty.", "set_client_certificate"), 470);
+            end
+            
+            @files['client_certificate'] = client_certificate
+            self
+        end
+
+        # A password for PKCS12 file with a client certificate if it's needed.
+        #
+        # * +client_certificate_password+ -
+        # * *Returns* - The converter object.
+        def setClientCertificatePassword(client_certificate_password)
+            @fields['client_certificate_password'] = client_certificate_password
+            self
+        end
+
         # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
         #
         # * +use_http+ - Set to true to use HTTP.
@@ -2567,6 +2676,32 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setTag(tag)
             @fields['tag'] = tag
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +http_proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpProxy(http_proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(http_proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(http_proxy, "http_proxy", "image-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
+            end
+            
+            @fields['http_proxy'] = http_proxy
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +https_proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpsProxy(https_proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(https_proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(https_proxy, "https_proxy", "image-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
+            end
+            
+            @fields['https_proxy'] = https_proxy
             self
         end
 
@@ -3004,6 +3139,32 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setTag(tag)
             @fields['tag'] = tag
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +http_proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpProxy(http_proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(http_proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(http_proxy, "http_proxy", "image-to-pdf", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
+            end
+            
+            @fields['http_proxy'] = http_proxy
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +https_proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpsProxy(https_proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(https_proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(https_proxy, "https_proxy", "image-to-pdf", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
+            end
+            
+            @fields['https_proxy'] = https_proxy
             self
         end
 
