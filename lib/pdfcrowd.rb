@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.4.1'
+    CLIENT_VERSION = '4.4.2'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.4.1 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.4.2 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1440,11 +1440,11 @@ module Pdfcrowd
 
         # Set the viewport width in pixels. The viewport is the user's visible area of the page.
         #
-        # * +viewport_width+ - The value must be in a range 96-7680.
+        # * +viewport_width+ - The value must be in the range 96-7680.
         # * *Returns* - The converter object.
         def setViewportWidth(viewport_width)
             if (!(Integer(viewport_width) >= 96 && Integer(viewport_width) <= 7680))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(viewport_width, "viewport_width", "html-to-pdf", "The value must be in a range 96-7680.", "set_viewport_width"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(viewport_width, "viewport_width", "html-to-pdf", "The value must be in the range 96-7680.", "set_viewport_width"), 470);
             end
             
             @fields['viewport_width'] = viewport_width
@@ -1466,7 +1466,7 @@ module Pdfcrowd
 
         # Set the viewport size. The viewport is the user's visible area of the page.
         #
-        # * +width+ - Set the viewport width in pixels. The viewport is the user's visible area of the page. The value must be in a range 96-7680.
+        # * +width+ - Set the viewport width in pixels. The viewport is the user's visible area of the page. The value must be in the range 96-7680.
         # * +height+ - Set the viewport height in pixels. The viewport is the user's visible area of the page. Must be a positive integer number.
         # * *Returns* - The converter object.
         def setViewport(width, height)
@@ -1475,7 +1475,7 @@ module Pdfcrowd
             self
         end
 
-        # Sets the rendering mode.
+        # Set the rendering mode.
         #
         # * +rendering_mode+ - The rendering mode. Allowed values are default, viewport.
         # * *Returns* - The converter object.
@@ -1490,11 +1490,11 @@ module Pdfcrowd
 
         # Set the scaling factor (zoom) for the main page area.
         #
-        # * +scale_factor+ - The scale factor. The value must be in a range 10-500.
+        # * +scale_factor+ - The percentage value. The value must be in the range 10-500.
         # * *Returns* - The converter object.
         def setScaleFactor(scale_factor)
             if (!(Integer(scale_factor) >= 10 && Integer(scale_factor) <= 500))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(scale_factor, "scale_factor", "html-to-pdf", "The value must be in a range 10-500.", "set_scale_factor"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(scale_factor, "scale_factor", "html-to-pdf", "The value must be in the range 10-500.", "set_scale_factor"), 470);
             end
             
             @fields['scale_factor'] = scale_factor
@@ -1503,11 +1503,11 @@ module Pdfcrowd
 
         # Set the scaling factor (zoom) for the header and footer.
         #
-        # * +header_footer_scale_factor+ - The scale factor. The value must be in a range 10-500.
+        # * +header_footer_scale_factor+ - The percentage value. The value must be in the range 10-500.
         # * *Returns* - The converter object.
         def setHeaderFooterScaleFactor(header_footer_scale_factor)
             if (!(Integer(header_footer_scale_factor) >= 10 && Integer(header_footer_scale_factor) <= 500))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(header_footer_scale_factor, "header_footer_scale_factor", "html-to-pdf", "The value must be in a range 10-500.", "set_header_footer_scale_factor"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(header_footer_scale_factor, "header_footer_scale_factor", "html-to-pdf", "The value must be in the range 10-500.", "set_header_footer_scale_factor"), 470);
             end
             
             @fields['header_footer_scale_factor'] = header_footer_scale_factor
@@ -1520,6 +1520,45 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setDisableSmartShrinking(disable_smart_shrinking)
             @fields['disable_smart_shrinking'] = disable_smart_shrinking
+            self
+        end
+
+        # Set the quality of embedded JPEG images. Lower quality results in smaller PDF file. Lower quality affects printing or zooming in a PDF viewer.
+        #
+        # * +jpeg_quality+ - The percentage value. The value must be in the range 1-100.
+        # * *Returns* - The converter object.
+        def setJpegQuality(jpeg_quality)
+            if (!(Integer(jpeg_quality) >= 1 && Integer(jpeg_quality) <= 100))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(jpeg_quality, "jpeg_quality", "html-to-pdf", "The value must be in the range 1-100.", "set_jpeg_quality"), 470);
+            end
+            
+            @fields['jpeg_quality'] = jpeg_quality
+            self
+        end
+
+        # Set image categories to be converted into embedded JPEG images. The conversion into JPEG may result in smaller PDF file.
+        #
+        # * +convert_images_to_jpeg+ - The image category. Allowed values are none, opaque, all.
+        # * *Returns* - The converter object.
+        def setConvertImagesToJpeg(convert_images_to_jpeg)
+            unless /(?i)^(none|opaque|all)$/.match(convert_images_to_jpeg)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(convert_images_to_jpeg, "convert_images_to_jpeg", "html-to-pdf", "Allowed values are none, opaque, all.", "set_convert_images_to_jpeg"), 470);
+            end
+            
+            @fields['convert_images_to_jpeg'] = convert_images_to_jpeg
+            self
+        end
+
+        # Set the DPI when embedded image is scaled down. Lower DPI may result in smaller PDF file. Lower DPI affects printing or zooming in a PDF viewer. Use 0 for no scaling down.
+        #
+        # * +image_dpi+ - The DPI value. Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setImageDpi(image_dpi)
+            if (!(Integer(image_dpi) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(image_dpi, "image_dpi", "html-to-pdf", "Must be a positive integer number or 0.", "set_image_dpi"), 470);
+            end
+            
+            @fields['image_dpi'] = image_dpi
             self
         end
 
@@ -1766,6 +1805,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
+        # The number is available after calling the conversion. So use the method after convertXYZ method.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
@@ -2288,11 +2328,11 @@ module Pdfcrowd
 
         # Set the output image width in pixels.
         #
-        # * +screenshot_width+ - The value must be in a range 96-7680.
+        # * +screenshot_width+ - The value must be in the range 96-7680.
         # * *Returns* - The converter object.
         def setScreenshotWidth(screenshot_width)
             if (!(Integer(screenshot_width) >= 96 && Integer(screenshot_width) <= 7680))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(screenshot_width, "screenshot_width", "html-to-image", "The value must be in a range 96-7680.", "set_screenshot_width"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(screenshot_width, "screenshot_width", "html-to-image", "The value must be in the range 96-7680.", "set_screenshot_width"), 470);
             end
             
             @fields['screenshot_width'] = screenshot_width
@@ -2328,6 +2368,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
+        # The number is available after calling the conversion. So use the method after convertXYZ method.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
@@ -2645,6 +2686,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
+        # The number is available after calling the conversion. So use the method after convertXYZ method.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
@@ -2846,6 +2888,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
+        # The number is available after calling the conversion. So use the method after convertXYZ method.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
@@ -3108,6 +3151,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
+        # The number is available after calling the conversion. So use the method after convertXYZ method.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
