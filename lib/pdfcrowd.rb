@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.4.2'
+    CLIENT_VERSION = '4.5.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.4.2 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.5.0 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1360,9 +1360,9 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript after the document is loaded. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...).
+        # Run a custom JavaScript after the document is loaded and ready to print. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...). The custom JavaScript can use helper functions from our JavaScript library.
         #
-        # * +custom_javascript+ - String containing a JavaScript code. The string must not be empty.
+        # * +custom_javascript+ - A string containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
         def setCustomJavascript(custom_javascript)
             if (!(!custom_javascript.nil? && !custom_javascript.empty?))
@@ -1370,6 +1370,19 @@ module Pdfcrowd
             end
             
             @fields['custom_javascript'] = custom_javascript
+            self
+        end
+
+        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation. The custom JavaScript can use helper functions from our JavaScript library.
+        #
+        # * +on_load_javascript+ - A string containing a JavaScript code. The string must not be empty.
+        # * *Returns* - The converter object.
+        def setOnLoadJavascript(on_load_javascript)
+            if (!(!on_load_javascript.nil? && !on_load_javascript.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(on_load_javascript, "on_load_javascript", "html-to-pdf", "The string must not be empty.", "set_on_load_javascript"), 470);
+            end
+            
+            @fields['on_load_javascript'] = on_load_javascript
             self
         end
 
@@ -1523,7 +1536,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the quality of embedded JPEG images. Lower quality results in smaller PDF file. Lower quality affects printing or zooming in a PDF viewer.
+        # Set the quality of embedded JPEG images. A lower quality results in a smaller PDF file but can lead to compression artifacts.
         #
         # * +jpeg_quality+ - The percentage value. The value must be in the range 1-100.
         # * *Returns* - The converter object.
@@ -1536,7 +1549,7 @@ module Pdfcrowd
             self
         end
 
-        # Set image categories to be converted into embedded JPEG images. The conversion into JPEG may result in smaller PDF file.
+        # Specify which image types will be converted to JPEG. Converting lossless compression image formats (PNG, GIF, ...) to JPEG may result in a smaller PDF file.
         #
         # * +convert_images_to_jpeg+ - The image category. Allowed values are none, opaque, all.
         # * *Returns* - The converter object.
@@ -1549,7 +1562,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the DPI when embedded image is scaled down. Lower DPI may result in smaller PDF file. Lower DPI affects printing or zooming in a PDF viewer. Use 0 for no scaling down.
+        # Set the DPI of images in PDF. A lower DPI may result in a smaller PDF file. If the specified DPI is higher than the actual image DPI, the original image DPI is retained (no upscaling is performed). Use 0 to leave the images unaltered.
         #
         # * +image_dpi+ - The DPI value. Must be a positive integer number or 0.
         # * *Returns* - The converter object.
@@ -1805,7 +1818,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
-        # The number is available after calling the conversion. So use the method after convertXYZ method.
+        # This method can only be called after a call to one of the convertXYZ methods.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
@@ -2248,9 +2261,9 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript after the document is loaded. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...).
+        # Run a custom JavaScript after the document is loaded and ready to print. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...). The custom JavaScript can use helper functions from our JavaScript library.
         #
-        # * +custom_javascript+ - String containing a JavaScript code. The string must not be empty.
+        # * +custom_javascript+ - A string containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
         def setCustomJavascript(custom_javascript)
             if (!(!custom_javascript.nil? && !custom_javascript.empty?))
@@ -2258,6 +2271,19 @@ module Pdfcrowd
             end
             
             @fields['custom_javascript'] = custom_javascript
+            self
+        end
+
+        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation. The custom JavaScript can use helper functions from our JavaScript library.
+        #
+        # * +on_load_javascript+ - A string containing a JavaScript code. The string must not be empty.
+        # * *Returns* - The converter object.
+        def setOnLoadJavascript(on_load_javascript)
+            if (!(!on_load_javascript.nil? && !on_load_javascript.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(on_load_javascript, "on_load_javascript", "html-to-image", "The string must not be empty.", "set_on_load_javascript"), 470);
+            end
+            
+            @fields['on_load_javascript'] = on_load_javascript
             self
         end
 
@@ -2368,7 +2394,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
-        # The number is available after calling the conversion. So use the method after convertXYZ method.
+        # This method can only be called after a call to one of the convertXYZ methods.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
@@ -2686,7 +2712,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
-        # The number is available after calling the conversion. So use the method after convertXYZ method.
+        # This method can only be called after a call to one of the convertXYZ methods.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
@@ -2888,7 +2914,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
-        # The number is available after calling the conversion. So use the method after convertXYZ method.
+        # This method can only be called after a call to one of the convertXYZ methods.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
@@ -3151,7 +3177,7 @@ module Pdfcrowd
         end
 
         # Get the number of conversion credits available in your account.
-        # The number is available after calling the conversion. So use the method after convertXYZ method.
+        # This method can only be called after a call to one of the convertXYZ methods.
         # The returned value can differ from the actual count if you run parallel conversions.
         # The special value 999999 is returned if the information is not available.
         # * *Returns* - The number of credits.
