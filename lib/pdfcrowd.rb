@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.5.0'
+    CLIENT_VERSION = '4.6.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.5.0 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.6.0 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -2375,6 +2375,19 @@ module Pdfcrowd
             end
             
             @fields['screenshot_height'] = screenshot_height
+            self
+        end
+
+        # Set the scaling factor (zoom) for the output image.
+        #
+        # * +scale_factor+ - The percentage value. Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setScaleFactor(scale_factor)
+            if (!(Integer(scale_factor) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(scale_factor, "scale_factor", "html-to-image", "Must be a positive integer number.", "set_scale_factor"), 470);
+            end
+            
+            @fields['scale_factor'] = scale_factor
             self
         end
 
