@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.6.0'
+    CLIENT_VERSION = '4.7.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.6.0 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.7.0 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1498,6 +1498,19 @@ module Pdfcrowd
             end
             
             @fields['rendering_mode'] = rendering_mode
+            self
+        end
+
+        # Specifies the scaling mode used for fitting the HTML contents to the print area.
+        #
+        # * +smart_scaling_mode+ - The smart scaling mode. Allowed values are default, disabled, viewport-fit, content-fit, single-page-fit.
+        # * *Returns* - The converter object.
+        def setSmartScalingMode(smart_scaling_mode)
+            unless /(?i)^(default|disabled|viewport-fit|content-fit|single-page-fit)$/.match(smart_scaling_mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(smart_scaling_mode, "smart_scaling_mode", "html-to-pdf", "Allowed values are default, disabled, viewport-fit, content-fit, single-page-fit.", "set_smart_scaling_mode"), 470);
+            end
+            
+            @fields['smart_scaling_mode'] = smart_scaling_mode
             self
         end
 
