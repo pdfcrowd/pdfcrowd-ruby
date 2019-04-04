@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.7.0'
+    CLIENT_VERSION = '4.8.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.7.0 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.8.0 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1223,6 +1223,73 @@ module Pdfcrowd
             self
         end
 
+        # Set the top left X coordinate of the content area.
+        #
+        # * +content_area_x+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * *Returns* - The converter object.
+        def setContentAreaX(content_area_x)
+            unless /(?i)^\-?[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(content_area_x)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(content_area_x, "content_area_x", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.", "set_content_area_x"), 470);
+            end
+            
+            @fields['content_area_x'] = content_area_x
+            self
+        end
+
+        # Set the top left Y coordinate of the content area.
+        #
+        # * +content_area_y+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * *Returns* - The converter object.
+        def setContentAreaY(content_area_y)
+            unless /(?i)^\-?[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(content_area_y)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(content_area_y, "content_area_y", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.", "set_content_area_y"), 470);
+            end
+            
+            @fields['content_area_y'] = content_area_y
+            self
+        end
+
+        # Set the width of the content area. It should be at least 1 inch.
+        #
+        # * +content_area_width+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * *Returns* - The converter object.
+        def setContentAreaWidth(content_area_width)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(content_area_width)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(content_area_width, "content_area_width", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_content_area_width"), 470);
+            end
+            
+            @fields['content_area_width'] = content_area_width
+            self
+        end
+
+        # Set the height of the content area. It should be at least 1 inch.
+        #
+        # * +content_area_height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * *Returns* - The converter object.
+        def setContentAreaHeight(content_area_height)
+            unless /(?i)^[0-9]*(\.[0-9]+)?(pt|px|mm|cm|in)$/.match(content_area_height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(content_area_height, "content_area_height", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_content_area_height"), 470);
+            end
+            
+            @fields['content_area_height'] = content_area_height
+            self
+        end
+
+        # Set the content area position and size. The content area enables to specify a web page area to be converted.
+        #
+        # * +x+ - Set the top left X coordinate of the content area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * +y+ - Set the top left Y coordinate of the content area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * +width+ - Set the width of the content area. It should be at least 1 inch. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +height+ - Set the height of the content area. It should be at least 1 inch. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * *Returns* - The converter object.
+        def setContentArea(x, y, width, height)
+            setContentAreaX(x)
+            setContentAreaY(y)
+            setContentAreaWidth(width)
+            setContentAreaHeight(height)
+            self
+        end
+
         # Do not print the background graphics.
         #
         # * +no_background+ - Set to true to disable the background graphics.
@@ -1360,7 +1427,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript after the document is loaded and ready to print. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...). The custom JavaScript can use helper functions from our JavaScript library.
+        # Run a custom JavaScript after the document is loaded and ready to print. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...). In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
         #
         # * +custom_javascript+ - A string containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
@@ -1373,7 +1440,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation. The custom JavaScript can use helper functions from our JavaScript library.
+        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation. In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
         #
         # * +on_load_javascript+ - A string containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
@@ -2274,7 +2341,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript after the document is loaded and ready to print. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...). The custom JavaScript can use helper functions from our JavaScript library.
+        # Run a custom JavaScript after the document is loaded and ready to print. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...). In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
         #
         # * +custom_javascript+ - A string containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
@@ -2287,7 +2354,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation. The custom JavaScript can use helper functions from our JavaScript library.
+        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation. In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
         #
         # * +on_load_javascript+ - A string containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
