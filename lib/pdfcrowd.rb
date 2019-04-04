@@ -1223,7 +1223,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left X coordinate of the content area.
+        # Set the top left X coordinate of the content area. It's relative to the top left X coordinate of the print area.
         #
         # * +content_area_x+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
         # * *Returns* - The converter object.
@@ -1236,7 +1236,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left Y coordinate of the content area.
+        # Set the top left Y coordinate of the content area. It's relative to the top left Y coordinate of the print area.
         #
         # * +content_area_y+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
         # * *Returns* - The converter object.
@@ -1277,8 +1277,8 @@ module Pdfcrowd
 
         # Set the content area position and size. The content area enables to specify a web page area to be converted.
         #
-        # * +x+ - Set the top left X coordinate of the content area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
-        # * +y+ - Set the top left Y coordinate of the content area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * +x+ - Set the top left X coordinate of the content area. It's relative to the top left X coordinate of the print area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * +y+ - Set the top left Y coordinate of the content area. It's relative to the top left Y coordinate of the print area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
         # * +width+ - Set the width of the content area. It should be at least 1 inch. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * +height+ - Set the height of the content area. It should be at least 1 inch. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
