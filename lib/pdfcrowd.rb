@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.8.0'
+    CLIENT_VERSION = '4.9.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.8.0 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.9.0 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1123,71 +1123,6 @@ module Pdfcrowd
             self
         end
 
-        # The page background color in RGB or RGBA hexadecimal format. The color fills the entire page regardless of the margins.
-        #
-        # * +page_background_color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
-        # * *Returns* - The converter object.
-        def setPageBackgroundColor(page_background_color)
-            unless /^[0-9a-fA-F]{6,8}$/.match(page_background_color)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background_color, "page_background_color", "html-to-pdf", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_page_background_color"), 470);
-            end
-            
-            @fields['page_background_color'] = page_background_color
-            self
-        end
-
-        # Apply the first page of the watermark PDF to every page of the output PDF.
-        #
-        # * +page_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
-        def setPageWatermark(page_watermark)
-            if (!(File.file?(page_watermark) && !File.zero?(page_watermark)))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(page_watermark, "page_watermark", "html-to-pdf", "The file must exist and not be empty.", "set_page_watermark"), 470);
-            end
-            
-            @files['page_watermark'] = page_watermark
-            self
-        end
-
-        # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
-        #
-        # * +multipage_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
-        def setMultipageWatermark(multipage_watermark)
-            if (!(File.file?(multipage_watermark) && !File.zero?(multipage_watermark)))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_watermark, "multipage_watermark", "html-to-pdf", "The file must exist and not be empty.", "set_multipage_watermark"), 470);
-            end
-            
-            @files['multipage_watermark'] = multipage_watermark
-            self
-        end
-
-        # Apply the first page of the specified PDF to the background of every page of the output PDF.
-        #
-        # * +page_background+ - The file path to a local background PDF file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
-        def setPageBackground(page_background)
-            if (!(File.file?(page_background) && !File.zero?(page_background)))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background, "page_background", "html-to-pdf", "The file must exist and not be empty.", "set_page_background"), 470);
-            end
-            
-            @files['page_background'] = page_background
-            self
-        end
-
-        # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
-        #
-        # * +multipage_background+ - The file path to a local background PDF file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
-        def setMultipageBackground(multipage_background)
-            if (!(File.file?(multipage_background) && !File.zero?(multipage_background)))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_background, "multipage_background", "html-to-pdf", "The file must exist and not be empty.", "set_multipage_background"), 470);
-            end
-            
-            @files['multipage_background'] = multipage_background
-            self
-        end
-
         # The page header is not printed on the specified pages.
         #
         # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma seperated list of page numbers.
@@ -1287,6 +1222,71 @@ module Pdfcrowd
             setContentAreaY(y)
             setContentAreaWidth(width)
             setContentAreaHeight(height)
+            self
+        end
+
+        # Apply the first page of the watermark PDF to every page of the output PDF.
+        #
+        # * +page_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setPageWatermark(page_watermark)
+            if (!(File.file?(page_watermark) && !File.zero?(page_watermark)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_watermark, "page_watermark", "html-to-pdf", "The file must exist and not be empty.", "set_page_watermark"), 470);
+            end
+            
+            @files['page_watermark'] = page_watermark
+            self
+        end
+
+        # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        #
+        # * +multipage_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setMultipageWatermark(multipage_watermark)
+            if (!(File.file?(multipage_watermark) && !File.zero?(multipage_watermark)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_watermark, "multipage_watermark", "html-to-pdf", "The file must exist and not be empty.", "set_multipage_watermark"), 470);
+            end
+            
+            @files['multipage_watermark'] = multipage_watermark
+            self
+        end
+
+        # Apply the first page of the specified PDF to the background of every page of the output PDF.
+        #
+        # * +page_background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setPageBackground(page_background)
+            if (!(File.file?(page_background) && !File.zero?(page_background)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background, "page_background", "html-to-pdf", "The file must exist and not be empty.", "set_page_background"), 470);
+            end
+            
+            @files['page_background'] = page_background
+            self
+        end
+
+        # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
+        #
+        # * +multipage_background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setMultipageBackground(multipage_background)
+            if (!(File.file?(multipage_background) && !File.zero?(multipage_background)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_background, "multipage_background", "html-to-pdf", "The file must exist and not be empty.", "set_multipage_background"), 470);
+            end
+            
+            @files['multipage_background'] = multipage_background
+            self
+        end
+
+        # The page background color in RGB or RGBA hexadecimal format. The color fills the entire page regardless of the margins.
+        #
+        # * +page_background_color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
+        # * *Returns* - The converter object.
+        def setPageBackgroundColor(page_background_color)
+            unless /^[0-9a-fA-F]{6,8}$/.match(page_background_color)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background_color, "page_background_color", "html-to-pdf", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_page_background_color"), 470);
+            end
+            
+            @fields['page_background_color'] = page_background_color
             self
         end
 
@@ -1440,7 +1440,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation. In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
+        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation (add/remove elements, update CSS, ...). In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
         #
         # * +on_load_javascript+ - A string containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
@@ -2354,7 +2354,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation. In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
+        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation (add/remove elements, update CSS, ...). In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
         #
         # * +on_load_javascript+ - A string containing a JavaScript code. The string must not be empty.
         # * *Returns* - The converter object.
@@ -2988,6 +2988,249 @@ module Pdfcrowd
             
             @raw_data['f_%s' % @file_id] = pdf_raw_data
             @file_id += 1
+            self
+        end
+
+        # Apply the first page of the watermark PDF to every page of the output PDF.
+        #
+        # * +page_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setPageWatermark(page_watermark)
+            if (!(File.file?(page_watermark) && !File.zero?(page_watermark)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_watermark, "page_watermark", "pdf-to-pdf", "The file must exist and not be empty.", "set_page_watermark"), 470);
+            end
+            
+            @files['page_watermark'] = page_watermark
+            self
+        end
+
+        # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        #
+        # * +multipage_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setMultipageWatermark(multipage_watermark)
+            if (!(File.file?(multipage_watermark) && !File.zero?(multipage_watermark)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_watermark, "multipage_watermark", "pdf-to-pdf", "The file must exist and not be empty.", "set_multipage_watermark"), 470);
+            end
+            
+            @files['multipage_watermark'] = multipage_watermark
+            self
+        end
+
+        # Apply the first page of the specified PDF to the background of every page of the output PDF.
+        #
+        # * +page_background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setPageBackground(page_background)
+            if (!(File.file?(page_background) && !File.zero?(page_background)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background, "page_background", "pdf-to-pdf", "The file must exist and not be empty.", "set_page_background"), 470);
+            end
+            
+            @files['page_background'] = page_background
+            self
+        end
+
+        # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
+        #
+        # * +multipage_background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setMultipageBackground(multipage_background)
+            if (!(File.file?(multipage_background) && !File.zero?(multipage_background)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_background, "multipage_background", "pdf-to-pdf", "The file must exist and not be empty.", "set_multipage_background"), 470);
+            end
+            
+            @files['multipage_background'] = multipage_background
+            self
+        end
+
+        # Create linearized PDF. This is also known as Fast Web View.
+        #
+        # * +linearize+ - Set to true to create linearized PDF.
+        # * *Returns* - The converter object.
+        def setLinearize(linearize)
+            @fields['linearize'] = linearize
+            self
+        end
+
+        # Encrypt the PDF. This prevents search engines from indexing the contents.
+        #
+        # * +encrypt+ - Set to true to enable PDF encryption.
+        # * *Returns* - The converter object.
+        def setEncrypt(encrypt)
+            @fields['encrypt'] = encrypt
+            self
+        end
+
+        # Protect the PDF with a user password. When a PDF has a user password, it must be supplied in order to view the document and to perform operations allowed by the access permissions.
+        #
+        # * +user_password+ - The user password.
+        # * *Returns* - The converter object.
+        def setUserPassword(user_password)
+            @fields['user_password'] = user_password
+            self
+        end
+
+        # Protect the PDF with an owner password. Supplying an owner password grants unlimited access to the PDF including changing the passwords and access permissions.
+        #
+        # * +owner_password+ - The owner password.
+        # * *Returns* - The converter object.
+        def setOwnerPassword(owner_password)
+            @fields['owner_password'] = owner_password
+            self
+        end
+
+        # Disallow printing of the output PDF.
+        #
+        # * +no_print+ - Set to true to set the no-print flag in the output PDF.
+        # * *Returns* - The converter object.
+        def setNoPrint(no_print)
+            @fields['no_print'] = no_print
+            self
+        end
+
+        # Disallow modification of the ouput PDF.
+        #
+        # * +no_modify+ - Set to true to set the read-only only flag in the output PDF.
+        # * *Returns* - The converter object.
+        def setNoModify(no_modify)
+            @fields['no_modify'] = no_modify
+            self
+        end
+
+        # Disallow text and graphics extraction from the output PDF.
+        #
+        # * +no_copy+ - Set to true to set the no-copy flag in the output PDF.
+        # * *Returns* - The converter object.
+        def setNoCopy(no_copy)
+            @fields['no_copy'] = no_copy
+            self
+        end
+
+        # Specify the page layout to be used when the document is opened.
+        #
+        # * +page_layout+ - Allowed values are single-page, one-column, two-column-left, two-column-right.
+        # * *Returns* - The converter object.
+        def setPageLayout(page_layout)
+            unless /(?i)^(single-page|one-column|two-column-left|two-column-right)$/.match(page_layout)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_layout, "page_layout", "pdf-to-pdf", "Allowed values are single-page, one-column, two-column-left, two-column-right.", "set_page_layout"), 470);
+            end
+            
+            @fields['page_layout'] = page_layout
+            self
+        end
+
+        # Specify how the document should be displayed when opened.
+        #
+        # * +page_mode+ - Allowed values are full-screen, thumbnails, outlines.
+        # * *Returns* - The converter object.
+        def setPageMode(page_mode)
+            unless /(?i)^(full-screen|thumbnails|outlines)$/.match(page_mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_mode, "page_mode", "pdf-to-pdf", "Allowed values are full-screen, thumbnails, outlines.", "set_page_mode"), 470);
+            end
+            
+            @fields['page_mode'] = page_mode
+            self
+        end
+
+        # Specify how the page should be displayed when opened.
+        #
+        # * +initial_zoom_type+ - Allowed values are fit-width, fit-height, fit-page.
+        # * *Returns* - The converter object.
+        def setInitialZoomType(initial_zoom_type)
+            unless /(?i)^(fit-width|fit-height|fit-page)$/.match(initial_zoom_type)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(initial_zoom_type, "initial_zoom_type", "pdf-to-pdf", "Allowed values are fit-width, fit-height, fit-page.", "set_initial_zoom_type"), 470);
+            end
+            
+            @fields['initial_zoom_type'] = initial_zoom_type
+            self
+        end
+
+        # Display the specified page when the document is opened.
+        #
+        # * +initial_page+ - Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setInitialPage(initial_page)
+            if (!(Integer(initial_page) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(initial_page, "initial_page", "pdf-to-pdf", "Must be a positive integer number.", "set_initial_page"), 470);
+            end
+            
+            @fields['initial_page'] = initial_page
+            self
+        end
+
+        # Specify the initial page zoom in percents when the document is opened.
+        #
+        # * +initial_zoom+ - Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setInitialZoom(initial_zoom)
+            if (!(Integer(initial_zoom) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(initial_zoom, "initial_zoom", "pdf-to-pdf", "Must be a positive integer number.", "set_initial_zoom"), 470);
+            end
+            
+            @fields['initial_zoom'] = initial_zoom
+            self
+        end
+
+        # Specify whether to hide the viewer application's tool bars when the document is active.
+        #
+        # * +hide_toolbar+ - Set to true to hide tool bars.
+        # * *Returns* - The converter object.
+        def setHideToolbar(hide_toolbar)
+            @fields['hide_toolbar'] = hide_toolbar
+            self
+        end
+
+        # Specify whether to hide the viewer application's menu bar when the document is active.
+        #
+        # * +hide_menubar+ - Set to true to hide the menu bar.
+        # * *Returns* - The converter object.
+        def setHideMenubar(hide_menubar)
+            @fields['hide_menubar'] = hide_menubar
+            self
+        end
+
+        # Specify whether to hide user interface elements in the document's window (such as scroll bars and navigation controls), leaving only the document's contents displayed.
+        #
+        # * +hide_window_ui+ - Set to true to hide ui elements.
+        # * *Returns* - The converter object.
+        def setHideWindowUi(hide_window_ui)
+            @fields['hide_window_ui'] = hide_window_ui
+            self
+        end
+
+        # Specify whether to resize the document's window to fit the size of the first displayed page.
+        #
+        # * +fit_window+ - Set to true to resize the window.
+        # * *Returns* - The converter object.
+        def setFitWindow(fit_window)
+            @fields['fit_window'] = fit_window
+            self
+        end
+
+        # Specify whether to position the document's window in the center of the screen.
+        #
+        # * +center_window+ - Set to true to center the window.
+        # * *Returns* - The converter object.
+        def setCenterWindow(center_window)
+            @fields['center_window'] = center_window
+            self
+        end
+
+        # Specify whether the window's title bar should display the document title. If false , the title bar should instead display the name of the PDF file containing the document.
+        #
+        # * +display_title+ - Set to true to display the title.
+        # * *Returns* - The converter object.
+        def setDisplayTitle(display_title)
+            @fields['display_title'] = display_title
+            self
+        end
+
+        # Set the predominant reading order for text to right-to-left. This option has no direct effect on the document's contents or page numbering but can be used to determine the relative positioning of pages when displayed side by side or printed n-up
+        #
+        # * +right_to_left+ - Set to true to set right-to-left reading order.
+        # * *Returns* - The converter object.
+        def setRightToLeft(right_to_left)
+            @fields['right_to_left'] = right_to_left
             self
         end
 
