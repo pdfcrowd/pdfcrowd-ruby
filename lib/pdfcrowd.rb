@@ -683,6 +683,7 @@ module Pdfcrowd
 
                 begin
                     http.start {|conn|
+                        conn.read_timeout = 300
                         conn.request(request) {|response|
                             @debug_log_url = response["X-Pdfcrowd-Debug-Log"] || ''
                             @credits = (response["X-Pdfcrowd-Remaining-Credits"] || 999999).to_i
@@ -802,10 +803,6 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-pdf", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
-            if (!(File.file?(file) && !File.zero?(file)))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-pdf", "The file name must have a valid extension.", "convert_file"), 470);
-            end
-            
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -817,10 +814,6 @@ module Pdfcrowd
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-pdf", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
-            end
-            
-            if (!(File.file?(file) && !File.zero?(file)))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-pdf", "The file name must have a valid extension.", "convert_file_to_stream"), 470);
             end
             
             @files['file'] = file
@@ -1008,7 +1001,7 @@ module Pdfcrowd
             self
         end
 
-        # Disable margins.
+        # Disable page margins.
         #
         # * +no_margins+ - Set to true to disable margins.
         # * *Returns* - The converter object.
@@ -1158,7 +1151,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left X coordinate of the content area. It's relative to the top left X coordinate of the print area.
+        # Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area.
         #
         # * +content_area_x+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
         # * *Returns* - The converter object.
@@ -1171,7 +1164,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left Y coordinate of the content area. It's relative to the top left Y coordinate of the print area.
+        # Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area.
         #
         # * +content_area_y+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
         # * *Returns* - The converter object.
@@ -1212,8 +1205,8 @@ module Pdfcrowd
 
         # Set the content area position and size. The content area enables to specify a web page area to be converted.
         #
-        # * +x+ - Set the top left X coordinate of the content area. It's relative to the top left X coordinate of the print area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
-        # * +y+ - Set the top left Y coordinate of the content area. It's relative to the top left Y coordinate of the print area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * +x+ - Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * +y+ - Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
         # * +width+ - Set the width of the content area. It should be at least 1 inch. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * +height+ - Set the height of the content area. It should be at least 1 inch. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
         # * *Returns* - The converter object.
@@ -1978,7 +1971,7 @@ module Pdfcrowd
             self
         end
 
-        # A password for PKCS12 file with a client certificate if it's needed.
+        # A password for PKCS12 file with a client certificate if it is needed.
         #
         # * +client_certificate_password+ -
         # * *Returns* - The converter object.
@@ -2113,10 +2106,6 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-image", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
-            if (!(File.file?(file) && !File.zero?(file)))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-image", "The file name must have a valid extension.", "convert_file"), 470);
-            end
-            
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -2128,10 +2117,6 @@ module Pdfcrowd
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
-            end
-            
-            if (!(File.file?(file) && !File.zero?(file)))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "file", "html-to-image", "The file name must have a valid extension.", "convert_file_to_stream"), 470);
             end
             
             @files['file'] = file
@@ -2445,7 +2430,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output image height in pixels. If it's not specified, actual document height is used.
+        # Set the output image height in pixels. If it is not specified, actual document height is used.
         #
         # * +screenshot_height+ - Must be a positive integer number.
         # * *Returns* - The converter object.
@@ -2561,7 +2546,7 @@ module Pdfcrowd
             self
         end
 
-        # A password for PKCS12 file with a client certificate if it's needed.
+        # A password for PKCS12 file with a client certificate if it is needed.
         #
         # * +client_certificate_password+ -
         # * *Returns* - The converter object.
