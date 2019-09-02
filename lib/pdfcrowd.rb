@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.9.0'
+    CLIENT_VERSION = '4.10.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.9.0 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.10.0 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1513,11 +1513,11 @@ module Pdfcrowd
 
         # Set the viewport width in pixels. The viewport is the user's visible area of the page.
         #
-        # * +viewport_width+ - The value must be in the range 96-7680.
+        # * +viewport_width+ - The value must be in the range 96-65000.
         # * *Returns* - The converter object.
         def setViewportWidth(viewport_width)
-            if (!(Integer(viewport_width) >= 96 && Integer(viewport_width) <= 7680))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(viewport_width, "viewport_width", "html-to-pdf", "The value must be in the range 96-7680.", "set_viewport_width"), 470);
+            if (!(Integer(viewport_width) >= 96 && Integer(viewport_width) <= 65000))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(viewport_width, "viewport_width", "html-to-pdf", "The value must be in the range 96-65000.", "set_viewport_width"), 470);
             end
             
             @fields['viewport_width'] = viewport_width
@@ -1539,7 +1539,7 @@ module Pdfcrowd
 
         # Set the viewport size. The viewport is the user's visible area of the page.
         #
-        # * +width+ - Set the viewport width in pixels. The viewport is the user's visible area of the page. The value must be in the range 96-7680.
+        # * +width+ - Set the viewport width in pixels. The viewport is the user's visible area of the page. The value must be in the range 96-65000.
         # * +height+ - Set the viewport height in pixels. The viewport is the user's visible area of the page. Must be a positive integer number.
         # * *Returns* - The converter object.
         def setViewport(width, height)
@@ -2419,11 +2419,11 @@ module Pdfcrowd
 
         # Set the output image width in pixels.
         #
-        # * +screenshot_width+ - The value must be in the range 96-7680.
+        # * +screenshot_width+ - The value must be in the range 96-65000.
         # * *Returns* - The converter object.
         def setScreenshotWidth(screenshot_width)
-            if (!(Integer(screenshot_width) >= 96 && Integer(screenshot_width) <= 7680))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(screenshot_width, "screenshot_width", "html-to-image", "The value must be in the range 96-7680.", "set_screenshot_width"), 470);
+            if (!(Integer(screenshot_width) >= 96 && Integer(screenshot_width) <= 65000))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(screenshot_width, "screenshot_width", "html-to-image", "The value must be in the range 96-65000.", "set_screenshot_width"), 470);
             end
             
             @fields['screenshot_width'] = screenshot_width
