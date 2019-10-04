@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.10.0'
+    CLIENT_VERSION = '4.11.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.10.0 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.11.0 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1231,6 +1231,19 @@ module Pdfcrowd
             self
         end
 
+        # Load a watermark PDF from the specified URL and apply the first page of the watermark PDF to every page of the output PDF.
+        #
+        # * +page_watermark_url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setPageWatermarkUrl(page_watermark_url)
+            unless /(?i)^https?:\/\/.*$/.match(page_watermark_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_watermark_url, "page_watermark_url", "html-to-pdf", "The supported protocols are http:// and https://.", "set_page_watermark_url"), 470);
+            end
+            
+            @fields['page_watermark_url'] = page_watermark_url
+            self
+        end
+
         # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
         #
         # * +multipage_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
@@ -1241,6 +1254,19 @@ module Pdfcrowd
             end
             
             @files['multipage_watermark'] = multipage_watermark
+            self
+        end
+
+        # Load a watermark PDF from the specified URL and apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        #
+        # * +multipage_watermark_url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setMultipageWatermarkUrl(multipage_watermark_url)
+            unless /(?i)^https?:\/\/.*$/.match(multipage_watermark_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_watermark_url, "multipage_watermark_url", "html-to-pdf", "The supported protocols are http:// and https://.", "set_multipage_watermark_url"), 470);
+            end
+            
+            @fields['multipage_watermark_url'] = multipage_watermark_url
             self
         end
 
@@ -1257,6 +1283,19 @@ module Pdfcrowd
             self
         end
 
+        # Load a background PDF from the specified URL and apply the first page of the background PDF to every page of the output PDF.
+        #
+        # * +page_background_url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setPageBackgroundUrl(page_background_url)
+            unless /(?i)^https?:\/\/.*$/.match(page_background_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background_url, "page_background_url", "html-to-pdf", "The supported protocols are http:// and https://.", "set_page_background_url"), 470);
+            end
+            
+            @fields['page_background_url'] = page_background_url
+            self
+        end
+
         # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
         #
         # * +multipage_background+ - The file path to a local background PDF file. The file must exist and not be empty.
@@ -1267,6 +1306,19 @@ module Pdfcrowd
             end
             
             @files['multipage_background'] = multipage_background
+            self
+        end
+
+        # Load a background PDF from the specified URL and apply each page of the specified background PDF to the corresponding page of the output PDF.
+        #
+        # * +multipage_background_url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setMultipageBackgroundUrl(multipage_background_url)
+            unless /(?i)^https?:\/\/.*$/.match(multipage_background_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_background_url, "multipage_background_url", "html-to-pdf", "The supported protocols are http:// and https://.", "set_multipage_background_url"), 470);
+            end
+            
+            @fields['multipage_background_url'] = multipage_background_url
             self
         end
 
@@ -2989,6 +3041,19 @@ module Pdfcrowd
             self
         end
 
+        # Load a watermark PDF from the specified URL and apply the first page of the watermark PDF to every page of the output PDF.
+        #
+        # * +page_watermark_url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setPageWatermarkUrl(page_watermark_url)
+            unless /(?i)^https?:\/\/.*$/.match(page_watermark_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_watermark_url, "page_watermark_url", "pdf-to-pdf", "The supported protocols are http:// and https://.", "set_page_watermark_url"), 470);
+            end
+            
+            @fields['page_watermark_url'] = page_watermark_url
+            self
+        end
+
         # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
         #
         # * +multipage_watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
@@ -2999,6 +3064,19 @@ module Pdfcrowd
             end
             
             @files['multipage_watermark'] = multipage_watermark
+            self
+        end
+
+        # Load a watermark PDF from the specified URL and apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        #
+        # * +multipage_watermark_url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setMultipageWatermarkUrl(multipage_watermark_url)
+            unless /(?i)^https?:\/\/.*$/.match(multipage_watermark_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_watermark_url, "multipage_watermark_url", "pdf-to-pdf", "The supported protocols are http:// and https://.", "set_multipage_watermark_url"), 470);
+            end
+            
+            @fields['multipage_watermark_url'] = multipage_watermark_url
             self
         end
 
@@ -3015,6 +3093,19 @@ module Pdfcrowd
             self
         end
 
+        # Load a background PDF from the specified URL and apply the first page of the background PDF to every page of the output PDF.
+        #
+        # * +page_background_url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setPageBackgroundUrl(page_background_url)
+            unless /(?i)^https?:\/\/.*$/.match(page_background_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page_background_url, "page_background_url", "pdf-to-pdf", "The supported protocols are http:// and https://.", "set_page_background_url"), 470);
+            end
+            
+            @fields['page_background_url'] = page_background_url
+            self
+        end
+
         # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
         #
         # * +multipage_background+ - The file path to a local background PDF file. The file must exist and not be empty.
@@ -3025,6 +3116,19 @@ module Pdfcrowd
             end
             
             @files['multipage_background'] = multipage_background
+            self
+        end
+
+        # Load a background PDF from the specified URL and apply each page of the specified background PDF to the corresponding page of the output PDF.
+        #
+        # * +multipage_background_url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setMultipageBackgroundUrl(multipage_background_url)
+            unless /(?i)^https?:\/\/.*$/.match(multipage_background_url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(multipage_background_url, "multipage_background_url", "pdf-to-pdf", "The supported protocols are http:// and https://.", "set_multipage_background_url"), 470);
+            end
+            
+            @fields['multipage_background_url'] = multipage_background_url
             self
         end
 
