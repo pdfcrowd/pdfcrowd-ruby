@@ -1511,7 +1511,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. The maximum value is determined by your API license.
+        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. Your API license defines the maximum wait time by "Max Delay" parameter.
         #
         # * +javascript_delay+ - The number of milliseconds to wait. Must be a positive integer number or 0.
         # * *Returns* - The converter object.
@@ -2417,7 +2417,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. The maximum value is determined by your API license.
+        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. Your API license defines the maximum wait time by "Max Delay" parameter.
         #
         # * +javascript_delay+ - The number of milliseconds to wait. Must be a positive integer number or 0.
         # * *Returns* - The converter object.
