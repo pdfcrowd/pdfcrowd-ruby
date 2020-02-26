@@ -2032,7 +2032,8 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API. Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
@@ -2607,7 +2608,8 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API. Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
@@ -2903,7 +2905,8 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API. Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
@@ -3380,7 +3383,8 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API. Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
@@ -3663,7 +3667,8 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API. Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +use_http+ - Set to true to use HTTP.
         # * *Returns* - The converter object.
