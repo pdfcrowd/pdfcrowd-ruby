@@ -724,7 +724,7 @@ module Pdfcrowd
     end
 
     def self.create_invalid_value_message(value, field, converter, hint, id)
-        message = "Invalid value '%s' for a field '%s'." % [value, field]
+        message = "Invalid value '%s' for the field '%s'." % [value, field]
         message += " " + hint if hint
         return message + " " + "Details: https://www.pdfcrowd.com/doc/api/%s/ruby/#%s" % [converter, id]
     end
