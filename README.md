@@ -21,10 +21,13 @@ Or you can build and install the gem manually:
     make gem
     gem install pdfcrowd-*.gem
 
-## Documentation
+## Learn more
 
 * API Home:  <https://pdfcrowd.com/doc/api/>
 * API Reference:  <https://pdfcrowd.com/doc/api/html-to-pdf/ruby/>
+* Interactive API Playground:
+  * Ruby: <https://pdfcrowd.com/playground/html-to-pdf/?lang=ruby>
+  * Rails: <https://pdfcrowd.com/playground/html-to-pdf/?lang=wf-rails>
 
 ## License
 
