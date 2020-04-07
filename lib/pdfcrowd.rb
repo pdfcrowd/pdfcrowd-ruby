@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '4.11.0'
+    CLIENT_VERSION = '4.12.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/4.11.0 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/4.12.0 (http://pdfcrowd.com)')
 
             @retry_count = 1
         end
@@ -1215,6 +1215,82 @@ module Pdfcrowd
             setContentAreaY(y)
             setContentAreaWidth(width)
             setContentAreaHeight(height)
+            self
+        end
+
+        # Set the input data for template rendering. The data format can be JSON, XML, YAML or CSV.
+        #
+        # * +data_string+ - The input data string.
+        # * *Returns* - The converter object.
+        def setDataString(data_string)
+            @fields['data_string'] = data_string
+            self
+        end
+
+        # Load the input data for template rendering from the specified file. The data format can be JSON, XML, YAML or CSV.
+        #
+        # * +data_file+ - The file path to a local file containing the input data.
+        # * *Returns* - The converter object.
+        def setDataFile(data_file)
+            @files['data_file'] = data_file
+            self
+        end
+
+        # Specify the input data format.
+        #
+        # * +data_format+ - The data format. Allowed values are auto, json, xml, yaml, csv.
+        # * *Returns* - The converter object.
+        def setDataFormat(data_format)
+            unless /(?i)^(auto|json|xml|yaml|csv)$/.match(data_format)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(data_format, "data_format", "html-to-pdf", "Allowed values are auto, json, xml, yaml, csv.", "set_data_format"), 470);
+            end
+            
+            @fields['data_format'] = data_format
+            self
+        end
+
+        # Set the encoding of the data file set by setDataFile.
+        #
+        # * +data_encoding+ - The data file encoding.
+        # * *Returns* - The converter object.
+        def setDataEncoding(data_encoding)
+            @fields['data_encoding'] = data_encoding
+            self
+        end
+
+        # Ignore undefined variables in the HTML template. The default mode is strict so any undefined variable causes the conversion to fail. You can use {% if variable is defined %} to check if the variable is defined.
+        #
+        # * +data_ignore_undefined+ - Set to true to ignore undefined variables.
+        # * *Returns* - The converter object.
+        def setDataIgnoreUndefined(data_ignore_undefined)
+            @fields['data_ignore_undefined'] = data_ignore_undefined
+            self
+        end
+
+        # Auto escape HTML symbols in the input data before placing them into the output.
+        #
+        # * +data_auto_escape+ - Set to true to turn auto escaping on.
+        # * *Returns* - The converter object.
+        def setDataAutoEscape(data_auto_escape)
+            @fields['data_auto_escape'] = data_auto_escape
+            self
+        end
+
+        # Auto trim whitespace around each template command block.
+        #
+        # * +data_trim_blocks+ - Set to true to turn auto trimming on.
+        # * *Returns* - The converter object.
+        def setDataTrimBlocks(data_trim_blocks)
+            @fields['data_trim_blocks'] = data_trim_blocks
+            self
+        end
+
+        # Set the advanced data options:csv_delimiter - The CSV data delimiter, the default is ,.xml_remove_root - Remove the root XML element from the input data.data_root - The name of the root element inserted into the input data without a root node (e.g. CSV), the default is data.
+        #
+        # * +data_options+ - Comma separated list of options.
+        # * *Returns* - The converter object.
+        def setDataOptions(data_options)
+            @fields['data_options'] = data_options
             self
         end
 
@@ -2240,6 +2316,82 @@ module Pdfcrowd
                 FileUtils.rm(file_path)
                 raise
             end
+        end
+
+        # Set the input data for template rendering. The data format can be JSON, XML, YAML or CSV.
+        #
+        # * +data_string+ - The input data string.
+        # * *Returns* - The converter object.
+        def setDataString(data_string)
+            @fields['data_string'] = data_string
+            self
+        end
+
+        # Load the input data for template rendering from the specified file. The data format can be JSON, XML, YAML or CSV.
+        #
+        # * +data_file+ - The file path to a local file containing the input data.
+        # * *Returns* - The converter object.
+        def setDataFile(data_file)
+            @files['data_file'] = data_file
+            self
+        end
+
+        # Specify the input data format.
+        #
+        # * +data_format+ - The data format. Allowed values are auto, json, xml, yaml, csv.
+        # * *Returns* - The converter object.
+        def setDataFormat(data_format)
+            unless /(?i)^(auto|json|xml|yaml|csv)$/.match(data_format)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(data_format, "data_format", "html-to-image", "Allowed values are auto, json, xml, yaml, csv.", "set_data_format"), 470);
+            end
+            
+            @fields['data_format'] = data_format
+            self
+        end
+
+        # Set the encoding of the data file set by setDataFile.
+        #
+        # * +data_encoding+ - The data file encoding.
+        # * *Returns* - The converter object.
+        def setDataEncoding(data_encoding)
+            @fields['data_encoding'] = data_encoding
+            self
+        end
+
+        # Ignore undefined variables in the HTML template. The default mode is strict so any undefined variable causes the conversion to fail. You can use {% if variable is defined %} to check if the variable is defined.
+        #
+        # * +data_ignore_undefined+ - Set to true to ignore undefined variables.
+        # * *Returns* - The converter object.
+        def setDataIgnoreUndefined(data_ignore_undefined)
+            @fields['data_ignore_undefined'] = data_ignore_undefined
+            self
+        end
+
+        # Auto escape HTML symbols in the input data before placing them into the output.
+        #
+        # * +data_auto_escape+ - Set to true to turn auto escaping on.
+        # * *Returns* - The converter object.
+        def setDataAutoEscape(data_auto_escape)
+            @fields['data_auto_escape'] = data_auto_escape
+            self
+        end
+
+        # Auto trim whitespace around each template command block.
+        #
+        # * +data_trim_blocks+ - Set to true to turn auto trimming on.
+        # * *Returns* - The converter object.
+        def setDataTrimBlocks(data_trim_blocks)
+            @fields['data_trim_blocks'] = data_trim_blocks
+            self
+        end
+
+        # Set the advanced data options:csv_delimiter - The CSV data delimiter, the default is ,.xml_remove_root - Remove the root XML element from the input data.data_root - The name of the root element inserted into the input data without a root node (e.g. CSV), the default is data.
+        #
+        # * +data_options+ - Comma separated list of options.
+        # * *Returns* - The converter object.
+        def setDataOptions(data_options)
+            @fields['data_options'] = data_options
+            self
         end
 
         # Do not print the background graphics.
