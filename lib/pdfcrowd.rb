@@ -2118,7 +2118,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # Set a custom user agent HTTP header. It can be useful if you are behind some proxy or firewall.
         #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
@@ -2770,7 +2770,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # Set a custom user agent HTTP header. It can be useful if you are behind some proxy or firewall.
         #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
@@ -3067,7 +3067,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # Set a custom user agent HTTP header. It can be useful if you are behind some proxy or firewall.
         #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
@@ -3545,7 +3545,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # Set a custom user agent HTTP header. It can be useful if you are behind some proxy or firewall.
         #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
@@ -3829,7 +3829,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom user agent HTTP header. It can be usefull if you are behind some proxy or firewall.
+        # Set a custom user agent HTTP header. It can be useful if you are behind some proxy or firewall.
         #
         # * +user_agent+ - The user agent string.
         # * *Returns* - The converter object.
