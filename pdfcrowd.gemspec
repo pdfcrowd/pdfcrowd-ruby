@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.platform = Gem::Platform::RUBY
-  spec.version = '4.12.0'
+  spec.version = '5.0.0'
   spec.name = 'pdfcrowd'
   spec.author = 'Pdfcrowd Team'
   spec.email = 'support@pdfcrowd.com'
