@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.0.0'
+    CLIENT_VERSION = '5.1.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.0.0 (http://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.1.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -887,6 +887,44 @@ module Pdfcrowd
             output_file = open(file_path, "wb")
             begin
                 convertStringToStream(text, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert an input stream.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertStream(in_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert an input stream and write the result to an output stream.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertStreamToStream(in_stream, out_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert an input stream and write the result to a local file.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertStreamToFile(in_stream, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "html-to-pdf", "The string must not be empty.", "convert_stream_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertStreamToStream(in_stream, output_file)
                 output_file.close()
             rescue Error => why
                 output_file.close()
@@ -2449,6 +2487,44 @@ module Pdfcrowd
             end
         end
 
+        # Convert an input stream.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertStream(in_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert an input stream and write the result to an output stream.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertStreamToStream(in_stream, out_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert an input stream and write the result to a local file.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertStreamToFile(in_stream, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "html-to-image", "The string must not be empty.", "convert_stream_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertStreamToStream(in_stream, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
         # Set the input data for template rendering. The data format can be JSON, XML, YAML or CSV.
         #
         # * +data_string+ - The input data string.
@@ -3126,6 +3202,44 @@ module Pdfcrowd
             output_file = open(file_path, "wb")
             begin
                 convertRawDataToStream(data, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert an input stream.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertStream(in_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert an input stream and write the result to an output stream.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertStreamToStream(in_stream, out_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert an input stream and write the result to a local file.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertStreamToFile(in_stream, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "image-to-image", "The string must not be empty.", "convert_stream_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertStreamToStream(in_stream, output_file)
                 output_file.close()
             rescue Error => why
                 output_file.close()
@@ -3939,6 +4053,44 @@ module Pdfcrowd
             output_file = open(file_path, "wb")
             begin
                 convertRawDataToStream(data, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert an input stream.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertStream(in_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert an input stream and write the result to an output stream.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertStreamToStream(in_stream, out_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert an input stream and write the result to a local file.
+        #
+        # * +in_stream+ - The input stream with the source data.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertStreamToFile(in_stream, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "image-to-pdf", "The string must not be empty.", "convert_stream_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertStreamToStream(in_stream, output_file)
                 output_file.close()
             rescue Error => why
                 output_file.close()
