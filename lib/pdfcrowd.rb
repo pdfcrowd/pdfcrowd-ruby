@@ -1641,7 +1641,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the DOM handling when only a part of the document is converted.
+        # Specify the DOM handling when only a part of the document is converted. This can affect the CSS rules used.
         #
         # * +mode+ - Allowed values are cut-out, remove-siblings, hide-siblings.
         # * *Returns* - The converter object.
@@ -2749,7 +2749,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the DOM handling when only a part of the document is converted.
+        # Specify the DOM handling when only a part of the document is converted. This can affect the CSS rules used.
         #
         # * +mode+ - Allowed values are cut-out, remove-siblings, hide-siblings.
         # * *Returns* - The converter object.
