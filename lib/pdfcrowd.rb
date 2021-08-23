@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.1.1'
+    CLIENT_VERSION = '5.2.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.1.1 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.2.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -626,7 +626,7 @@ module Pdfcrowd
             body << 'Content-Disposition: form-data; name="%s"; filename="%s"' % [name, file_name]
             body << 'Content-Type: application/octet-stream'
             body << ''
-            body << data
+            body << data.force_encoding('UTF-8')
         end
 
         def self.encode_multipart_post_data(fields, files, raw_data)
@@ -933,6 +933,15 @@ module Pdfcrowd
             end
         end
 
+        # Set the file name of the main HTML document stored in the input archive. If not specified, the first HTML file in the archive is used for conversion. Use this method if the input archive contains multiple HTML documents.
+        #
+        # * +filename+ - The file name.
+        # * *Returns* - The converter object.
+        def setZipMainFilename(filename)
+            @fields['zip_main_filename'] = filename
+            self
+        end
+
         # Set the output page size.
         #
         # * +size+ - Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.
@@ -1213,6 +1222,15 @@ module Pdfcrowd
             self
         end
 
+        # Set the file name of the header HTML document stored in the input archive. Use this method if the input archive contains multiple HTML documents.
+        #
+        # * +filename+ - The file name.
+        # * *Returns* - The converter object.
+        def setZipHeaderFilename(filename)
+            @fields['zip_header_filename'] = filename
+            self
+        end
+
         # Load an HTML code from the specified URL and use it as the page footer. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of a converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals. Allowed values: arabic - Arabic numerals, they are used by default roman - Roman numerals eastern-arabic - Eastern Arabic numerals bengali - Bengali numerals devanagari - Devanagari numerals thai - Thai numerals east-asia - Chinese, Vietnamese, Japanese and Korean numerals chinese-formal - Chinese formal numerals Please contact us if you need another type of numerals. Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL. Allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
         #
         # * +url+ - The supported protocols are http:// and https://.
@@ -1249,6 +1267,15 @@ module Pdfcrowd
             end
             
             @fields['footer_height'] = height
+            self
+        end
+
+        # Set the file name of the footer HTML document stored in the input archive. Use this method if the input archive contains multiple HTML documents.
+        #
+        # * +filename+ - The file name.
+        # * *Returns* - The converter object.
+        def setZipFooterFilename(filename)
+            @fields['zip_footer_filename'] = filename
             self
         end
 
@@ -1878,6 +1905,15 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setKeywords(keywords)
             @fields['keywords'] = keywords
+            self
+        end
+
+        # Extract meta tags (author, keywords and description) from the input HTML and use them in the output PDF.
+        #
+        # * +value+ - Set to true to extract meta tags.
+        # * *Returns* - The converter object.
+        def setExtractMetaTags(value)
+            @fields['extract_meta_tags'] = value
             self
         end
 
@@ -2523,6 +2559,15 @@ module Pdfcrowd
                 FileUtils.rm(file_path)
                 raise
             end
+        end
+
+        # Set the file name of the main HTML document stored in the input archive. If not specified, the first HTML file in the archive is used for conversion. Use this method if the input archive contains multiple HTML documents.
+        #
+        # * +filename+ - The file name.
+        # * *Returns* - The converter object.
+        def setZipMainFilename(filename)
+            @fields['zip_main_filename'] = filename
+            self
         end
 
         # Use the print version of the page if available (@media print).
@@ -3665,6 +3710,55 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setNoCopy(value)
             @fields['no_copy'] = value
+            self
+        end
+
+        # Set the title of the PDF.
+        #
+        # * +title+ - The title.
+        # * *Returns* - The converter object.
+        def setTitle(title)
+            @fields['title'] = title
+            self
+        end
+
+        # Set the subject of the PDF.
+        #
+        # * +subject+ - The subject.
+        # * *Returns* - The converter object.
+        def setSubject(subject)
+            @fields['subject'] = subject
+            self
+        end
+
+        # Set the author of the PDF.
+        #
+        # * +author+ - The author.
+        # * *Returns* - The converter object.
+        def setAuthor(author)
+            @fields['author'] = author
+            self
+        end
+
+        # Associate keywords with the document.
+        #
+        # * +keywords+ - The string with the keywords.
+        # * *Returns* - The converter object.
+        def setKeywords(keywords)
+            @fields['keywords'] = keywords
+            self
+        end
+
+        # Use metadata (title, subject, author and keywords) from the n-th input PDF.
+        #
+        # * +index+ - Set the index of the input PDF file from which to use the metadata. 0 means no metadata. Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setUseMetadataFrom(index)
+            if (!(Integer(index) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(index, "setUseMetadataFrom", "pdf-to-pdf", "Must be a positive integer number or 0.", "set_use_metadata_from"), 470);
+            end
+            
+            @fields['use_metadata_from'] = index
             self
         end
 
