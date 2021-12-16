@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.2.0'
+    CLIENT_VERSION = '5.2.2'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.2.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.2.2 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -735,7 +735,7 @@ module Pdfcrowd
     def self.create_invalid_value_message(value, field, converter, hint, id)
         message = "Invalid value '%s' for %s." % [value, field]
         message += " " + hint if hint
-        return message + " " + "Details: https://www.pdfcrowd.com/doc/api/%s/ruby/#%s" % [converter, id]
+        return message + " " + "Details: https://www.pdfcrowd.com/doc/api/%s/ruby/ref/#%s" % [converter, id]
     end
 
 # generated code
