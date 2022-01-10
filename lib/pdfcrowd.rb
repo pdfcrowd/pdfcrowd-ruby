@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.2.2'
+    CLIENT_VERSION = '5.3.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.2.2 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.3.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -1486,6 +1486,15 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setDisableRemoteFonts(value)
             @fields['disable_remote_fonts'] = value
+            self
+        end
+
+        # Use a mobile user agent.
+        #
+        # * +value+ - Set to true to use a mobile user agent.
+        # * *Returns* - The converter object.
+        def setUseMobileUserAgent(value)
+            @fields['use_mobile_user_agent'] = value
             self
         end
 
@@ -2612,6 +2621,15 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setDisableRemoteFonts(value)
             @fields['disable_remote_fonts'] = value
+            self
+        end
+
+        # Use a mobile user agent.
+        #
+        # * +value+ - Set to true to use a mobile user agent.
+        # * *Returns* - The converter object.
+        def setUseMobileUserAgent(value)
+            @fields['use_mobile_user_agent'] = value
             self
         end
 
