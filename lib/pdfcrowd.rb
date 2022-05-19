@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.5.0'
+    CLIENT_VERSION = '5.6.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.5.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.6.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -1837,6 +1837,15 @@ module Pdfcrowd
             end
             
             @fields['image_dpi'] = dpi
+            self
+        end
+
+        # Convert HTML forms to fillable PDF forms. Details can be found in the blog post.
+        #
+        # * +value+ - Set to true to make fillable PDF forms.
+        # * *Returns* - The converter object.
+        def setEnablePdfForms(value)
+            @fields['enable_pdf_forms'] = value
             self
         end
 
