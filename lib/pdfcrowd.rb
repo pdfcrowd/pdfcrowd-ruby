@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.6.0'
+    CLIENT_VERSION = '5.6.1'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.6.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.6.1 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -957,11 +957,11 @@ module Pdfcrowd
 
         # Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF.
         #
-        # * +width+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +width+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setPageWidth(width)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setPageWidth", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_page_width"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setPageWidth", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_page_width"), 470);
             end
             
             @fields['page_width'] = width
@@ -970,11 +970,11 @@ module Pdfcrowd
 
         # Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF.
         #
-        # * +height+ - Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +height+ - The value must be -1 or specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setPageHeight(height)
             unless /(?i)^0$|^\-1$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setPageHeight", "html-to-pdf", "Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_page_height"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setPageHeight", "html-to-pdf", "The value must be -1 or specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_page_height"), 470);
             end
             
             @fields['page_height'] = height
@@ -983,8 +983,8 @@ module Pdfcrowd
 
         # Set the output page dimensions.
         #
-        # * +width+ - Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
-        # * +height+ - Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. Can be -1 or specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +width+ - Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +height+ - Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. The value must be -1 or specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setPageDimensions(width, height)
             setPageWidth(width)
@@ -1007,11 +1007,11 @@ module Pdfcrowd
 
         # Set the output page top margin.
         #
-        # * +top+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +top+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setMarginTop(top)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(top)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(top, "setMarginTop", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_margin_top"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(top, "setMarginTop", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_top"), 470);
             end
             
             @fields['margin_top'] = top
@@ -1020,11 +1020,11 @@ module Pdfcrowd
 
         # Set the output page right margin.
         #
-        # * +right+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +right+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setMarginRight(right)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(right)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(right, "setMarginRight", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_margin_right"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(right, "setMarginRight", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_right"), 470);
             end
             
             @fields['margin_right'] = right
@@ -1033,11 +1033,11 @@ module Pdfcrowd
 
         # Set the output page bottom margin.
         #
-        # * +bottom+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +bottom+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setMarginBottom(bottom)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(bottom)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(bottom, "setMarginBottom", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_margin_bottom"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(bottom, "setMarginBottom", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_bottom"), 470);
             end
             
             @fields['margin_bottom'] = bottom
@@ -1046,11 +1046,11 @@ module Pdfcrowd
 
         # Set the output page left margin.
         #
-        # * +left+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +left+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setMarginLeft(left)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(left)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(left, "setMarginLeft", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_margin_left"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(left, "setMarginLeft", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_left"), 470);
             end
             
             @fields['margin_left'] = left
@@ -1068,10 +1068,10 @@ module Pdfcrowd
 
         # Set the output page margins.
         #
-        # * +top+ - Set the output page top margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
-        # * +right+ - Set the output page right margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
-        # * +bottom+ - Set the output page bottom margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
-        # * +left+ - Set the output page left margin. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +top+ - Set the output page top margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +right+ - Set the output page right margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +bottom+ - Set the output page bottom margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +left+ - Set the output page left margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setPageMargins(top, right, bottom, left)
             setMarginTop(top)
@@ -1105,11 +1105,11 @@ module Pdfcrowd
 
         # Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area.
         #
-        # * +x+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * +x+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt". It may contain a negative value.
         # * *Returns* - The converter object.
         def setContentAreaX(x)
             unless /(?i)^0$|^\-?[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(x)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setContentAreaX", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.", "set_content_area_x"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setContentAreaX", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\". It may contain a negative value.", "set_content_area_x"), 470);
             end
             
             @fields['content_area_x'] = x
@@ -1118,11 +1118,11 @@ module Pdfcrowd
 
         # Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area.
         #
-        # * +y+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
+        # * +y+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt". It may contain a negative value.
         # * *Returns* - The converter object.
         def setContentAreaY(y)
             unless /(?i)^0$|^\-?[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(y)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setContentAreaY", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.", "set_content_area_y"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setContentAreaY", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\". It may contain a negative value.", "set_content_area_y"), 470);
             end
             
             @fields['content_area_y'] = y
@@ -1131,11 +1131,11 @@ module Pdfcrowd
 
         # Set the width of the content area. It should be at least 1 inch.
         #
-        # * +width+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +width+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setContentAreaWidth(width)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentAreaWidth", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_content_area_width"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentAreaWidth", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_content_area_width"), 470);
             end
             
             @fields['content_area_width'] = width
@@ -1144,11 +1144,11 @@ module Pdfcrowd
 
         # Set the height of the content area. It should be at least 1 inch.
         #
-        # * +height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +height+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setContentAreaHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setContentAreaHeight", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_content_area_height"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setContentAreaHeight", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_content_area_height"), 470);
             end
             
             @fields['content_area_height'] = height
@@ -1157,10 +1157,10 @@ module Pdfcrowd
 
         # Set the content area position and size. The content area enables to specify a web page area to be converted.
         #
-        # * +x+ - Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
-        # * +y+ - Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt). It may contain a negative value.
-        # * +width+ - Set the width of the content area. It should be at least 1 inch. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
-        # * +height+ - Set the height of the content area. It should be at least 1 inch. Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +x+ - Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt". It may contain a negative value.
+        # * +y+ - Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt". It may contain a negative value.
+        # * +width+ - Set the width of the content area. It should be at least 1 inch. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +height+ - Set the height of the content area. It should be at least 1 inch. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setContentArea(x, y, width, height)
             setContentAreaX(x)
@@ -1211,11 +1211,11 @@ module Pdfcrowd
 
         # Set the header height.
         #
-        # * +height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +height+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setHeaderHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setHeaderHeight", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_header_height"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setHeaderHeight", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_header_height"), 470);
             end
             
             @fields['header_height'] = height
@@ -1259,11 +1259,11 @@ module Pdfcrowd
 
         # Set the footer height.
         #
-        # * +height+ - Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).
+        # * +height+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
         # * *Returns* - The converter object.
         def setFooterHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setFooterHeight", "html-to-pdf", "Can be specified in inches (in), millimeters (mm), centimeters (cm), or points (pt).", "set_footer_height"), 470);
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setFooterHeight", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_footer_height"), 470);
             end
             
             @fields['footer_height'] = height
