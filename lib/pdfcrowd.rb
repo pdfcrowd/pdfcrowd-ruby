@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.6.2'
+    CLIENT_VERSION = '5.7.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.6.2 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.7.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -1714,11 +1714,11 @@ module Pdfcrowd
 
         # The input HTML is automatically enhanced to improve the readability.
         #
-        # * +enhancements+ - Allowed values are none, readability-v1.
+        # * +enhancements+ - Allowed values are none, readability-v1, readability-v2, readability-v3.
         # * *Returns* - The converter object.
         def setReadabilityEnhancements(enhancements)
-            unless /(?i)^(none|readability-v1)$/.match(enhancements)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-pdf", "Allowed values are none, readability-v1.", "set_readability_enhancements"), 470);
+            unless /(?i)^(none|readability-v1|readability-v2|readability-v3)$/.match(enhancements)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-pdf", "Allowed values are none, readability-v1, readability-v2, readability-v3.", "set_readability_enhancements"), 470);
             end
             
             @fields['readability_enhancements'] = enhancements
@@ -2880,11 +2880,11 @@ module Pdfcrowd
 
         # The input HTML is automatically enhanced to improve the readability.
         #
-        # * +enhancements+ - Allowed values are none, readability-v1.
+        # * +enhancements+ - Allowed values are none, readability-v1, readability-v2, readability-v3.
         # * *Returns* - The converter object.
         def setReadabilityEnhancements(enhancements)
-            unless /(?i)^(none|readability-v1)$/.match(enhancements)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-image", "Allowed values are none, readability-v1.", "set_readability_enhancements"), 470);
+            unless /(?i)^(none|readability-v1|readability-v2|readability-v3)$/.match(enhancements)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-image", "Allowed values are none, readability-v1, readability-v2, readability-v3.", "set_readability_enhancements"), 470);
             end
             
             @fields['readability_enhancements'] = enhancements
