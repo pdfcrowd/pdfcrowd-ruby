@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.7.0'
+    CLIENT_VERSION = '5.8.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.7.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.8.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -1327,9 +1327,9 @@ module Pdfcrowd
             self
         end
 
-        # Apply the first page of the watermark PDF to every page of the output PDF.
+        # Apply a watermark to each page of the output PDF file. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
         #
-        # * +watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setPageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
@@ -1340,7 +1340,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a watermark PDF from the specified URL and apply the first page of the watermark PDF to every page of the output PDF.
+        # Load a file from the specified URL and apply the file as a watermark to each page of the output PDF. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
         #
         # * +url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
@@ -1353,9 +1353,9 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        # Apply each page of a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
         #
-        # * +watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setMultipageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
@@ -1366,7 +1366,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a watermark PDF from the specified URL and apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        # Load a file from the specified URL and apply each page of the file as a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
         #
         # * +url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
@@ -1379,9 +1379,9 @@ module Pdfcrowd
             self
         end
 
-        # Apply the first page of the specified PDF to the background of every page of the output PDF.
+        # Apply a background to each page of the output PDF file. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
         #
-        # * +background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        # * +background+ - The file path to a local file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setPageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
@@ -1392,7 +1392,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a background PDF from the specified URL and apply the first page of the background PDF to every page of the output PDF.
+        # Load a file from the specified URL and apply the file as a background to each page of the output PDF. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
         #
         # * +url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
@@ -1405,9 +1405,9 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
+        # Apply each page of a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
         #
-        # * +background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        # * +background+ - The file path to a local file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setMultipageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
@@ -1418,7 +1418,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a background PDF from the specified URL and apply each page of the specified background PDF to the corresponding page of the output PDF.
+        # Load a file from the specified URL and apply each page of the file as a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
         #
         # * +url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
@@ -3626,9 +3626,9 @@ module Pdfcrowd
             self
         end
 
-        # Apply the first page of the watermark PDF to every page of the output PDF.
+        # Apply a watermark to each page of the output PDF file. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
         #
-        # * +watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setPageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
@@ -3639,7 +3639,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a watermark PDF from the specified URL and apply the first page of the watermark PDF to every page of the output PDF.
+        # Load a file from the specified URL and apply the file as a watermark to each page of the output PDF. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
         #
         # * +url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
@@ -3652,9 +3652,9 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        # Apply each page of a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
         #
-        # * +watermark+ - The file path to a local watermark PDF file. The file must exist and not be empty.
+        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setMultipageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
@@ -3665,7 +3665,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a watermark PDF from the specified URL and apply each page of the specified watermark PDF to the corresponding page of the output PDF.
+        # Load a file from the specified URL and apply each page of the file as a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
         #
         # * +url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
@@ -3678,9 +3678,9 @@ module Pdfcrowd
             self
         end
 
-        # Apply the first page of the specified PDF to the background of every page of the output PDF.
+        # Apply a background to each page of the output PDF file. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
         #
-        # * +background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        # * +background+ - The file path to a local file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setPageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
@@ -3691,7 +3691,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a background PDF from the specified URL and apply the first page of the background PDF to every page of the output PDF.
+        # Load a file from the specified URL and apply the file as a background to each page of the output PDF. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
         #
         # * +url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
@@ -3704,9 +3704,9 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of the specified PDF to the background of the corresponding page of the output PDF.
+        # Apply each page of a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
         #
-        # * +background+ - The file path to a local background PDF file. The file must exist and not be empty.
+        # * +background+ - The file path to a local file. The file must exist and not be empty.
         # * *Returns* - The converter object.
         def setMultipageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
@@ -3717,7 +3717,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a background PDF from the specified URL and apply each page of the specified background PDF to the corresponding page of the output PDF.
+        # Load a file from the specified URL and apply each page of the file as a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
         #
         # * +url+ - The supported protocols are http:// and https://.
         # * *Returns* - The converter object.
