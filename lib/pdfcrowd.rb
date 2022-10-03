@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.8.0'
+    CLIENT_VERSION = '5.9.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.8.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.9.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -597,6 +597,10 @@ module Pdfcrowd
             @page_count
         end
 
+        def getTotalPageCount()
+            @total_page_count
+        end
+
         def getOutputSize()
             @output_size
         end
@@ -613,6 +617,7 @@ module Pdfcrowd
             @consumed_credits = 0
             @job_id = ''
             @page_count = 0
+            @total_page_count = 0
             @output_size = 0
             @retry = 0
         end
@@ -699,6 +704,7 @@ module Pdfcrowd
                             @consumed_credits = (response["X-Pdfcrowd-Consumed-Credits"] || 0).to_i
                             @job_id = response["X-Pdfcrowd-Job-Id"] || ''
                             @page_count = (response["X-Pdfcrowd-Pages"] || 0).to_i
+                            @total_page_count = (response["X-Pdfcrowd-Total-Pages"] || 0).to_i
                             @output_size = (response["X-Pdfcrowd-Output-Size"] || 0).to_i
 
                             raise Error.new('test 502', '502') \
@@ -1714,11 +1720,11 @@ module Pdfcrowd
 
         # The input HTML is automatically enhanced to improve the readability.
         #
-        # * +enhancements+ - Allowed values are none, readability-v1, readability-v2, readability-v3.
+        # * +enhancements+ - Allowed values are none, readability-v1, readability-v2, readability-v3, readability-v4.
         # * *Returns* - The converter object.
         def setReadabilityEnhancements(enhancements)
-            unless /(?i)^(none|readability-v1|readability-v2|readability-v3)$/.match(enhancements)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-pdf", "Allowed values are none, readability-v1, readability-v2, readability-v3.", "set_readability_enhancements"), 470);
+            unless /(?i)^(none|readability-v1|readability-v2|readability-v3|readability-v4)$/.match(enhancements)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-pdf", "Allowed values are none, readability-v1, readability-v2, readability-v3, readability-v4.", "set_readability_enhancements"), 470);
             end
             
             @fields['readability_enhancements'] = enhancements
@@ -2197,10 +2203,16 @@ module Pdfcrowd
             return @helper.getJobId()
         end
 
-        # Get the total number of pages in the output document.
+        # Get the number of pages in the output document.
         # * *Returns* - The page count.
         def getPageCount()
             return @helper.getPageCount()
+        end
+
+        # Get the total number of pages in the original output document, including the pages excluded by setPrintPageRange().
+        # * *Returns* - The total page count.
+        def getTotalPageCount()
+            return @helper.getTotalPageCount()
         end
 
         # Get the size of the output in bytes.
@@ -2880,11 +2892,11 @@ module Pdfcrowd
 
         # The input HTML is automatically enhanced to improve the readability.
         #
-        # * +enhancements+ - Allowed values are none, readability-v1, readability-v2, readability-v3.
+        # * +enhancements+ - Allowed values are none, readability-v1, readability-v2, readability-v3, readability-v4.
         # * *Returns* - The converter object.
         def setReadabilityEnhancements(enhancements)
-            unless /(?i)^(none|readability-v1|readability-v2|readability-v3)$/.match(enhancements)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-image", "Allowed values are none, readability-v1, readability-v2, readability-v3.", "set_readability_enhancements"), 470);
+            unless /(?i)^(none|readability-v1|readability-v2|readability-v3|readability-v4)$/.match(enhancements)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-image", "Allowed values are none, readability-v1, readability-v2, readability-v3, readability-v4.", "set_readability_enhancements"), 470);
             end
             
             @fields['readability_enhancements'] = enhancements
@@ -4006,7 +4018,7 @@ module Pdfcrowd
             return @helper.getJobId()
         end
 
-        # Get the total number of pages in the output document.
+        # Get the number of pages in the output document.
         # * *Returns* - The page count.
         def getPageCount()
             return @helper.getPageCount()
@@ -4791,7 +4803,7 @@ module Pdfcrowd
             return @helper.getJobId()
         end
 
-        # Get the total number of pages in the output document.
+        # Get the number of pages in the output document.
         # * *Returns* - The page count.
         def getPageCount()
             return @helper.getPageCount()
