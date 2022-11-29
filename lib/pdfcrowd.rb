@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.9.0'
+    CLIENT_VERSION = '5.10.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.9.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.10.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -1783,11 +1783,11 @@ module Pdfcrowd
 
         # Specifies the scaling mode used for fitting the HTML contents to the print area.
         #
-        # * +mode+ - The smart scaling mode. Allowed values are default, disabled, viewport-fit, content-fit, single-page-fit, mode1.
+        # * +mode+ - The smart scaling mode. Allowed values are default, disabled, viewport-fit, content-fit, single-page-fit, single-page-fit-ex, mode1.
         # * *Returns* - The converter object.
         def setSmartScalingMode(mode)
-            unless /(?i)^(default|disabled|viewport-fit|content-fit|single-page-fit|mode1)$/.match(mode)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setSmartScalingMode", "html-to-pdf", "Allowed values are default, disabled, viewport-fit, content-fit, single-page-fit, mode1.", "set_smart_scaling_mode"), 470);
+            unless /(?i)^(default|disabled|viewport-fit|content-fit|single-page-fit|single-page-fit-ex|mode1)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setSmartScalingMode", "html-to-pdf", "Allowed values are default, disabled, viewport-fit, content-fit, single-page-fit, single-page-fit-ex, mode1.", "set_smart_scaling_mode"), 470);
             end
             
             @fields['smart_scaling_mode'] = mode
@@ -4303,6 +4303,328 @@ module Pdfcrowd
             self
         end
 
+        # Apply a watermark to each page of the output PDF file. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
+        #
+        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setPageWatermark(watermark)
+            if (!(File.file?(watermark) && !File.zero?(watermark)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(watermark, "setPageWatermark", "image-to-pdf", "The file must exist and not be empty.", "set_page_watermark"), 470);
+            end
+            
+            @files['page_watermark'] = watermark
+            self
+        end
+
+        # Load a file from the specified URL and apply the file as a watermark to each page of the output PDF. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
+        #
+        # * +url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setPageWatermarkUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setPageWatermarkUrl", "image-to-pdf", "The supported protocols are http:// and https://.", "set_page_watermark_url"), 470);
+            end
+            
+            @fields['page_watermark_url'] = url
+            self
+        end
+
+        # Apply each page of a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
+        #
+        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setMultipageWatermark(watermark)
+            if (!(File.file?(watermark) && !File.zero?(watermark)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(watermark, "setMultipageWatermark", "image-to-pdf", "The file must exist and not be empty.", "set_multipage_watermark"), 470);
+            end
+            
+            @files['multipage_watermark'] = watermark
+            self
+        end
+
+        # Load a file from the specified URL and apply each page of the file as a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
+        #
+        # * +url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setMultipageWatermarkUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setMultipageWatermarkUrl", "image-to-pdf", "The supported protocols are http:// and https://.", "set_multipage_watermark_url"), 470);
+            end
+            
+            @fields['multipage_watermark_url'] = url
+            self
+        end
+
+        # Apply a background to each page of the output PDF file. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
+        #
+        # * +background+ - The file path to a local file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setPageBackground(background)
+            if (!(File.file?(background) && !File.zero?(background)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(background, "setPageBackground", "image-to-pdf", "The file must exist and not be empty.", "set_page_background"), 470);
+            end
+            
+            @files['page_background'] = background
+            self
+        end
+
+        # Load a file from the specified URL and apply the file as a background to each page of the output PDF. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
+        #
+        # * +url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setPageBackgroundUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setPageBackgroundUrl", "image-to-pdf", "The supported protocols are http:// and https://.", "set_page_background_url"), 470);
+            end
+            
+            @fields['page_background_url'] = url
+            self
+        end
+
+        # Apply each page of a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
+        #
+        # * +background+ - The file path to a local file. The file must exist and not be empty.
+        # * *Returns* - The converter object.
+        def setMultipageBackground(background)
+            if (!(File.file?(background) && !File.zero?(background)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(background, "setMultipageBackground", "image-to-pdf", "The file must exist and not be empty.", "set_multipage_background"), 470);
+            end
+            
+            @files['multipage_background'] = background
+            self
+        end
+
+        # Load a file from the specified URL and apply each page of the file as a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
+        #
+        # * +url+ - The supported protocols are http:// and https://.
+        # * *Returns* - The converter object.
+        def setMultipageBackgroundUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setMultipageBackgroundUrl", "image-to-pdf", "The supported protocols are http:// and https://.", "set_multipage_background_url"), 470);
+            end
+            
+            @fields['multipage_background_url'] = url
+            self
+        end
+
+        # Create linearized PDF. This is also known as Fast Web View.
+        #
+        # * +value+ - Set to true to create linearized PDF.
+        # * *Returns* - The converter object.
+        def setLinearize(value)
+            @fields['linearize'] = value
+            self
+        end
+
+        # Encrypt the PDF. This prevents search engines from indexing the contents.
+        #
+        # * +value+ - Set to true to enable PDF encryption.
+        # * *Returns* - The converter object.
+        def setEncrypt(value)
+            @fields['encrypt'] = value
+            self
+        end
+
+        # Protect the PDF with a user password. When a PDF has a user password, it must be supplied in order to view the document and to perform operations allowed by the access permissions.
+        #
+        # * +password+ - The user password.
+        # * *Returns* - The converter object.
+        def setUserPassword(password)
+            @fields['user_password'] = password
+            self
+        end
+
+        # Protect the PDF with an owner password. Supplying an owner password grants unlimited access to the PDF including changing the passwords and access permissions.
+        #
+        # * +password+ - The owner password.
+        # * *Returns* - The converter object.
+        def setOwnerPassword(password)
+            @fields['owner_password'] = password
+            self
+        end
+
+        # Disallow printing of the output PDF.
+        #
+        # * +value+ - Set to true to set the no-print flag in the output PDF.
+        # * *Returns* - The converter object.
+        def setNoPrint(value)
+            @fields['no_print'] = value
+            self
+        end
+
+        # Disallow modification of the output PDF.
+        #
+        # * +value+ - Set to true to set the read-only only flag in the output PDF.
+        # * *Returns* - The converter object.
+        def setNoModify(value)
+            @fields['no_modify'] = value
+            self
+        end
+
+        # Disallow text and graphics extraction from the output PDF.
+        #
+        # * +value+ - Set to true to set the no-copy flag in the output PDF.
+        # * *Returns* - The converter object.
+        def setNoCopy(value)
+            @fields['no_copy'] = value
+            self
+        end
+
+        # Set the title of the PDF.
+        #
+        # * +title+ - The title.
+        # * *Returns* - The converter object.
+        def setTitle(title)
+            @fields['title'] = title
+            self
+        end
+
+        # Set the subject of the PDF.
+        #
+        # * +subject+ - The subject.
+        # * *Returns* - The converter object.
+        def setSubject(subject)
+            @fields['subject'] = subject
+            self
+        end
+
+        # Set the author of the PDF.
+        #
+        # * +author+ - The author.
+        # * *Returns* - The converter object.
+        def setAuthor(author)
+            @fields['author'] = author
+            self
+        end
+
+        # Associate keywords with the document.
+        #
+        # * +keywords+ - The string with the keywords.
+        # * *Returns* - The converter object.
+        def setKeywords(keywords)
+            @fields['keywords'] = keywords
+            self
+        end
+
+        # Specify the page layout to be used when the document is opened.
+        #
+        # * +layout+ - Allowed values are single-page, one-column, two-column-left, two-column-right.
+        # * *Returns* - The converter object.
+        def setPageLayout(layout)
+            unless /(?i)^(single-page|one-column|two-column-left|two-column-right)$/.match(layout)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(layout, "setPageLayout", "image-to-pdf", "Allowed values are single-page, one-column, two-column-left, two-column-right.", "set_page_layout"), 470);
+            end
+            
+            @fields['page_layout'] = layout
+            self
+        end
+
+        # Specify how the document should be displayed when opened.
+        #
+        # * +mode+ - Allowed values are full-screen, thumbnails, outlines.
+        # * *Returns* - The converter object.
+        def setPageMode(mode)
+            unless /(?i)^(full-screen|thumbnails|outlines)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPageMode", "image-to-pdf", "Allowed values are full-screen, thumbnails, outlines.", "set_page_mode"), 470);
+            end
+            
+            @fields['page_mode'] = mode
+            self
+        end
+
+        # Specify how the page should be displayed when opened.
+        #
+        # * +zoom_type+ - Allowed values are fit-width, fit-height, fit-page.
+        # * *Returns* - The converter object.
+        def setInitialZoomType(zoom_type)
+            unless /(?i)^(fit-width|fit-height|fit-page)$/.match(zoom_type)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(zoom_type, "setInitialZoomType", "image-to-pdf", "Allowed values are fit-width, fit-height, fit-page.", "set_initial_zoom_type"), 470);
+            end
+            
+            @fields['initial_zoom_type'] = zoom_type
+            self
+        end
+
+        # Display the specified page when the document is opened.
+        #
+        # * +page+ - Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setInitialPage(page)
+            if (!(Integer(page) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(page, "setInitialPage", "image-to-pdf", "Must be a positive integer number.", "set_initial_page"), 470);
+            end
+            
+            @fields['initial_page'] = page
+            self
+        end
+
+        # Specify the initial page zoom in percents when the document is opened.
+        #
+        # * +zoom+ - Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setInitialZoom(zoom)
+            if (!(Integer(zoom) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(zoom, "setInitialZoom", "image-to-pdf", "Must be a positive integer number.", "set_initial_zoom"), 470);
+            end
+            
+            @fields['initial_zoom'] = zoom
+            self
+        end
+
+        # Specify whether to hide the viewer application's tool bars when the document is active.
+        #
+        # * +value+ - Set to true to hide tool bars.
+        # * *Returns* - The converter object.
+        def setHideToolbar(value)
+            @fields['hide_toolbar'] = value
+            self
+        end
+
+        # Specify whether to hide the viewer application's menu bar when the document is active.
+        #
+        # * +value+ - Set to true to hide the menu bar.
+        # * *Returns* - The converter object.
+        def setHideMenubar(value)
+            @fields['hide_menubar'] = value
+            self
+        end
+
+        # Specify whether to hide user interface elements in the document's window (such as scroll bars and navigation controls), leaving only the document's contents displayed.
+        #
+        # * +value+ - Set to true to hide ui elements.
+        # * *Returns* - The converter object.
+        def setHideWindowUi(value)
+            @fields['hide_window_ui'] = value
+            self
+        end
+
+        # Specify whether to resize the document's window to fit the size of the first displayed page.
+        #
+        # * +value+ - Set to true to resize the window.
+        # * *Returns* - The converter object.
+        def setFitWindow(value)
+            @fields['fit_window'] = value
+            self
+        end
+
+        # Specify whether to position the document's window in the center of the screen.
+        #
+        # * +value+ - Set to true to center the window.
+        # * *Returns* - The converter object.
+        def setCenterWindow(value)
+            @fields['center_window'] = value
+            self
+        end
+
+        # Specify whether the window's title bar should display the document title. If false , the title bar should instead display the name of the PDF file containing the document.
+        #
+        # * +value+ - Set to true to display the title.
+        # * *Returns* - The converter object.
+        def setDisplayTitle(value)
+            @fields['display_title'] = value
+            self
+        end
+
         # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
         #
         # * +value+ - Set to true to enable the debug logging.
@@ -4902,6 +5224,499 @@ module Pdfcrowd
             extension = File.extname(file_path).downcase
             (extension == '.zip') == isZippedOutput()
         end
+    end
+
+    # Conversion from PDF to text.
+    class PdfToTextClient
+        # Constructor for the Pdfcrowd API client.
+        #
+        # * +user_name+ - Your username at Pdfcrowd.
+        # * +api_key+ - Your API key.
+        def initialize(user_name, api_key)
+            @helper = ConnectionHelper.new(user_name, api_key)
+            @fields = {
+                'input_format'=>'pdf',
+                'output_format'=>'txt'
+            }
+            @file_id = 1
+            @files = {}
+            @raw_data = {}
+        end
+
+        # Convert a PDF.
+        #
+        # * +url+ - The address of the PDF to convert. The supported protocols are http:// and https://.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "pdf-to-text", "The supported protocols are http:// and https://.", "convert_url"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a PDF and write the result to an output stream.
+        #
+        # * +url+ - The address of the PDF to convert. The supported protocols are http:// and https://.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertUrlToStream(url, out_stream)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "pdf-to-text", "The supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a PDF and write the result to a local file.
+        #
+        # * +url+ - The address of the PDF to convert. The supported protocols are http:// and https://.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertUrlToFile(url, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "pdf-to-text", "The string must not be empty.", "convert_url_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertUrlToStream(url, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert a local file.
+        #
+        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertFile(file)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "pdf-to-text", "The file must exist and not be empty.", "convert_file"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a local file and write the result to an output stream.
+        #
+        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertFileToStream(file, out_stream)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "pdf-to-text", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a local file and write the result to a local file.
+        #
+        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertFileToFile(file, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "pdf-to-text", "The string must not be empty.", "convert_file_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertFileToStream(file, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert raw data.
+        #
+        # * +data+ - The raw content to be converted.
+        # * *Returns* - Byte array with the output.
+        def convertRawData(data)
+            @raw_data['file'] = data
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert raw data and write the result to an output stream.
+        #
+        # * +data+ - The raw content to be converted.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertRawDataToStream(data, out_stream)
+            @raw_data['file'] = data
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert raw data to a file.
+        #
+        # * +data+ - The raw content to be converted.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertRawDataToFile(data, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertRawDataToFile::file_path", "pdf-to-text", "The string must not be empty.", "convert_raw_data_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertRawDataToStream(data, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert the contents of an input stream.
+        #
+        # * +in_stream+ - The input stream with source data.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertStream(in_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert the contents of an input stream and write the result to an output stream.
+        #
+        # * +in_stream+ - The input stream with source data.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertStreamToStream(in_stream, out_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert the contents of an input stream and write the result to a local file.
+        #
+        # * +in_stream+ - The input stream with source data.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertStreamToFile(in_stream, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "pdf-to-text", "The string must not be empty.", "convert_stream_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertStreamToStream(in_stream, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # The password to open the encrypted PDF file.
+        #
+        # * +password+ - The input PDF password.
+        # * *Returns* - The converter object.
+        def setPdfPassword(password)
+            @fields['pdf_password'] = password
+            self
+        end
+
+        # Set the page range to print.
+        #
+        # * +pages+ - A comma separated list of page numbers or ranges.
+        # * *Returns* - The converter object.
+        def setPrintPageRange(pages)
+            unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPrintPageRange", "pdf-to-text", "A comma separated list of page numbers or ranges.", "set_print_page_range"), 470);
+            end
+            
+            @fields['print_page_range'] = pages
+            self
+        end
+
+        # Ignore the original PDF layout.
+        #
+        # * +value+ - Set to true to ignore the layout.
+        # * *Returns* - The converter object.
+        def setNoLayout(value)
+            @fields['no_layout'] = value
+            self
+        end
+
+        # The end-of-line convention for the text output.
+        #
+        # * +eol+ - Allowed values are unix, dos, mac.
+        # * *Returns* - The converter object.
+        def setEol(eol)
+            unless /(?i)^(unix|dos|mac)$/.match(eol)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(eol, "setEol", "pdf-to-text", "Allowed values are unix, dos, mac.", "set_eol"), 470);
+            end
+            
+            @fields['eol'] = eol
+            self
+        end
+
+        # Specify the page break mode for the text output.
+        #
+        # * +mode+ - Allowed values are none, default, custom.
+        # * *Returns* - The converter object.
+        def setPageBreakMode(mode)
+            unless /(?i)^(none|default|custom)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPageBreakMode", "pdf-to-text", "Allowed values are none, default, custom.", "set_page_break_mode"), 470);
+            end
+            
+            @fields['page_break_mode'] = mode
+            self
+        end
+
+        # Specify the custom page break.
+        #
+        # * +page_break+ - String to insert between the pages.
+        # * *Returns* - The converter object.
+        def setCustomPageBreak(page_break)
+            @fields['custom_page_break'] = page_break
+            self
+        end
+
+        # Specify the paragraph detection mode.
+        #
+        # * +mode+ - Allowed values are none, bounding-box, characters.
+        # * *Returns* - The converter object.
+        def setParagraphMode(mode)
+            unless /(?i)^(none|bounding-box|characters)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setParagraphMode", "pdf-to-text", "Allowed values are none, bounding-box, characters.", "set_paragraph_mode"), 470);
+            end
+            
+            @fields['paragraph_mode'] = mode
+            self
+        end
+
+        # Set the maximum line spacing when the paragraph detection mode is enabled.
+        #
+        # * +threshold+ - The value must be a positive integer percentage.
+        # * *Returns* - The converter object.
+        def setLineSpacingThreshold(threshold)
+            unless /(?i)^0$|^[0-9]+%$/.match(threshold)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(threshold, "setLineSpacingThreshold", "pdf-to-text", "The value must be a positive integer percentage.", "set_line_spacing_threshold"), 470);
+            end
+            
+            @fields['line_spacing_threshold'] = threshold
+            self
+        end
+
+        # Remove the hyphen character from the end of lines.
+        #
+        # * +value+ - Set to true to remove hyphens.
+        # * *Returns* - The converter object.
+        def setRemoveHyphenation(value)
+            @fields['remove_hyphenation'] = value
+            self
+        end
+
+        # Remove empty lines from the text output.
+        #
+        # * +value+ - Set to true to remove empty lines.
+        # * *Returns* - The converter object.
+        def setRemoveEmptyLines(value)
+            @fields['remove_empty_lines'] = value
+            self
+        end
+
+        # Set the top left X coordinate of the crop area in points.
+        #
+        # * +x+ - Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropAreaX(x)
+            if (!(Integer(x) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setCropAreaX", "pdf-to-text", "Must be a positive integer number or 0.", "set_crop_area_x"), 470);
+            end
+            
+            @fields['crop_area_x'] = x
+            self
+        end
+
+        # Set the top left Y coordinate of the crop area in points.
+        #
+        # * +y+ - Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropAreaY(y)
+            if (!(Integer(y) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setCropAreaY", "pdf-to-text", "Must be a positive integer number or 0.", "set_crop_area_y"), 470);
+            end
+            
+            @fields['crop_area_y'] = y
+            self
+        end
+
+        # Set the width of the crop area in points.
+        #
+        # * +width+ - Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropAreaWidth(width)
+            if (!(Integer(width) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setCropAreaWidth", "pdf-to-text", "Must be a positive integer number or 0.", "set_crop_area_width"), 470);
+            end
+            
+            @fields['crop_area_width'] = width
+            self
+        end
+
+        # Set the height of the crop area in points.
+        #
+        # * +height+ - Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropAreaHeight(height)
+            if (!(Integer(height) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setCropAreaHeight", "pdf-to-text", "Must be a positive integer number or 0.", "set_crop_area_height"), 470);
+            end
+            
+            @fields['crop_area_height'] = height
+            self
+        end
+
+        # Set the crop area. It allows to extract just a part of a PDF page.
+        #
+        # * +x+ - Set the top left X coordinate of the crop area in points. Must be a positive integer number or 0.
+        # * +y+ - Set the top left Y coordinate of the crop area in points. Must be a positive integer number or 0.
+        # * +width+ - Set the width of the crop area in points. Must be a positive integer number or 0.
+        # * +height+ - Set the height of the crop area in points. Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropArea(x, y, width, height)
+            setCropAreaX(x)
+            setCropAreaY(y)
+            setCropAreaWidth(width)
+            setCropAreaHeight(height)
+            self
+        end
+
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
+        #
+        # * +value+ - Set to true to enable the debug logging.
+        # * *Returns* - The converter object.
+        def setDebugLog(value)
+            @fields['debug_log'] = value
+            self
+        end
+
+        # Get the URL of the debug log for the last conversion.
+        # * *Returns* - The link to the debug log.
+        def getDebugLogUrl()
+            return @helper.getDebugLogUrl()
+        end
+
+        # Get the number of conversion credits available in your account.
+        # This method can only be called after a call to one of the convertXtoY methods.
+        # The returned value can differ from the actual count if you run parallel conversions.
+        # The special value 999999 is returned if the information is not available.
+        # * *Returns* - The number of credits.
+        def getRemainingCreditCount()
+            return @helper.getRemainingCreditCount()
+        end
+
+        # Get the number of credits consumed by the last conversion.
+        # * *Returns* - The number of credits.
+        def getConsumedCreditCount()
+            return @helper.getConsumedCreditCount()
+        end
+
+        # Get the job id.
+        # * *Returns* - The unique job identifier.
+        def getJobId()
+            return @helper.getJobId()
+        end
+
+        # Get the number of pages in the output document.
+        # * *Returns* - The page count.
+        def getPageCount()
+            return @helper.getPageCount()
+        end
+
+        # Get the size of the output in bytes.
+        # * *Returns* - The count of bytes.
+        def getOutputSize()
+            return @helper.getOutputSize()
+        end
+
+        # Get the version details.
+        # * *Returns* - API version, converter version, and client version.
+        def getVersion()
+            return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
+        end
+
+        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
+        #
+        # * +tag+ - A string with the custom tag.
+        # * *Returns* - The converter object.
+        def setTag(tag)
+            @fields['tag'] = tag
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpProxy(proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "pdf-to-text", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
+            end
+            
+            @fields['http_proxy'] = proxy
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpsProxy(proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "pdf-to-text", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
+            end
+            
+            @fields['https_proxy'] = proxy
+            self
+        end
+
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
+        #
+        # * +value+ - Set to true to use HTTP.
+        # * *Returns* - The converter object.
+        def setUseHttp(value)
+            @helper.setUseHttp(value)
+            self
+        end
+
+        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
+        #
+        # * +agent+ - The user agent string.
+        # * *Returns* - The converter object.
+        def setUserAgent(agent)
+            @helper.setUserAgent(agent)
+            self
+        end
+
+        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
+        #
+        # * +host+ - The proxy hostname.
+        # * +port+ - The proxy port.
+        # * +user_name+ - The username.
+        # * +password+ - The password.
+        # * *Returns* - The converter object.
+        def setProxy(host, port, user_name, password)
+            @helper.setProxy(host, port, user_name, password)
+            self
+        end
+
+        # Specifies the number of automatic retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        #
+        # * +count+ - Number of retries.
+        # * *Returns* - The converter object.
+        def setRetryCount(count)
+            @helper.setRetryCount(count)
+            self
+        end
+
     end
 
 end
