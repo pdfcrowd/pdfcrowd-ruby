@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.10.0'
+    CLIENT_VERSION = '5.11.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.10.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.11.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -3407,6 +3407,184 @@ module Pdfcrowd
             self
         end
 
+        # Set the output canvas size.
+        #
+        # * +size+ - Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.
+        # * *Returns* - The converter object.
+        def setCanvasSize(size)
+            unless /(?i)^(A0|A1|A2|A3|A4|A5|A6|Letter)$/.match(size)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(size, "setCanvasSize", "image-to-image", "Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.", "set_canvas_size"), 470);
+            end
+            
+            @fields['canvas_size'] = size
+            self
+        end
+
+        # Set the output canvas width.
+        #
+        # * +width+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setCanvasWidth(width)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setCanvasWidth", "image-to-image", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_canvas_width"), 470);
+            end
+            
+            @fields['canvas_width'] = width
+            self
+        end
+
+        # Set the output canvas height.
+        #
+        # * +height+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setCanvasHeight(height)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setCanvasHeight", "image-to-image", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_canvas_height"), 470);
+            end
+            
+            @fields['canvas_height'] = height
+            self
+        end
+
+        # Set the output canvas dimensions. If no canvas size is specified, margins are applied as a border around the image.
+        #
+        # * +width+ - Set the output canvas width. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +height+ - Set the output canvas height. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setCanvasDimensions(width, height)
+            setCanvasWidth(width)
+            setCanvasHeight(height)
+            self
+        end
+
+        # Set the output canvas orientation.
+        #
+        # * +orientation+ - Allowed values are landscape, portrait.
+        # * *Returns* - The converter object.
+        def setOrientation(orientation)
+            unless /(?i)^(landscape|portrait)$/.match(orientation)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(orientation, "setOrientation", "image-to-image", "Allowed values are landscape, portrait.", "set_orientation"), 470);
+            end
+            
+            @fields['orientation'] = orientation
+            self
+        end
+
+        # Set the image position on the page.
+        #
+        # * +position+ - Allowed values are center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right.
+        # * *Returns* - The converter object.
+        def setPosition(position)
+            unless /(?i)^(center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right)$/.match(position)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(position, "setPosition", "image-to-image", "Allowed values are center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right.", "set_position"), 470);
+            end
+            
+            @fields['position'] = position
+            self
+        end
+
+        # Set the mode to print the image on the content area of the page.
+        #
+        # * +mode+ - Allowed values are default, fit, stretch.
+        # * *Returns* - The converter object.
+        def setPrintCanvasMode(mode)
+            unless /(?i)^(default|fit|stretch)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPrintCanvasMode", "image-to-image", "Allowed values are default, fit, stretch.", "set_print_canvas_mode"), 470);
+            end
+            
+            @fields['print_canvas_mode'] = mode
+            self
+        end
+
+        # Set the output canvas top margin.
+        #
+        # * +top+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMarginTop(top)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(top)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(top, "setMarginTop", "image-to-image", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_top"), 470);
+            end
+            
+            @fields['margin_top'] = top
+            self
+        end
+
+        # Set the output canvas right margin.
+        #
+        # * +right+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMarginRight(right)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(right)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(right, "setMarginRight", "image-to-image", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_right"), 470);
+            end
+            
+            @fields['margin_right'] = right
+            self
+        end
+
+        # Set the output canvas bottom margin.
+        #
+        # * +bottom+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMarginBottom(bottom)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(bottom)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(bottom, "setMarginBottom", "image-to-image", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_bottom"), 470);
+            end
+            
+            @fields['margin_bottom'] = bottom
+            self
+        end
+
+        # Set the output canvas left margin.
+        #
+        # * +left+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMarginLeft(left)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(left)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(left, "setMarginLeft", "image-to-image", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_left"), 470);
+            end
+            
+            @fields['margin_left'] = left
+            self
+        end
+
+        # Set the output canvas margins.
+        #
+        # * +top+ - Set the output canvas top margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +right+ - Set the output canvas right margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +bottom+ - Set the output canvas bottom margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +left+ - Set the output canvas left margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMargins(top, right, bottom, left)
+            setMarginTop(top)
+            setMarginRight(right)
+            setMarginBottom(bottom)
+            setMarginLeft(left)
+            self
+        end
+
+        # The canvas background color in RGB or RGBA hexadecimal format. The color fills the entire canvas regardless of margins. If no canvas size is specified and the image format supports background (e.g. PDF, PNG), the background color is applied too.
+        #
+        # * +color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
+        # * *Returns* - The converter object.
+        def setCanvasBackgroundColor(color)
+            unless /^[0-9a-fA-F]{6,8}$/.match(color)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(color, "setCanvasBackgroundColor", "image-to-image", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_canvas_background_color"), 470);
+            end
+            
+            @fields['canvas_background_color'] = color
+            self
+        end
+
+        # Set the DPI resolution of the input image. The DPI affects margin options specified in points too (e.g. 1 point is equal to 1 pixel in 96 DPI).
+        #
+        # * +dpi+ - The DPI value.
+        # * *Returns* - The converter object.
+        def setDpi(dpi)
+            @fields['dpi'] = dpi
+            self
+        end
+
         # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
         #
         # * +value+ - Set to true to enable the debug logging.
@@ -3564,11 +3742,11 @@ module Pdfcrowd
 
         # Specifies the action to be performed on the input PDFs.
         #
-        # * +action+ - Allowed values are join, shuffle.
+        # * +action+ - Allowed values are join, shuffle, extract, delete.
         # * *Returns* - The converter object.
         def setAction(action)
-            unless /(?i)^(join|shuffle)$/.match(action)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(action, "setAction", "pdf-to-pdf", "Allowed values are join, shuffle.", "set_action"), 470);
+            unless /(?i)^(join|shuffle|extract|delete)$/.match(action)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(action, "setAction", "pdf-to-pdf", "Allowed values are join, shuffle, extract, delete.", "set_action"), 470);
             end
             
             @fields['action'] = action
@@ -3635,6 +3813,19 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setInputPdfPassword(password)
             @fields['input_pdf_password'] = password
+            self
+        end
+
+        # Set the page range for extract or delete action.
+        #
+        # * +pages+ - A comma separated list of page numbers or ranges.
+        # * *Returns* - The converter object.
+        def setPageRange(pages)
+            unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPageRange", "pdf-to-pdf", "A comma separated list of page numbers or ranges.", "set_page_range"), 470);
+            end
+            
+            @fields['page_range'] = pages
             self
         end
 
@@ -4300,6 +4491,184 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setRotate(rotate)
             @fields['rotate'] = rotate
+            self
+        end
+
+        # Set the output page size.
+        #
+        # * +size+ - Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.
+        # * *Returns* - The converter object.
+        def setPageSize(size)
+            unless /(?i)^(A0|A1|A2|A3|A4|A5|A6|Letter)$/.match(size)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(size, "setPageSize", "image-to-pdf", "Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.", "set_page_size"), 470);
+            end
+            
+            @fields['page_size'] = size
+            self
+        end
+
+        # Set the output page width.
+        #
+        # * +width+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setPageWidth(width)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setPageWidth", "image-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_page_width"), 470);
+            end
+            
+            @fields['page_width'] = width
+            self
+        end
+
+        # Set the output page height.
+        #
+        # * +height+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setPageHeight(height)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setPageHeight", "image-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_page_height"), 470);
+            end
+            
+            @fields['page_height'] = height
+            self
+        end
+
+        # Set the output page dimensions. If no page size is specified, margins are applied as a border around the image.
+        #
+        # * +width+ - Set the output page width. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +height+ - Set the output page height. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setPageDimensions(width, height)
+            setPageWidth(width)
+            setPageHeight(height)
+            self
+        end
+
+        # Set the output page orientation.
+        #
+        # * +orientation+ - Allowed values are landscape, portrait.
+        # * *Returns* - The converter object.
+        def setOrientation(orientation)
+            unless /(?i)^(landscape|portrait)$/.match(orientation)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(orientation, "setOrientation", "image-to-pdf", "Allowed values are landscape, portrait.", "set_orientation"), 470);
+            end
+            
+            @fields['orientation'] = orientation
+            self
+        end
+
+        # Set the image position on the page.
+        #
+        # * +position+ - Allowed values are center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right.
+        # * *Returns* - The converter object.
+        def setPosition(position)
+            unless /(?i)^(center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right)$/.match(position)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(position, "setPosition", "image-to-pdf", "Allowed values are center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right.", "set_position"), 470);
+            end
+            
+            @fields['position'] = position
+            self
+        end
+
+        # Set the mode to print the image on the content area of the page.
+        #
+        # * +mode+ - Allowed values are default, fit, stretch.
+        # * *Returns* - The converter object.
+        def setPrintPageMode(mode)
+            unless /(?i)^(default|fit|stretch)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPrintPageMode", "image-to-pdf", "Allowed values are default, fit, stretch.", "set_print_page_mode"), 470);
+            end
+            
+            @fields['print_page_mode'] = mode
+            self
+        end
+
+        # Set the output page top margin.
+        #
+        # * +top+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMarginTop(top)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(top)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(top, "setMarginTop", "image-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_top"), 470);
+            end
+            
+            @fields['margin_top'] = top
+            self
+        end
+
+        # Set the output page right margin.
+        #
+        # * +right+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMarginRight(right)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(right)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(right, "setMarginRight", "image-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_right"), 470);
+            end
+            
+            @fields['margin_right'] = right
+            self
+        end
+
+        # Set the output page bottom margin.
+        #
+        # * +bottom+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMarginBottom(bottom)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(bottom)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(bottom, "setMarginBottom", "image-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_bottom"), 470);
+            end
+            
+            @fields['margin_bottom'] = bottom
+            self
+        end
+
+        # Set the output page left margin.
+        #
+        # * +left+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setMarginLeft(left)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(left)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(left, "setMarginLeft", "image-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", or points \"pt\".", "set_margin_left"), 470);
+            end
+            
+            @fields['margin_left'] = left
+            self
+        end
+
+        # Set the output page margins.
+        #
+        # * +top+ - Set the output page top margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +right+ - Set the output page right margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +bottom+ - Set the output page bottom margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * +left+ - Set the output page left margin. The value must be specified in inches "in", millimeters "mm", centimeters "cm", or points "pt".
+        # * *Returns* - The converter object.
+        def setPageMargins(top, right, bottom, left)
+            setMarginTop(top)
+            setMarginRight(right)
+            setMarginBottom(bottom)
+            setMarginLeft(left)
+            self
+        end
+
+        # The page background color in RGB or RGBA hexadecimal format. The color fills the entire page regardless of the margins. If not page size is specified and the image format supports background (e.g. PDF, PNG), the background color is applied too.
+        #
+        # * +color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
+        # * *Returns* - The converter object.
+        def setPageBackgroundColor(color)
+            unless /^[0-9a-fA-F]{6,8}$/.match(color)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(color, "setPageBackgroundColor", "image-to-pdf", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_page_background_color"), 470);
+            end
+            
+            @fields['page_background_color'] = color
+            self
+        end
+
+        # Set the DPI resolution of the input image. The DPI affects margin options specified in points too (e.g. 1 point is equal to 1 pixel in 96 DPI).
+        #
+        # * +dpi+ - The DPI value.
+        # * *Returns* - The converter object.
+        def setDpi(dpi)
+            @fields['dpi'] = dpi
             self
         end
 
