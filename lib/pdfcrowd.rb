@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.12.0'
+    CLIENT_VERSION = '5.12.1'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.12.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.12.1 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -681,7 +681,7 @@ module Pdfcrowd
                 begin
                     return exec_request(request, out_stream)
                 rescue Error => err
-                    if err.getCode() == '502' and @retry_count > @retry
+                    if (err.getCode() == '502' or err.getCode() == '503') and @retry_count > @retry
                         @retry += 1
                         sleep(@retry * 0.1)
                     else
@@ -706,10 +706,6 @@ module Pdfcrowd
                             @page_count = (response["X-Pdfcrowd-Pages"] || 0).to_i
                             @total_page_count = (response["X-Pdfcrowd-Total-Pages"] || 0).to_i
                             @output_size = (response["X-Pdfcrowd-Output-Size"] || 0).to_i
-
-                            raise Error.new('test 502', '502') \
-                                       if ENV["PDFCROWD_UNIT_TEST_MODE"] and
-                                         @retry_count > @retry
 
                             case response
                             when Net::HTTPSuccess
@@ -2396,7 +2392,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the number of automatic retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         #
         # * +count+ - Number of retries.
         # * *Returns* - The converter object.
@@ -3180,7 +3176,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the number of automatic retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         #
         # * +count+ - Number of retries.
         # * *Returns* - The converter object.
@@ -3788,7 +3784,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the number of automatic retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         #
         # * +count+ - Number of retries.
         # * *Returns* - The converter object.
@@ -4356,7 +4352,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the number of automatic retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         #
         # * +count+ - Number of retries.
         # * *Returns* - The converter object.
@@ -5273,7 +5269,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the number of automatic retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         #
         # * +count+ - Number of retries.
         # * *Returns* - The converter object.
@@ -5730,7 +5726,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the number of automatic retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         #
         # * +count+ - Number of retries.
         # * *Returns* - The converter object.
@@ -6229,7 +6225,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the number of automatic retries when the 502 HTTP status code is received. The 502 status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
         #
         # * +count+ - Number of retries.
         # * *Returns* - The converter object.
