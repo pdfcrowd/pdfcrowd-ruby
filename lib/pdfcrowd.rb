@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.12.1'
+    CLIENT_VERSION = '5.13.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.12.1 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.13.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -1182,6 +1182,19 @@ module Pdfcrowd
             end
             
             @fields['css_page_rule_mode'] = mode
+            self
+        end
+
+        # Specifies which blank pages to exclude from the output document.
+        #
+        # * +pages+ - The empty page behavior. Allowed values are trailing, none.
+        # * *Returns* - The converter object.
+        def setRemoveBlankPages(pages)
+            unless /(?i)^(trailing|none)$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setRemoveBlankPages", "html-to-pdf", "Allowed values are trailing, none.", "set_remove_blank_pages"), 470);
+            end
+            
+            @fields['remove_blank_pages'] = pages
             self
         end
 
