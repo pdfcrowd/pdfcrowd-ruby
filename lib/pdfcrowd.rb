@@ -396,12 +396,12 @@ module Pdfcrowd
       req.content_type, req.body = encode_multipart_post_data(fpath)
       return call_api(req, out_stream)
     end
-end
-end
 
+    def assert
+        raise "Assertion failed !" unless yield
+    end
 
-def assert
-  raise "Assertion failed !" unless yield
+end
 end
 
 
