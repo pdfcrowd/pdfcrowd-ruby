@@ -191,12 +191,12 @@ module Pdfcrowd
     end
 
     def setPageLayout(value)
-        assert { value > 0 and value <= 3 }
+        assert_pdfcrowd { value > 0 and value <= 3 }
         @fields['page_layout'] = value
     end
 
     def setPageMode(value)
-        assert { value > 0 and value <= 3 }
+        assert_pdfcrowd { value > 0 and value <= 3 }
         @fields['page_mode'] = value
     end
 
@@ -242,7 +242,7 @@ module Pdfcrowd
     end
 
     def setInitialPdfZoomType(value)
-        assert { value>0 and value<=3 }
+        assert_pdfcrowd { value>0 and value<=3 }
         @fields['initial_pdf_zoom_type'] = value
     end
 
@@ -400,7 +400,7 @@ end
 end
 
 
-def assert
+def assert_pdfcrowd
   raise "Assertion failed !" unless yield
 end
 
@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.13.0'
+    CLIENT_VERSION = '5.13.1'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.13.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.13.1 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'

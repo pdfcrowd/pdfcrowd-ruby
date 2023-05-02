@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+5.13.1
+------
+
+- FIX: resolve the name conflict with assert function for API v1
+
 5.13.0
 ------
 
