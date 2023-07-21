@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.13.1'
+    CLIENT_VERSION = '5.14.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.13.1 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.14.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -1624,6 +1624,19 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setNoXpdfcrowdHeader(value)
             @fields['no_xpdfcrowd_header'] = value
+            self
+        end
+
+        # Apply custom CSS to the input HTML document. It allows you to modify the visual appearance and layout of your HTML content dynamically. Tip: Using !important in custom CSS provides a way to prioritize and override conflicting styles.
+        #
+        # * +css+ - A string containing valid CSS. The string must not be empty.
+        # * *Returns* - The converter object.
+        def setCustomCss(css)
+            if (!(!css.nil? && !css.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(css, "setCustomCss", "html-to-pdf", "The string must not be empty.", "set_custom_css"), 470);
+            end
+            
+            @fields['custom_css'] = css
             self
         end
 
@@ -2796,6 +2809,19 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setNoXpdfcrowdHeader(value)
             @fields['no_xpdfcrowd_header'] = value
+            self
+        end
+
+        # Apply custom CSS to the input HTML document. It allows you to modify the visual appearance and layout of your HTML content dynamically. Tip: Using !important in custom CSS provides a way to prioritize and override conflicting styles.
+        #
+        # * +css+ - A string containing valid CSS. The string must not be empty.
+        # * *Returns* - The converter object.
+        def setCustomCss(css)
+            if (!(!css.nil? && !css.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(css, "setCustomCss", "html-to-image", "The string must not be empty.", "set_custom_css"), 470);
+            end
+            
+            @fields['custom_css'] = css
             self
         end
 
