@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.14.0'
+    CLIENT_VERSION = '5.15.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.14.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.15.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -2374,6 +2374,19 @@ module Pdfcrowd
             self
         end
 
+        # Set the maximum time to load the page and its resources. After this time, all requests will be considered successful. This can be useful to ensure that the conversion does not timeout. Use this method if there is no other way to fix page loading.
+        #
+        # * +max_time+ - The number of seconds to wait. The value must be in the range 10-30.
+        # * *Returns* - The converter object.
+        def setMaxLoadingTime(max_time)
+            if (!(Integer(max_time) >= 10 && Integer(max_time) <= 30))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(max_time, "setMaxLoadingTime", "html-to-pdf", "The value must be in the range 10-30.", "set_max_loading_time"), 470);
+            end
+            
+            @fields['max_loading_time'] = max_time
+            self
+        end
+
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
         # * +version+ - The version identifier. Allowed values are latest, 20.10, 18.10.
@@ -2641,6 +2654,58 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setZipMainFilename(filename)
             @fields['zip_main_filename'] = filename
+            self
+        end
+
+        # Set the output image width in pixels.
+        #
+        # * +width+ - The value must be in the range 96-65000.
+        # * *Returns* - The converter object.
+        def setScreenshotWidth(width)
+            if (!(Integer(width) >= 96 && Integer(width) <= 65000))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setScreenshotWidth", "html-to-image", "The value must be in the range 96-65000.", "set_screenshot_width"), 470);
+            end
+            
+            @fields['screenshot_width'] = width
+            self
+        end
+
+        # Set the output image height in pixels. If it is not specified, actual document height is used.
+        #
+        # * +height+ - Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setScreenshotHeight(height)
+            if (!(Integer(height) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setScreenshotHeight", "html-to-image", "Must be a positive integer number.", "set_screenshot_height"), 470);
+            end
+            
+            @fields['screenshot_height'] = height
+            self
+        end
+
+        # Set the scaling factor (zoom) for the output image.
+        #
+        # * +factor+ - The percentage value. Must be a positive integer number.
+        # * *Returns* - The converter object.
+        def setScaleFactor(factor)
+            if (!(Integer(factor) > 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(factor, "setScaleFactor", "html-to-image", "Must be a positive integer number.", "set_scale_factor"), 470);
+            end
+            
+            @fields['scale_factor'] = factor
+            self
+        end
+
+        # The output image background color.
+        #
+        # * +color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
+        # * *Returns* - The converter object.
+        def setBackgroundColor(color)
+            unless /^[0-9a-fA-F]{6,8}$/.match(color)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(color, "setBackgroundColor", "html-to-image", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_background_color"), 470);
+            end
+            
+            @fields['background_color'] = color
             self
         end
 
@@ -2938,58 +3003,6 @@ module Pdfcrowd
             self
         end
 
-        # Set the output image width in pixels.
-        #
-        # * +width+ - The value must be in the range 96-65000.
-        # * *Returns* - The converter object.
-        def setScreenshotWidth(width)
-            if (!(Integer(width) >= 96 && Integer(width) <= 65000))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setScreenshotWidth", "html-to-image", "The value must be in the range 96-65000.", "set_screenshot_width"), 470);
-            end
-            
-            @fields['screenshot_width'] = width
-            self
-        end
-
-        # Set the output image height in pixels. If it is not specified, actual document height is used.
-        #
-        # * +height+ - Must be a positive integer number.
-        # * *Returns* - The converter object.
-        def setScreenshotHeight(height)
-            if (!(Integer(height) > 0))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setScreenshotHeight", "html-to-image", "Must be a positive integer number.", "set_screenshot_height"), 470);
-            end
-            
-            @fields['screenshot_height'] = height
-            self
-        end
-
-        # Set the scaling factor (zoom) for the output image.
-        #
-        # * +factor+ - The percentage value. Must be a positive integer number.
-        # * *Returns* - The converter object.
-        def setScaleFactor(factor)
-            if (!(Integer(factor) > 0))
-                raise Error.new(Pdfcrowd.create_invalid_value_message(factor, "setScaleFactor", "html-to-image", "Must be a positive integer number.", "set_scale_factor"), 470);
-            end
-            
-            @fields['scale_factor'] = factor
-            self
-        end
-
-        # The output image background color.
-        #
-        # * +color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
-        # * *Returns* - The converter object.
-        def setBackgroundColor(color)
-            unless /^[0-9a-fA-F]{6,8}$/.match(color)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(color, "setBackgroundColor", "html-to-image", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_background_color"), 470);
-            end
-            
-            @fields['background_color'] = color
-            self
-        end
-
         # Set the input data for template rendering. The data format can be JSON, XML, YAML or CSV.
         #
         # * +data_string+ - The input data string.
@@ -3168,6 +3181,19 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setClientCertificatePassword(password)
             @fields['client_certificate_password'] = password
+            self
+        end
+
+        # Set the maximum time to load the page and its resources. After this time, all requests will be considered successful. This can be useful to ensure that the conversion does not timeout. Use this method if there is no other way to fix page loading.
+        #
+        # * +max_time+ - The number of seconds to wait. The value must be in the range 10-30.
+        # * *Returns* - The converter object.
+        def setMaxLoadingTime(max_time)
+            if (!(Integer(max_time) >= 10 && Integer(max_time) <= 30))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(max_time, "setMaxLoadingTime", "html-to-image", "The value must be in the range 10-30.", "set_max_loading_time"), 470);
+            end
+            
+            @fields['max_loading_time'] = max_time
             self
         end
 
