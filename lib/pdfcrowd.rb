@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.15.0'
+    CLIENT_VERSION = '5.16.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.15.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.16.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -5578,6 +5578,15 @@ module Pdfcrowd
             end
             
             @fields['print_page_range'] = pages
+            self
+        end
+
+        # Set the output graphics DPI.
+        #
+        # * +dpi+ - The DPI value.
+        # * *Returns* - The converter object.
+        def setDpi(dpi)
+            @fields['dpi'] = dpi
             self
         end
 
