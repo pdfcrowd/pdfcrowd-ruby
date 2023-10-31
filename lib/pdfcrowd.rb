@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.16.0'
+    CLIENT_VERSION = '5.17.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.16.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.17.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -5592,14 +5592,27 @@ module Pdfcrowd
 
         # Specifies where the images are stored.
         #
-        # * +mode+ - The image storage mode. Allowed values are embed, separate.
+        # * +mode+ - The image storage mode. Allowed values are embed, separate, none.
         # * *Returns* - The converter object.
         def setImageMode(mode)
-            unless /(?i)^(embed|separate)$/.match(mode)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setImageMode", "pdf-to-html", "Allowed values are embed, separate.", "set_image_mode"), 470);
+            unless /(?i)^(embed|separate|none)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setImageMode", "pdf-to-html", "Allowed values are embed, separate, none.", "set_image_mode"), 470);
             end
             
             @fields['image_mode'] = mode
+            self
+        end
+
+        # Specifies a format for the output images.
+        #
+        # * +image_format+ - The image format. Allowed values are png, jpg, svg.
+        # * *Returns* - The converter object.
+        def setImageFormat(image_format)
+            unless /(?i)^(png|jpg|svg)$/.match(image_format)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(image_format, "setImageFormat", "pdf-to-html", "Allowed values are png, jpg, svg.", "set_image_format"), 470);
+            end
+            
+            @fields['image_format'] = image_format
             self
         end
 
