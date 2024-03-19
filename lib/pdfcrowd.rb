@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.18.0'
+    CLIENT_VERSION = '5.18.1'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.18.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.18.1 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -5642,7 +5642,7 @@ module Pdfcrowd
             self
         end
 
-        # Converts ligatures — two or more letters combined into a single glyph—back into their individual ASCII characters.
+        # Converts ligatures, two or more letters combined into a single glyph, back into their individual ASCII characters.
         #
         # * +value+ - Set to true to split ligatures.
         # * *Returns* - The converter object.
