@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.18.1'
+    CLIENT_VERSION = '5.19.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.18.1 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.19.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -1790,7 +1790,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the rendering mode.
+        # Set the rendering mode of the page, allowing control over how content is displayed.
         #
         # * +mode+ - The rendering mode. Allowed values are default, viewport.
         # * *Returns* - The converter object.
@@ -2389,11 +2389,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-pdf", "Allowed values are latest, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-pdf", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
@@ -3199,11 +3199,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-image", "Allowed values are latest, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-image", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
@@ -3807,11 +3807,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-image", "Allowed values are latest, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-image", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
@@ -4375,11 +4375,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "pdf-to-pdf", "Allowed values are latest, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "pdf-to-pdf", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
@@ -5292,11 +5292,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-pdf", "Allowed values are latest, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-pdf", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
