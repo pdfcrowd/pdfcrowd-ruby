@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.19.0'
+    CLIENT_VERSION = '5.20.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.19.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/5.20.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '20.10'
@@ -6284,6 +6284,466 @@ module Pdfcrowd
         def setHttpsProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "pdf-to-text", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
+            end
+            
+            @fields['https_proxy'] = proxy
+            self
+        end
+
+        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
+        #
+        # * +value+ - Set to true to use HTTP.
+        # * *Returns* - The converter object.
+        def setUseHttp(value)
+            @helper.setUseHttp(value)
+            self
+        end
+
+        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
+        #
+        # * +agent+ - The user agent string.
+        # * *Returns* - The converter object.
+        def setUserAgent(agent)
+            @helper.setUserAgent(agent)
+            self
+        end
+
+        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
+        #
+        # * +host+ - The proxy hostname.
+        # * +port+ - The proxy port.
+        # * +user_name+ - The username.
+        # * +password+ - The password.
+        # * *Returns* - The converter object.
+        def setProxy(host, port, user_name, password)
+            @helper.setProxy(host, port, user_name, password)
+            self
+        end
+
+        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
+        #
+        # * +count+ - Number of retries.
+        # * *Returns* - The converter object.
+        def setRetryCount(count)
+            @helper.setRetryCount(count)
+            self
+        end
+
+    end
+
+    # Conversion from PDF to image.
+    class PdfToImageClient
+        # Constructor for the Pdfcrowd API client.
+        #
+        # * +user_name+ - Your username at Pdfcrowd.
+        # * +api_key+ - Your API key.
+        def initialize(user_name, api_key)
+            @helper = ConnectionHelper.new(user_name, api_key)
+            @fields = {
+                'input_format'=>'pdf',
+                'output_format'=>'png'
+            }
+            @file_id = 1
+            @files = {}
+            @raw_data = {}
+        end
+
+        # Convert an image.
+        #
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertUrl(url)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "pdf-to-image", "The supported protocols are http:// and https://.", "convert_url"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert an image and write the result to an output stream.
+        #
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertUrlToStream(url, out_stream)
+            unless /(?i)^https?:\/\/.*$/.match(url)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "pdf-to-image", "The supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
+            end
+            
+            @fields['url'] = url
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert an image and write the result to a local file.
+        #
+        # * +url+ - The address of the image to convert. The supported protocols are http:// and https://.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertUrlToFile(url, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "pdf-to-image", "The string must not be empty.", "convert_url_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertUrlToStream(url, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert a local file.
+        #
+        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertFile(file)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "pdf-to-image", "The file must exist and not be empty.", "convert_file"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert a local file and write the result to an output stream.
+        #
+        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertFileToStream(file, out_stream)
+            if (!(File.file?(file) && !File.zero?(file)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "pdf-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
+            end
+            
+            @files['file'] = file
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert a local file and write the result to a local file.
+        #
+        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertFileToFile(file, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "pdf-to-image", "The string must not be empty.", "convert_file_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertFileToStream(file, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert raw data.
+        #
+        # * +data+ - The raw content to be converted.
+        # * *Returns* - Byte array with the output.
+        def convertRawData(data)
+            @raw_data['file'] = data
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert raw data and write the result to an output stream.
+        #
+        # * +data+ - The raw content to be converted.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertRawDataToStream(data, out_stream)
+            @raw_data['file'] = data
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert raw data to a file.
+        #
+        # * +data+ - The raw content to be converted.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertRawDataToFile(data, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertRawDataToFile::file_path", "pdf-to-image", "The string must not be empty.", "convert_raw_data_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertRawDataToStream(data, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # Convert the contents of an input stream.
+        #
+        # * +in_stream+ - The input stream with source data.
+        # * *Returns* - Byte array containing the conversion output.
+        def convertStream(in_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data)
+        end
+
+        # Convert the contents of an input stream and write the result to an output stream.
+        #
+        # * +in_stream+ - The input stream with source data.
+        # * +out_stream+ - The output stream that will contain the conversion output.
+        def convertStreamToStream(in_stream, out_stream)
+            @raw_data['stream'] = in_stream.read
+            @helper.post(@fields, @files, @raw_data, out_stream)
+        end
+
+        # Convert the contents of an input stream and write the result to a local file.
+        #
+        # * +in_stream+ - The input stream with source data.
+        # * +file_path+ - The output file path. The string must not be empty.
+        def convertStreamToFile(in_stream, file_path)
+            if (!(!file_path.nil? && !file_path.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "pdf-to-image", "The string must not be empty.", "convert_stream_to_file"), 470);
+            end
+            
+            output_file = open(file_path, "wb")
+            begin
+                convertStreamToStream(in_stream, output_file)
+                output_file.close()
+            rescue Error => why
+                output_file.close()
+                FileUtils.rm(file_path)
+                raise
+            end
+        end
+
+        # The format of the output file.
+        #
+        # * +output_format+ - Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.
+        # * *Returns* - The converter object.
+        def setOutputFormat(output_format)
+            unless /(?i)^(png|jpg|gif|tiff|bmp|ico|ppm|pgm|pbm|pnm|psb|pct|ras|tga|sgi|sun|webp)$/.match(output_format)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(output_format, "setOutputFormat", "pdf-to-image", "Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.", "set_output_format"), 470);
+            end
+            
+            @fields['output_format'] = output_format
+            self
+        end
+
+        # Password to open the encrypted PDF file.
+        #
+        # * +password+ - The input PDF password.
+        # * *Returns* - The converter object.
+        def setPdfPassword(password)
+            @fields['pdf_password'] = password
+            self
+        end
+
+        # Set the page range to print.
+        #
+        # * +pages+ - A comma separated list of page numbers or ranges.
+        # * *Returns* - The converter object.
+        def setPrintPageRange(pages)
+            unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPrintPageRange", "pdf-to-image", "A comma separated list of page numbers or ranges.", "set_print_page_range"), 470);
+            end
+            
+            @fields['print_page_range'] = pages
+            self
+        end
+
+        # Set the output graphics DPI.
+        #
+        # * +dpi+ - The DPI value.
+        # * *Returns* - The converter object.
+        def setDpi(dpi)
+            @fields['dpi'] = dpi
+            self
+        end
+
+        # A helper method to determine if the output file from a conversion process is a zip archive. The conversion output can be either a single image file or a zip file containing one or more image files. This method should be called after the conversion has been successfully completed.
+        # * *Returns* - True if the conversion output is a zip archive, otherwise False.
+        def isZippedOutput()
+            @fields.fetch('force_zip', false) == true || getPageCount() > 1
+        end
+
+        # Enforces the zip output format.
+        #
+        # * +value+ - Set to true to get the output as a zip archive.
+        # * *Returns* - The converter object.
+        def setForceZip(value)
+            @fields['force_zip'] = value
+            self
+        end
+
+        # Use the crop box rather than media box.
+        #
+        # * +value+ - Set to true to use crop box.
+        # * *Returns* - The converter object.
+        def setUseCropbox(value)
+            @fields['use_cropbox'] = value
+            self
+        end
+
+        # Set the top left X coordinate of the crop area in points.
+        #
+        # * +x+ - Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropAreaX(x)
+            if (!(Integer(x) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setCropAreaX", "pdf-to-image", "Must be a positive integer number or 0.", "set_crop_area_x"), 470);
+            end
+            
+            @fields['crop_area_x'] = x
+            self
+        end
+
+        # Set the top left Y coordinate of the crop area in points.
+        #
+        # * +y+ - Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropAreaY(y)
+            if (!(Integer(y) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setCropAreaY", "pdf-to-image", "Must be a positive integer number or 0.", "set_crop_area_y"), 470);
+            end
+            
+            @fields['crop_area_y'] = y
+            self
+        end
+
+        # Set the width of the crop area in points.
+        #
+        # * +width+ - Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropAreaWidth(width)
+            if (!(Integer(width) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setCropAreaWidth", "pdf-to-image", "Must be a positive integer number or 0.", "set_crop_area_width"), 470);
+            end
+            
+            @fields['crop_area_width'] = width
+            self
+        end
+
+        # Set the height of the crop area in points.
+        #
+        # * +height+ - Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropAreaHeight(height)
+            if (!(Integer(height) >= 0))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setCropAreaHeight", "pdf-to-image", "Must be a positive integer number or 0.", "set_crop_area_height"), 470);
+            end
+            
+            @fields['crop_area_height'] = height
+            self
+        end
+
+        # Set the crop area. It allows to extract just a part of a PDF page.
+        #
+        # * +x+ - Set the top left X coordinate of the crop area in points. Must be a positive integer number or 0.
+        # * +y+ - Set the top left Y coordinate of the crop area in points. Must be a positive integer number or 0.
+        # * +width+ - Set the width of the crop area in points. Must be a positive integer number or 0.
+        # * +height+ - Set the height of the crop area in points. Must be a positive integer number or 0.
+        # * *Returns* - The converter object.
+        def setCropArea(x, y, width, height)
+            setCropAreaX(x)
+            setCropAreaY(y)
+            setCropAreaWidth(width)
+            setCropAreaHeight(height)
+            self
+        end
+
+        # Generate a grayscale image.
+        #
+        # * +value+ - Set to true to generate a grayscale image.
+        # * *Returns* - The converter object.
+        def setUseGrayscale(value)
+            @fields['use_grayscale'] = value
+            self
+        end
+
+        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
+        #
+        # * +value+ - Set to true to enable the debug logging.
+        # * *Returns* - The converter object.
+        def setDebugLog(value)
+            @fields['debug_log'] = value
+            self
+        end
+
+        # Get the URL of the debug log for the last conversion.
+        # * *Returns* - The link to the debug log.
+        def getDebugLogUrl()
+            return @helper.getDebugLogUrl()
+        end
+
+        # Get the number of conversion credits available in your account.
+        # This method can only be called after a call to one of the convertXtoY methods.
+        # The returned value can differ from the actual count if you run parallel conversions.
+        # The special value 999999 is returned if the information is not available.
+        # * *Returns* - The number of credits.
+        def getRemainingCreditCount()
+            return @helper.getRemainingCreditCount()
+        end
+
+        # Get the number of credits consumed by the last conversion.
+        # * *Returns* - The number of credits.
+        def getConsumedCreditCount()
+            return @helper.getConsumedCreditCount()
+        end
+
+        # Get the job id.
+        # * *Returns* - The unique job identifier.
+        def getJobId()
+            return @helper.getJobId()
+        end
+
+        # Get the number of pages in the output document.
+        # * *Returns* - The page count.
+        def getPageCount()
+            return @helper.getPageCount()
+        end
+
+        # Get the size of the output in bytes.
+        # * *Returns* - The count of bytes.
+        def getOutputSize()
+            return @helper.getOutputSize()
+        end
+
+        # Get the version details.
+        # * *Returns* - API version, converter version, and client version.
+        def getVersion()
+            return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
+        end
+
+        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
+        #
+        # * +tag+ - A string with the custom tag.
+        # * *Returns* - The converter object.
+        def setTag(tag)
+            @fields['tag'] = tag
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpProxy(proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "pdf-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
+            end
+            
+            @fields['http_proxy'] = proxy
+            self
+        end
+
+        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        #
+        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
+        # * *Returns* - The converter object.
+        def setHttpsProxy(proxy)
+            unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "pdf-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
             end
             
             @fields['https_proxy'] = proxy
