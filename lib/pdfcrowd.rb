@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '5.20.0'
+    CLIENT_VERSION = '6.0.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,10 +541,10 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/5.20.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.0.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
-            @converter_version = '20.10'
+            @converter_version = '24.04'
         end
 
         def post(fields, files, raw_data, out_stream = nil)
@@ -1105,6 +1105,45 @@ module Pdfcrowd
             self
         end
 
+        # Set the viewport width for formatting the HTML content when generating a PDF. By specifying a viewport width, you can control how the content is rendered, ensuring it mimics the appearance on various devices or matches specific design requirements.
+        #
+        # * +width+ - The width of the viewport. The value must be "balanced", "small", "medium", "large", "extra-large", or a number in the range 96-65000.
+        # * *Returns* - The converter object.
+        def setContentViewportWidth(width)
+            unless /(?i)^(balanced|small|medium|large|extra-large|[0-9]+)$/.match(width)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentViewportWidth", "html-to-pdf", "The value must be \"balanced\", \"small\", \"medium\", \"large\", \"extra-large\", or a number in the range 96-65000.", "set_content_viewport_width"), 470);
+            end
+            
+            @fields['content_viewport_width'] = width
+            self
+        end
+
+        # Set the viewport height for formatting the HTML content when generating a PDF. By specifying a viewport height, you can enforce loading of lazy-loaded images and also affect vertical positioning of absolutely positioned elements within the content.
+        #
+        # * +height+ - The viewport height. The value must be "auto", "large", or a number.
+        # * *Returns* - The converter object.
+        def setContentViewportHeight(height)
+            unless /(?i)^(auto|large|[0-9]+)$/.match(height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setContentViewportHeight", "html-to-pdf", "The value must be \"auto\", \"large\", or a number.", "set_content_viewport_height"), 470);
+            end
+            
+            @fields['content_viewport_height'] = height
+            self
+        end
+
+        # Specifies the mode for fitting the HTML content to the print area by upscaling or downscaling it.
+        #
+        # * +mode+ - The fitting mode. Allowed values are auto, smart-scaling, no-scaling, viewport-width, content-width, single-page, single-page-ratio.
+        # * *Returns* - The converter object.
+        def setContentFitMode(mode)
+            unless /(?i)^(auto|smart-scaling|no-scaling|viewport-width|content-width|single-page|single-page-ratio)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setContentFitMode", "html-to-pdf", "Allowed values are auto, smart-scaling, no-scaling, viewport-width, content-width, single-page, single-page-ratio.", "set_content_fit_mode"), 470);
+            end
+            
+            @fields['content_fit_mode'] = mode
+            self
+        end
+
         # Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area.
         #
         # * +x+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
@@ -1187,11 +1226,11 @@ module Pdfcrowd
 
         # Specifies which blank pages to exclude from the output document.
         #
-        # * +pages+ - The empty page behavior. Allowed values are trailing, none.
+        # * +pages+ - The empty page behavior. Allowed values are trailing, all, none.
         # * *Returns* - The converter object.
         def setRemoveBlankPages(pages)
-            unless /(?i)^(trailing|none)$/.match(pages)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setRemoveBlankPages", "html-to-pdf", "Allowed values are trailing, none.", "set_remove_blank_pages"), 470);
+            unless /(?i)^(trailing|all|none)$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setRemoveBlankPages", "html-to-pdf", "Allowed values are trailing, all, none.", "set_remove_blank_pages"), 470);
             end
             
             @fields['remove_blank_pages'] = pages
@@ -2389,11 +2428,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-pdf", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-pdf", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
@@ -3199,11 +3238,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-image", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-image", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
@@ -3807,11 +3846,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-image", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-image", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
@@ -4375,11 +4414,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "pdf-to-pdf", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "pdf-to-pdf", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
@@ -5292,11 +5331,11 @@ module Pdfcrowd
 
         # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
         #
-        # * +version+ - The version identifier. Allowed values are latest, 24.04, 20.10, 18.10.
+        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
         # * *Returns* - The converter object.
         def setConverterVersion(version)
-            unless /(?i)^(latest|24.04|20.10|18.10)$/.match(version)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-pdf", "Allowed values are latest, 24.04, 20.10, 18.10.", "set_converter_version"), 470);
+            unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-pdf", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
             end
             
             @helper.setConverterVersion(version)
