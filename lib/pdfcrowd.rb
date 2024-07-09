@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.0.0'
+    CLIENT_VERSION = '6.0.1'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.0.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.0.1 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
@@ -1144,86 +1144,6 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area.
-        #
-        # * +x+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
-        # * *Returns* - The converter object.
-        def setContentAreaX(x)
-            unless /(?i)^0$|^\-?[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(x)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setContentAreaX", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", pixels \"px\", or points \"pt\". It may contain a negative value.", "set_content_area_x"), 470);
-            end
-            
-            @fields['content_area_x'] = x
-            self
-        end
-
-        # Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area.
-        #
-        # * +y+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
-        # * *Returns* - The converter object.
-        def setContentAreaY(y)
-            unless /(?i)^0$|^\-?[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(y)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setContentAreaY", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", pixels \"px\", or points \"pt\". It may contain a negative value.", "set_content_area_y"), 470);
-            end
-            
-            @fields['content_area_y'] = y
-            self
-        end
-
-        # Set the width of the content area. It should be at least 1 inch.
-        #
-        # * +width+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
-        # * *Returns* - The converter object.
-        def setContentAreaWidth(width)
-            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentAreaWidth", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", pixels \"px\", or points \"pt\".", "set_content_area_width"), 470);
-            end
-            
-            @fields['content_area_width'] = width
-            self
-        end
-
-        # Set the height of the content area. It should be at least 1 inch.
-        #
-        # * +height+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
-        # * *Returns* - The converter object.
-        def setContentAreaHeight(height)
-            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setContentAreaHeight", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", pixels \"px\", or points \"pt\".", "set_content_area_height"), 470);
-            end
-            
-            @fields['content_area_height'] = height
-            self
-        end
-
-        # Set the content area position and size. The content area enables to specify a web page area to be converted.
-        #
-        # * +x+ - Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area. The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
-        # * +y+ - Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area. The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
-        # * +width+ - Set the width of the content area. It should be at least 1 inch. The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
-        # * +height+ - Set the height of the content area. It should be at least 1 inch. The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
-        # * *Returns* - The converter object.
-        def setContentArea(x, y, width, height)
-            setContentAreaX(x)
-            setContentAreaY(y)
-            setContentAreaWidth(width)
-            setContentAreaHeight(height)
-            self
-        end
-
-        # Specifies behavior in presence of CSS @page rules. It may affect the page size, margins and orientation.
-        #
-        # * +mode+ - The page rule mode. Allowed values are default, mode1, mode2.
-        # * *Returns* - The converter object.
-        def setCssPageRuleMode(mode)
-            unless /(?i)^(default|mode1|mode2)$/.match(mode)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setCssPageRuleMode", "html-to-pdf", "Allowed values are default, mode1, mode2.", "set_css_page_rule_mode"), 470);
-            end
-            
-            @fields['css_page_rule_mode'] = mode
-            self
-        end
-
         # Specifies which blank pages to exclude from the output document.
         #
         # * +pages+ - The empty page behavior. Allowed values are trailing, all, none.
@@ -1663,6 +1583,19 @@ module Pdfcrowd
         # * *Returns* - The converter object.
         def setNoXpdfcrowdHeader(value)
             @fields['no_xpdfcrowd_header'] = value
+            self
+        end
+
+        # Specifies behavior in presence of CSS @page rules. It may affect the page size, margins and orientation.
+        #
+        # * +mode+ - The page rule mode. Allowed values are default, mode1, mode2.
+        # * *Returns* - The converter object.
+        def setCssPageRuleMode(mode)
+            unless /(?i)^(default|mode1|mode2)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setCssPageRuleMode", "html-to-pdf", "Allowed values are default, mode1, mode2.", "set_css_page_rule_mode"), 470);
+            end
+            
+            @fields['css_page_rule_mode'] = mode
             self
         end
 
@@ -2355,6 +2288,73 @@ module Pdfcrowd
             end
             
             @fields['layout_dpi'] = dpi
+            self
+        end
+
+        # Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area.
+        #
+        # * +x+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
+        # * *Returns* - The converter object.
+        def setContentAreaX(x)
+            unless /(?i)^0$|^\-?[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(x)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setContentAreaX", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", pixels \"px\", or points \"pt\". It may contain a negative value.", "set_content_area_x"), 470);
+            end
+            
+            @fields['content_area_x'] = x
+            self
+        end
+
+        # Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area.
+        #
+        # * +y+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
+        # * *Returns* - The converter object.
+        def setContentAreaY(y)
+            unless /(?i)^0$|^\-?[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(y)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setContentAreaY", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", pixels \"px\", or points \"pt\". It may contain a negative value.", "set_content_area_y"), 470);
+            end
+            
+            @fields['content_area_y'] = y
+            self
+        end
+
+        # Set the width of the content area. It should be at least 1 inch.
+        #
+        # * +width+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
+        # * *Returns* - The converter object.
+        def setContentAreaWidth(width)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentAreaWidth", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", pixels \"px\", or points \"pt\".", "set_content_area_width"), 470);
+            end
+            
+            @fields['content_area_width'] = width
+            self
+        end
+
+        # Set the height of the content area. It should be at least 1 inch.
+        #
+        # * +height+ - The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
+        # * *Returns* - The converter object.
+        def setContentAreaHeight(height)
+            unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setContentAreaHeight", "html-to-pdf", "The value must be specified in inches \"in\", millimeters \"mm\", centimeters \"cm\", pixels \"px\", or points \"pt\".", "set_content_area_height"), 470);
+            end
+            
+            @fields['content_area_height'] = height
+            self
+        end
+
+        # Set the content area position and size. The content area enables to specify a web page area to be converted.
+        #
+        # * +x+ - Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area. The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
+        # * +y+ - Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area. The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt". It may contain a negative value.
+        # * +width+ - Set the width of the content area. It should be at least 1 inch. The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
+        # * +height+ - Set the height of the content area. It should be at least 1 inch. The value must be specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
+        # * *Returns* - The converter object.
+        def setContentArea(x, y, width, height)
+            setContentAreaX(x)
+            setContentAreaY(y)
+            setContentAreaWidth(width)
+            setContentAreaHeight(height)
             self
         end
 
