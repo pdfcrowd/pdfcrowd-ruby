@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.1.0'
+    CLIENT_VERSION = '6.2.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.1.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.2.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
@@ -1085,11 +1085,11 @@ module Pdfcrowd
 
         # Set the page range to print.
         #
-        # * +pages+ - A comma separated list of page numbers or ranges.
+        # * +pages+ - A comma separated list of page numbers or ranges. Special strings may be used, such as `odd`, `even` and `last`.
         # * *Returns* - The converter object.
         def setPrintPageRange(pages)
-            unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPrintPageRange", "html-to-pdf", "A comma separated list of page numbers or ranges.", "set_print_page_range"), 470);
+            unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*)|odd|even|last)\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*)|odd|even|last)\s*$/.match(pages)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPrintPageRange", "html-to-pdf", "A comma separated list of page numbers or ranges. Special strings may be used, such as `odd`, `even` and `last`.", "set_print_page_range"), 470);
             end
             
             @fields['print_page_range'] = pages
@@ -1253,7 +1253,7 @@ module Pdfcrowd
             self
         end
 
-        # The page header is not printed on the specified pages.
+        # The page header content is not printed on the specified pages. To remove the entire header area, use the conversion config.
         #
         # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma separated list of page numbers.
         # * *Returns* - The converter object.
@@ -1266,7 +1266,7 @@ module Pdfcrowd
             self
         end
 
-        # The page footer is not printed on the specified pages.
+        # The page footer content is not printed on the specified pages. To remove the entire footer area, use the conversion config.
         #
         # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma separated list of page numbers.
         # * *Returns* - The converter object.
@@ -2426,7 +2426,7 @@ module Pdfcrowd
             self
         end
 
-        # Allows to configure conversion via JSON. The configuration defines various page settings for individual PDF pages or ranges of pages. It provides flexibility in designing each page of the PDF, giving control over each page's size, header, footer etc. If a page or parameter is not explicitly specified, the system will use the default settings for that page or attribute. If a JSON configuration is provided, the settings in the JSON will take precedence over the global options. The structure of the JSON must be: pageSetup: An array of objects where each object defines the configuration for a specific page or range of pages. The following properties can be set for each page object: pages: A comma-separated list of page numbers or ranges. For example: 1-: from page 1 to the end of the document 2: only the 2nd page 2, 4, 6: pages 2, 4, and 6 2-5: pages 2 through 5 pageSize: The page size (optional). Possible values: A0, A1, A2, A3, A4, A5, A6, Letter. pageWidth: The width of the page (optional). pageHeight: The height of the page (optional). marginLeft: Left margin (optional). marginRight: Right margin (optional). marginTop: Top margin (optional). marginBottom: Bottom margin (optional). displayHeader: Header appearance (optional). Possible values: none: completely excluded space: only the content is excluded, the space is used content: the content is printed (default) displayFooter: Footer appearance (optional). Possible values: none: completely excluded space: only the content is excluded, the space is used content: the content is printed (default) headerHeight: Height of the header (optional). footerHeight: Height of the footer (optional). orientation: Page orientation, such as "portrait" or "landscape" (optional). Dimensions may be empty, 0 or specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
+        # Allows to configure conversion via JSON. The configuration defines various page settings for individual PDF pages or ranges of pages. It provides flexibility in designing each page of the PDF, giving control over each page's size, header, footer etc. If a page or parameter is not explicitly specified, the system will use the default settings for that page or attribute. If a JSON configuration is provided, the settings in the JSON will take precedence over the global options. The structure of the JSON must be: pageSetup: An array of objects where each object defines the configuration for a specific page or range of pages. The following properties can be set for each page object: pages: A comma-separated list of page numbers or ranges. Special strings may be used, such as `odd`, `even` and `last`. For example: 1-: from page 1 to the end of the document 2: only the 2nd page 2,4,6: pages 2, 4, and 6 2-5: pages 2 through 5 odd,2: the 2nd page and all odd pages pageSize: The page size (optional). Possible values: A0, A1, A2, A3, A4, A5, A6, Letter. pageWidth: The width of the page (optional). pageHeight: The height of the page (optional). marginLeft: Left margin (optional). marginRight: Right margin (optional). marginTop: Top margin (optional). marginBottom: Bottom margin (optional). displayHeader: Header appearance (optional). Possible values: none: completely excluded space: only the content is excluded, the space is used content: the content is printed (default) displayFooter: Footer appearance (optional). Possible values: none: completely excluded space: only the content is excluded, the space is used content: the content is printed (default) headerHeight: Height of the header (optional). footerHeight: Height of the footer (optional). orientation: Page orientation, such as "portrait" or "landscape" (optional). Dimensions may be empty, 0 or specified in inches "in", millimeters "mm", centimeters "cm", pixels "px", or points "pt".
         #
         # * +json_string+ - The JSON string.
         # * *Returns* - The converter object.
@@ -5703,12 +5703,38 @@ module Pdfcrowd
             self
         end
 
+        # Sets the processing mode for handling Type 3 fonts.
+        #
+        # * +mode+ - The type3 font mode. Allowed values are raster, convert.
+        # * *Returns* - The converter object.
+        def setType3Mode(mode)
+            unless /(?i)^(raster|convert)$/.match(mode)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setType3Mode", "pdf-to-html", "Allowed values are raster, convert.", "set_type3_mode"), 470);
+            end
+            
+            @fields['type3_mode'] = mode
+            self
+        end
+
         # Converts ligatures, two or more letters combined into a single glyph, back into their individual ASCII characters.
         #
         # * +value+ - Set to true to split ligatures.
         # * *Returns* - The converter object.
         def setSplitLigatures(value)
             @fields['split_ligatures'] = value
+            self
+        end
+
+        # Apply custom CSS to the output HTML document. It allows you to modify the visual appearance and layout. Tip: Using !important in custom CSS provides a way to prioritize and override conflicting styles.
+        #
+        # * +css+ - A string containing valid CSS. The string must not be empty.
+        # * *Returns* - The converter object.
+        def setCustomCss(css)
+            if (!(!css.nil? && !css.empty?))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(css, "setCustomCss", "pdf-to-html", "The string must not be empty.", "set_custom_css"), 470);
+            end
+            
+            @fields['custom_css'] = css
             self
         end
 
