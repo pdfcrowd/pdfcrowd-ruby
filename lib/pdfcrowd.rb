@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.2.0'
+    CLIENT_VERSION = '6.2.1'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.2.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.2.1 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
@@ -1098,11 +1098,11 @@ module Pdfcrowd
 
         # Set the viewport width for formatting the HTML content when generating a PDF. By specifying a viewport width, you can control how the content is rendered, ensuring it mimics the appearance on various devices or matches specific design requirements.
         #
-        # * +width+ - The width of the viewport. The value must be "balanced", "small", "medium", "large", "extra-large", or a number in the range 96-65000.
+        # * +width+ - The width of the viewport. The value must be "balanced", "small", "medium", "large", "extra-large", or a number in the range 96-65000px.
         # * *Returns* - The converter object.
         def setContentViewportWidth(width)
-            unless /(?i)^(balanced|small|medium|large|extra-large|[0-9]+)$/.match(width)
-                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentViewportWidth", "html-to-pdf", "The value must be \"balanced\", \"small\", \"medium\", \"large\", \"extra-large\", or a number in the range 96-65000.", "set_content_viewport_width"), 470);
+            unless /(?i)^(balanced|small|medium|large|extra-large|[0-9]+(px)?)$/.match(width)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentViewportWidth", "html-to-pdf", "The value must be \"balanced\", \"small\", \"medium\", \"large\", \"extra-large\", or a number in the range 96-65000px.", "set_content_viewport_width"), 470);
             end
             
             @fields['content_viewport_width'] = width
@@ -1114,7 +1114,7 @@ module Pdfcrowd
         # * +height+ - The viewport height. The value must be "auto", "large", or a number.
         # * *Returns* - The converter object.
         def setContentViewportHeight(height)
-            unless /(?i)^(auto|large|[0-9]+)$/.match(height)
+            unless /(?i)^(auto|large|[0-9]+(px)?)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setContentViewportHeight", "html-to-pdf", "The value must be \"auto\", \"large\", or a number.", "set_content_viewport_height"), 470);
             end
             
