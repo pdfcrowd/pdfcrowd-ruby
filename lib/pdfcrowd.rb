@@ -530,7 +530,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.2.1'
+    CLIENT_VERSION = '6.3.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -541,7 +541,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.2.1 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.3.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
@@ -5738,6 +5738,19 @@ module Pdfcrowd
             self
         end
 
+        # Add a specified prefix to all id and class attributes in the HTML content, creating a namespace for safe integration into another HTML document. This process ensures unique identifiers, preventing conflicts when merging with other HTML.
+        #
+        # * +prefix+ - The prefix to add before each id and class attribute name. Start with a letter or underscore, and use only letters, numbers, hyphens, underscores, or colons.
+        # * *Returns* - The converter object.
+        def setHtmlNamespace(prefix)
+            unless /(?i)^[a-z_][a-z0-9_:-]*$/.match(prefix)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(prefix, "setHtmlNamespace", "pdf-to-html", "Start with a letter or underscore, and use only letters, numbers, hyphens, underscores, or colons.", "set_html_namespace"), 470);
+            end
+            
+            @fields['html_namespace'] = prefix
+            self
+        end
+
         # A helper method to determine if the output file is a zip archive. The output of the conversion may be either an HTML file or a zip file containing the HTML and its external assets.
         # * *Returns* - True if the conversion output is a zip file, otherwise False.
         def isZippedOutput()
@@ -5875,6 +5888,19 @@ module Pdfcrowd
             end
             
             @fields['https_proxy'] = proxy
+            self
+        end
+
+        # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
+        #
+        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
+        # * *Returns* - The converter object.
+        def setConverterVersion(version)
+            unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "pdf-to-html", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
+            end
+            
+            @helper.setConverterVersion(version)
             self
         end
 
