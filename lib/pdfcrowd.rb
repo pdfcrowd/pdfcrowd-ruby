@@ -95,14 +95,14 @@ module Pdfcrowd
 
 
   #
-  # Pdfcrowd API client.
+  # PDFCrowd API client.
   #
   class Client
 
     #
     # Client constructor.
     #
-    # username -- your username at Pdfcrowd
+    # username -- your username at PDFCrowd
     # apikey  -- your API key
     #
     def initialize(username, apikey, hostname=nil)
@@ -558,7 +558,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.5.0'
+    CLIENT_VERSION = '6.5.2'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -569,7 +569,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.5.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.5.2 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
@@ -772,9 +772,9 @@ module Pdfcrowd
 
     # Conversion from HTML to PDF.
     class HtmlToPdfClient
-        # Constructor for the Pdfcrowd API client.
+        # Constructor for the PDFCrowd API client.
         #
-        # * +user_name+ - Your username at Pdfcrowd.
+        # * +user_name+ - Your username at PDFCrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
@@ -1563,7 +1563,7 @@ module Pdfcrowd
             self
         end
 
-        # Set cookies that are sent in Pdfcrowd HTTP requests.
+        # Set HTTP cookies to be included in all requests made by the converter.
         #
         # * +cookies+ - The cookie string.
         # * *Returns* - The converter object.
@@ -1599,7 +1599,7 @@ module Pdfcrowd
             self
         end
 
-        # Do not send the X-Pdfcrowd HTTP header in Pdfcrowd HTTP requests.
+        # Do not send the X-Pdfcrowd HTTP header in PDFCrowd HTTP requests.
         #
         # * +value+ - Set to true to disable sending X-Pdfcrowd HTTP header.
         # * *Returns* - The converter object.
@@ -1660,7 +1660,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom HTTP header that is sent in Pdfcrowd HTTP requests.
+        # Set a custom HTTP header to be included in all requests made by the converter.
         #
         # * +header+ - A string containing the header name and value separated by a colon.
         # * *Returns* - The converter object.
@@ -1673,7 +1673,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. Your API license defines the maximum wait time by "Max Delay" parameter.
+        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. Your license defines the maximum wait time by "Max Delay" parameter.
         #
         # * +delay+ - The number of milliseconds to wait. Must be a positive integer or 0.
         # * *Returns* - The converter object.
@@ -1712,7 +1712,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails. Your API license defines the maximum wait time by "Max Delay" parameter.
+        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails. Your license defines the maximum wait time by "Max Delay" parameter.
         #
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
@@ -2252,7 +2252,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -2265,7 +2265,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -2278,7 +2278,7 @@ module Pdfcrowd
             self
         end
 
-        # A client certificate to authenticate Pdfcrowd converter on your web server. The certificate is used for two-way SSL/TLS authentication and adds extra security.
+        # A client certificate to authenticate the converter on your web server. The certificate is used for two-way SSL/TLS authentication and adds extra security.
         #
         # * +certificate+ - The file must be in PKCS12 format. The file must exist and not be empty.
         # * *Returns* - The converter object.
@@ -2498,7 +2498,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
         # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +value+ - Set to true to use HTTP.
@@ -2551,9 +2551,9 @@ module Pdfcrowd
 
     # Conversion from HTML to image.
     class HtmlToImageClient
-        # Constructor for the Pdfcrowd API client.
+        # Constructor for the PDFCrowd API client.
         #
-        # * +user_name+ - Your username at Pdfcrowd.
+        # * +user_name+ - Your username at PDFCrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
@@ -2933,7 +2933,7 @@ module Pdfcrowd
             self
         end
 
-        # Set cookies that are sent in Pdfcrowd HTTP requests.
+        # Set HTTP cookies to be included in all requests made by the converter.
         #
         # * +cookies+ - The cookie string.
         # * *Returns* - The converter object.
@@ -2969,7 +2969,7 @@ module Pdfcrowd
             self
         end
 
-        # Do not send the X-Pdfcrowd HTTP header in Pdfcrowd HTTP requests.
+        # Do not send the X-Pdfcrowd HTTP header in PDFCrowd HTTP requests.
         #
         # * +value+ - Set to true to disable sending X-Pdfcrowd HTTP header.
         # * *Returns* - The converter object.
@@ -3017,7 +3017,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom HTTP header that is sent in Pdfcrowd HTTP requests.
+        # Set a custom HTTP header to be included in all requests made by the converter.
         #
         # * +header+ - A string containing the header name and value separated by a colon.
         # * *Returns* - The converter object.
@@ -3030,7 +3030,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. Your API license defines the maximum wait time by "Max Delay" parameter.
+        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. Your license defines the maximum wait time by "Max Delay" parameter.
         #
         # * +delay+ - The number of milliseconds to wait. Must be a positive integer or 0.
         # * *Returns* - The converter object.
@@ -3069,7 +3069,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails. Your API license defines the maximum wait time by "Max Delay" parameter.
+        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails. Your license defines the maximum wait time by "Max Delay" parameter.
         #
         # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
         # * *Returns* - The converter object.
@@ -3237,7 +3237,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -3250,7 +3250,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -3263,7 +3263,7 @@ module Pdfcrowd
             self
         end
 
-        # A client certificate to authenticate Pdfcrowd converter on your web server. The certificate is used for two-way SSL/TLS authentication and adds extra security.
+        # A client certificate to authenticate the converter on your web server. The certificate is used for two-way SSL/TLS authentication and adds extra security.
         #
         # * +certificate+ - The file must be in PKCS12 format. The file must exist and not be empty.
         # * *Returns* - The converter object.
@@ -3326,7 +3326,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
         # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +value+ - Set to true to use HTTP.
@@ -3379,9 +3379,9 @@ module Pdfcrowd
 
     # Conversion from one image format to another image format.
     class ImageToImageClient
-        # Constructor for the Pdfcrowd API client.
+        # Constructor for the PDFCrowd API client.
         #
-        # * +user_name+ - Your username at Pdfcrowd.
+        # * +user_name+ - Your username at PDFCrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
@@ -3904,7 +3904,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -3917,7 +3917,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -3943,7 +3943,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
         # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +value+ - Set to true to use HTTP.
@@ -3996,9 +3996,9 @@ module Pdfcrowd
 
     # Conversion from PDF to PDF.
     class PdfToPdfClient
-        # Constructor for the Pdfcrowd API client.
+        # Constructor for the PDFCrowd API client.
         #
-        # * +user_name+ - Your username at Pdfcrowd.
+        # * +user_name+ - Your username at PDFCrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
@@ -4064,7 +4064,7 @@ module Pdfcrowd
             self
         end
 
-        # Add in-memory raw PDF data to the list of the input PDFs.Typical usage is for adding PDF created by another Pdfcrowd converter. Example in PHP: $clientPdf2Pdf->addPdfRawData($clientHtml2Pdf->convertUrl('http://www.example.com'));
+        # Add in-memory raw PDF data to the list of the input PDFs.Typical usage is for adding PDF created by another PDFCrowd converter. Example in PHP: $clientPdf2Pdf->addPdfRawData($clientHtml2Pdf->convertUrl('http://www.example.com'));
         #
         # * +data+ - The raw PDF data. The input data must be PDF content.
         # * *Returns* - The converter object.
@@ -4520,7 +4520,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
         # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +value+ - Set to true to use HTTP.
@@ -4573,9 +4573,9 @@ module Pdfcrowd
 
     # Conversion from an image to PDF.
     class ImageToPdfClient
-        # Constructor for the Pdfcrowd API client.
+        # Constructor for the PDFCrowd API client.
         #
-        # * +user_name+ - Your username at Pdfcrowd.
+        # * +user_name+ - Your username at PDFCrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
@@ -5407,7 +5407,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -5420,7 +5420,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -5446,7 +5446,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
         # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +value+ - Set to true to use HTTP.
@@ -5499,9 +5499,9 @@ module Pdfcrowd
 
     # Conversion from PDF to HTML.
     class PdfToHtmlClient
-        # Constructor for the Pdfcrowd API client.
+        # Constructor for the PDFCrowd API client.
         #
-        # * +user_name+ - Your username at Pdfcrowd.
+        # * +user_name+ - Your username at PDFCrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
@@ -5956,7 +5956,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -5969,7 +5969,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -5995,7 +5995,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
         # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +value+ - Set to true to use HTTP.
@@ -6054,9 +6054,9 @@ module Pdfcrowd
 
     # Conversion from PDF to text.
     class PdfToTextClient
-        # Constructor for the Pdfcrowd API client.
+        # Constructor for the PDFCrowd API client.
         #
-        # * +user_name+ - Your username at Pdfcrowd.
+        # * +user_name+ - Your username at PDFCrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
@@ -6477,7 +6477,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -6490,7 +6490,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -6503,7 +6503,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
         # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +value+ - Set to true to use HTTP.
@@ -6556,9 +6556,9 @@ module Pdfcrowd
 
     # Conversion from PDF to image.
     class PdfToImageClient
-        # Constructor for the Pdfcrowd API client.
+        # Constructor for the PDFCrowd API client.
         #
-        # * +user_name+ - Your username at Pdfcrowd.
+        # * +user_name+ - Your username at PDFCrowd.
         # * +api_key+ - Your API key.
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
@@ -6946,7 +6946,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -6959,7 +6959,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by Pdfcrowd conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
+        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
         #
         # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
         # * *Returns* - The converter object.
@@ -6972,7 +6972,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies if the client communicates over HTTP or HTTPS with Pdfcrowd API.
+        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
         # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
         #
         # * +value+ - Set to true to use HTTP.
