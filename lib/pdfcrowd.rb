@@ -558,7 +558,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.5.2'
+    CLIENT_VERSION = '6.5.3'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -569,7 +569,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.5.2 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.5.3 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
