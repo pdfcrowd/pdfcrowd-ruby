@@ -558,7 +558,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.5.3'
+    CLIENT_VERSION = '6.5.4'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -569,7 +569,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.5.3 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.5.4 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
@@ -771,11 +771,10 @@ module Pdfcrowd
 # generated code
 
     # Conversion from HTML to PDF.
+    #
+    # @see https://pdfcrowd.com/api/html-to-pdf-ruby/
     class HtmlToPdfClient
-        # Constructor for the PDFCrowd API client.
-        #
-        # * +user_name+ - Your username at PDFCrowd.
-        # * +api_key+ - Your API key.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#initialize
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
             @fields = {
@@ -787,10 +786,7 @@ module Pdfcrowd
             @raw_data = {}
         end
 
-        # Convert a web page.
-        #
-        # * +url+ - The address of the web page to convert. Supported protocols are http:// and https://.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_url
         def convertUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "html-to-pdf", "Supported protocols are http:// and https://.", "convert_url"), 470);
@@ -800,10 +796,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a web page and write the result to an output stream.
-        #
-        # * +url+ - The address of the web page to convert. Supported protocols are http:// and https://.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_url_to_stream
         def convertUrlToStream(url, out_stream)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "html-to-pdf", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
@@ -813,10 +806,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a web page and write the result to a local file.
-        #
-        # * +url+ - The address of the web page to convert. Supported protocols are http:// and https://.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_url_to_file
         def convertUrlToFile(url, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "html-to-pdf", "The string must not be empty.", "convert_url_to_file"), 470);
@@ -833,10 +823,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_file
         def convertFile(file)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "html-to-pdf", "The file must exist and not be empty.", "convert_file"), 470);
@@ -846,10 +833,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a local file and write the result to an output stream.
-        #
-        # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_file_to_stream
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "html-to-pdf", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
@@ -859,10 +843,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a local file and write the result to a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_file_to_file
         def convertFileToFile(file, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "html-to-pdf", "The string must not be empty.", "convert_file_to_file"), 470);
@@ -879,10 +860,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a string.
-        #
-        # * +text+ - The string content to convert. The string must not be empty.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_string
         def convertString(text)
             if (!(!text.nil? && !text.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(text, "convertString", "html-to-pdf", "The string must not be empty.", "convert_string"), 470);
@@ -892,10 +870,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a string and write the output to an output stream.
-        #
-        # * +text+ - The string content to convert. The string must not be empty.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_string_to_stream
         def convertStringToStream(text, out_stream)
             if (!(!text.nil? && !text.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(text, "convertStringToStream::text", "html-to-pdf", "The string must not be empty.", "convert_string_to_stream"), 470);
@@ -905,10 +880,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a string and write the output to a file.
-        #
-        # * +text+ - The string content to convert. The string must not be empty.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_string_to_file
         def convertStringToFile(text, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStringToFile::file_path", "html-to-pdf", "The string must not be empty.", "convert_string_to_file"), 470);
@@ -925,28 +897,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert the contents of an input stream.
-        #
-        # * +in_stream+ - The input stream with source data. The stream can contain either HTML code or an archive (.zip, .tar.gz, .tar.bz2).The archive can contain HTML code and its external assets (images, style sheets, javascript).
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_stream
         def convertStream(in_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert the contents of an input stream and write the result to an output stream.
-        #
-        # * +in_stream+ - The input stream with source data. The stream can contain either HTML code or an archive (.zip, .tar.gz, .tar.bz2).The archive can contain HTML code and its external assets (images, style sheets, javascript).
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert the contents of an input stream and write the result to a local file.
-        #
-        # * +in_stream+ - The input stream with source data. The stream can contain either HTML code or an archive (.zip, .tar.gz, .tar.bz2).The archive can contain HTML code and its external assets (images, style sheets, javascript).
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_stream_to_file
         def convertStreamToFile(in_stream, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "html-to-pdf", "The string must not be empty.", "convert_stream_to_file"), 470);
@@ -963,19 +926,13 @@ module Pdfcrowd
             end
         end
 
-        # Set the file name of the main HTML document stored in the input archive. If not specified, the first HTML file in the archive is used for conversion. Use this method if the input archive contains multiple HTML documents.
-        #
-        # * +filename+ - The file name.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_zip_main_filename
         def setZipMainFilename(filename)
             @fields['zip_main_filename'] = filename
             self
         end
 
-        # Set the output page size.
-        #
-        # * +size+ - Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_size
         def setPageSize(size)
             unless /(?i)^(A0|A1|A2|A3|A4|A5|A6|Letter)$/.match(size)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(size, "setPageSize", "html-to-pdf", "Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.", "set_page_size"), 470);
@@ -985,10 +942,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF.
-        #
-        # * +width+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_width
         def setPageWidth(width)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setPageWidth", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_page_width"), 470);
@@ -998,10 +952,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF.
-        #
-        # * +height+ - The value must be -1 or specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_height
         def setPageHeight(height)
             unless /(?i)^0$|^\-1$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setPageHeight", "html-to-pdf", "The value must be -1 or specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_page_height"), 470);
@@ -1011,21 +962,14 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page dimensions.
-        #
-        # * +width+ - Set the output page width. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +height+ - Set the output page height. Use -1 for a single page PDF. The safe maximum is 200in otherwise some PDF viewers may be unable to open the PDF. The value must be -1 or specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_dimensions
         def setPageDimensions(width, height)
             setPageWidth(width)
             setPageHeight(height)
             self
         end
 
-        # Set the output page orientation.
-        #
-        # * +orientation+ - Allowed values are landscape, portrait.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_orientation
         def setOrientation(orientation)
             unless /(?i)^(landscape|portrait)$/.match(orientation)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(orientation, "setOrientation", "html-to-pdf", "Allowed values are landscape, portrait.", "set_orientation"), 470);
@@ -1035,10 +979,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page top margin.
-        #
-        # * +top+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_margin_top
         def setMarginTop(top)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(top)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(top, "setMarginTop", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_top"), 470);
@@ -1048,10 +989,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page right margin.
-        #
-        # * +right+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_margin_right
         def setMarginRight(right)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(right)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(right, "setMarginRight", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_right"), 470);
@@ -1061,10 +999,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page bottom margin.
-        #
-        # * +bottom+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_margin_bottom
         def setMarginBottom(bottom)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(bottom)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(bottom, "setMarginBottom", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_bottom"), 470);
@@ -1074,10 +1009,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page left margin.
-        #
-        # * +left+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_margin_left
         def setMarginLeft(left)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(left)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(left, "setMarginLeft", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_left"), 470);
@@ -1087,22 +1019,13 @@ module Pdfcrowd
             self
         end
 
-        # Disable page margins.
-        #
-        # * +value+ - Set to true to disable margins.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_no_margins
         def setNoMargins(value)
             @fields['no_margins'] = value
             self
         end
 
-        # Set the output page margins.
-        #
-        # * +top+ - Set the output page top margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +right+ - Set the output page right margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +bottom+ - Set the output page bottom margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +left+ - Set the output page left margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_margins
         def setPageMargins(top, right, bottom, left)
             setMarginTop(top)
             setMarginRight(right)
@@ -1111,10 +1034,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the page range to print.
-        #
-        # * +pages+ - A comma separated list of page numbers or ranges. Special strings may be used, such as 'odd', 'even' and 'last'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_print_page_range
         def setPrintPageRange(pages)
             unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*)|odd|even|last)\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*)|odd|even|last)\s*$/.match(pages)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPrintPageRange", "html-to-pdf", "A comma separated list of page numbers or ranges. Special strings may be used, such as 'odd', 'even' and 'last'.", "set_print_page_range"), 470);
@@ -1124,10 +1044,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the viewport width for formatting the HTML content when generating a PDF. By specifying a viewport width, you can control how the content is rendered, ensuring it mimics the appearance on various devices or matches specific design requirements.
-        #
-        # * +width+ - The width of the viewport. The value must be 'balanced', 'small', 'medium', 'large', 'extra-large', or a number in the range 96-65000px.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_content_viewport_width
         def setContentViewportWidth(width)
             unless /(?i)^(balanced|small|medium|large|extra-large|[0-9]+(px)?)$/.match(width)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentViewportWidth", "html-to-pdf", "The value must be 'balanced', 'small', 'medium', 'large', 'extra-large', or a number in the range 96-65000px.", "set_content_viewport_width"), 470);
@@ -1137,10 +1054,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the viewport height for formatting the HTML content when generating a PDF. By specifying a viewport height, you can enforce loading of lazy-loaded images and also affect vertical positioning of absolutely positioned elements within the content.
-        #
-        # * +height+ - The viewport height. The value must be 'auto', 'large', or a number.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_content_viewport_height
         def setContentViewportHeight(height)
             unless /(?i)^(auto|large|[0-9]+(px)?)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setContentViewportHeight", "html-to-pdf", "The value must be 'auto', 'large', or a number.", "set_content_viewport_height"), 470);
@@ -1150,10 +1064,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the mode for fitting the HTML content to the print area by upscaling or downscaling it.
-        #
-        # * +mode+ - The fitting mode. Allowed values are auto, smart-scaling, no-scaling, viewport-width, content-width, single-page, single-page-ratio.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_content_fit_mode
         def setContentFitMode(mode)
             unless /(?i)^(auto|smart-scaling|no-scaling|viewport-width|content-width|single-page|single-page-ratio)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setContentFitMode", "html-to-pdf", "Allowed values are auto, smart-scaling, no-scaling, viewport-width, content-width, single-page, single-page-ratio.", "set_content_fit_mode"), 470);
@@ -1163,10 +1074,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies which blank pages to exclude from the output document.
-        #
-        # * +pages+ - The empty page behavior. Allowed values are trailing, all, none.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_remove_blank_pages
         def setRemoveBlankPages(pages)
             unless /(?i)^(trailing|all|none)$/.match(pages)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setRemoveBlankPages", "html-to-pdf", "Allowed values are trailing, all, none.", "set_remove_blank_pages"), 470);
@@ -1176,10 +1084,7 @@ module Pdfcrowd
             self
         end
 
-        # Load an HTML code from the specified URL and use it as the page header. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of the converted document pdfcrowd-source-title - the title of the converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals. Allowed values: arabic - Arabic numerals, they are used by default roman - Roman numerals eastern-arabic - Eastern Arabic numerals bengali - Bengali numerals devanagari - Devanagari numerals thai - Thai numerals east-asia - Chinese, Vietnamese, Japanese and Korean numerals chinese-formal - Chinese formal numerals Please contact us if you need another type of numerals. Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL. Allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_header_url
         def setHeaderUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setHeaderUrl", "html-to-pdf", "Supported protocols are http:// and https://.", "set_header_url"), 470);
@@ -1189,10 +1094,7 @@ module Pdfcrowd
             self
         end
 
-        # Use the specified HTML code as the page header. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of the converted document pdfcrowd-source-title - the title of the converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals. Allowed values: arabic - Arabic numerals, they are used by default roman - Roman numerals eastern-arabic - Eastern Arabic numerals bengali - Bengali numerals devanagari - Devanagari numerals thai - Thai numerals east-asia - Chinese, Vietnamese, Japanese and Korean numerals chinese-formal - Chinese formal numerals Please contact us if you need another type of numerals. Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL. Allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
-        #
-        # * +html+ - The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_header_html
         def setHeaderHtml(html)
             if (!(!html.nil? && !html.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(html, "setHeaderHtml", "html-to-pdf", "The string must not be empty.", "set_header_html"), 470);
@@ -1202,10 +1104,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the header height.
-        #
-        # * +height+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_header_height
         def setHeaderHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setHeaderHeight", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_header_height"), 470);
@@ -1215,19 +1114,13 @@ module Pdfcrowd
             self
         end
 
-        # Set the file name of the header HTML document stored in the input archive. Use this method if the input archive contains multiple HTML documents.
-        #
-        # * +filename+ - The file name.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_zip_header_filename
         def setZipHeaderFilename(filename)
             @fields['zip_header_filename'] = filename
             self
         end
 
-        # Load an HTML code from the specified URL and use it as the page footer. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of the converted document pdfcrowd-source-title - the title of the converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals. Allowed values: arabic - Arabic numerals, they are used by default roman - Roman numerals eastern-arabic - Eastern Arabic numerals bengali - Bengali numerals devanagari - Devanagari numerals thai - Thai numerals east-asia - Chinese, Vietnamese, Japanese and Korean numerals chinese-formal - Chinese formal numerals Please contact us if you need another type of numerals. Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL. Allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_footer_url
         def setFooterUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setFooterUrl", "html-to-pdf", "Supported protocols are http:// and https://.", "set_footer_url"), 470);
@@ -1237,10 +1130,7 @@ module Pdfcrowd
             self
         end
 
-        # Use the specified HTML as the page footer. The following classes can be used in the HTML. The content of the respective elements will be expanded as follows: pdfcrowd-page-count - the total page count of printed pages pdfcrowd-page-number - the current page number pdfcrowd-source-url - the source URL of the converted document pdfcrowd-source-title - the title of the converted document The following attributes can be used: data-pdfcrowd-number-format - specifies the type of the used numerals. Allowed values: arabic - Arabic numerals, they are used by default roman - Roman numerals eastern-arabic - Eastern Arabic numerals bengali - Bengali numerals devanagari - Devanagari numerals thai - Thai numerals east-asia - Chinese, Vietnamese, Japanese and Korean numerals chinese-formal - Chinese formal numerals Please contact us if you need another type of numerals. Example: <span class='pdfcrowd-page-number' data-pdfcrowd-number-format='roman'></span> data-pdfcrowd-placement - specifies where to place the source URL. Allowed values: The URL is inserted to the content Example: <span class='pdfcrowd-source-url'></span> will produce <span>http://example.com</span> href - the URL is set to the href attribute Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href'>Link to source</a> will produce <a href='http://example.com'>Link to source</a> href-and-content - the URL is set to the href attribute and to the content Example: <a class='pdfcrowd-source-url' data-pdfcrowd-placement='href-and-content'></a> will produce <a href='http://example.com'>http://example.com</a>
-        #
-        # * +html+ - The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_footer_html
         def setFooterHtml(html)
             if (!(!html.nil? && !html.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(html, "setFooterHtml", "html-to-pdf", "The string must not be empty.", "set_footer_html"), 470);
@@ -1250,10 +1140,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the footer height.
-        #
-        # * +height+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_footer_height
         def setFooterHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setFooterHeight", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_footer_height"), 470);
@@ -1263,28 +1150,19 @@ module Pdfcrowd
             self
         end
 
-        # Set the file name of the footer HTML document stored in the input archive. Use this method if the input archive contains multiple HTML documents.
-        #
-        # * +filename+ - The file name.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_zip_footer_filename
         def setZipFooterFilename(filename)
             @fields['zip_footer_filename'] = filename
             self
         end
 
-        # Disable horizontal page margins for header and footer. The header/footer contents width will be equal to the physical page width.
-        #
-        # * +value+ - Set to true to disable horizontal margins for header and footer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_no_header_footer_horizontal_margins
         def setNoHeaderFooterHorizontalMargins(value)
             @fields['no_header_footer_horizontal_margins'] = value
             self
         end
 
-        # The page header content is not printed on the specified pages. To remove the entire header area, use the conversion config.
-        #
-        # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma separated list of page numbers.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_exclude_header_on_pages
         def setExcludeHeaderOnPages(pages)
             unless /^(?:\s*\-?\d+\s*,)*\s*\-?\d+\s*$/.match(pages)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setExcludeHeaderOnPages", "html-to-pdf", "A comma separated list of page numbers.", "set_exclude_header_on_pages"), 470);
@@ -1294,10 +1172,7 @@ module Pdfcrowd
             self
         end
 
-        # The page footer content is not printed on the specified pages. To remove the entire footer area, use the conversion config.
-        #
-        # * +pages+ - List of physical page numbers. Negative numbers count backwards from the last page: -1 is the last page, -2 is the last but one page, and so on. A comma separated list of page numbers.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_exclude_footer_on_pages
         def setExcludeFooterOnPages(pages)
             unless /^(?:\s*\-?\d+\s*,)*\s*\-?\d+\s*$/.match(pages)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setExcludeFooterOnPages", "html-to-pdf", "A comma separated list of page numbers.", "set_exclude_footer_on_pages"), 470);
@@ -1307,10 +1182,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the scaling factor (zoom) for the header and footer.
-        #
-        # * +factor+ - The percentage value. The accepted range is 10-500.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_header_footer_scale_factor
         def setHeaderFooterScaleFactor(factor)
             if (!(Integer(factor) >= 10 && Integer(factor) <= 500))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(factor, "setHeaderFooterScaleFactor", "html-to-pdf", "The accepted range is 10-500.", "set_header_footer_scale_factor"), 470);
@@ -1320,19 +1192,13 @@ module Pdfcrowd
             self
         end
 
-        # Set an offset between physical and logical page numbers.
-        #
-        # * +offset+ - Integer specifying page offset.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_numbering_offset
         def setPageNumberingOffset(offset)
             @fields['page_numbering_offset'] = offset
             self
         end
 
-        # Apply a watermark to each page of the output PDF file. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
-        #
-        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_watermark
         def setPageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(watermark, "setPageWatermark", "html-to-pdf", "The file must exist and not be empty.", "set_page_watermark"), 470);
@@ -1342,10 +1208,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply the file as a watermark to each page of the output PDF. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_watermark_url
         def setPageWatermarkUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setPageWatermarkUrl", "html-to-pdf", "Supported protocols are http:// and https://.", "set_page_watermark_url"), 470);
@@ -1355,10 +1218,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
-        #
-        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_multipage_watermark
         def setMultipageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(watermark, "setMultipageWatermark", "html-to-pdf", "The file must exist and not be empty.", "set_multipage_watermark"), 470);
@@ -1368,10 +1228,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply each page of the file as a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_multipage_watermark_url
         def setMultipageWatermarkUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setMultipageWatermarkUrl", "html-to-pdf", "Supported protocols are http:// and https://.", "set_multipage_watermark_url"), 470);
@@ -1381,10 +1238,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply a background to each page of the output PDF file. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
-        #
-        # * +background+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_background
         def setPageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(background, "setPageBackground", "html-to-pdf", "The file must exist and not be empty.", "set_page_background"), 470);
@@ -1394,10 +1248,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply the file as a background to each page of the output PDF. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_background_url
         def setPageBackgroundUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setPageBackgroundUrl", "html-to-pdf", "Supported protocols are http:// and https://.", "set_page_background_url"), 470);
@@ -1407,10 +1258,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
-        #
-        # * +background+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_multipage_background
         def setMultipageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(background, "setMultipageBackground", "html-to-pdf", "The file must exist and not be empty.", "set_multipage_background"), 470);
@@ -1420,10 +1268,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply each page of the file as a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_multipage_background_url
         def setMultipageBackgroundUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setMultipageBackgroundUrl", "html-to-pdf", "Supported protocols are http:// and https://.", "set_multipage_background_url"), 470);
@@ -1433,10 +1278,7 @@ module Pdfcrowd
             self
         end
 
-        # The page background color in RGB or RGBA hexadecimal format. The color fills the entire page regardless of the margins.
-        #
-        # * +color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_background_color
         def setPageBackgroundColor(color)
             unless /^[0-9a-fA-F]{6,8}$/.match(color)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(color, "setPageBackgroundColor", "html-to-pdf", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_page_background_color"), 470);
@@ -1446,64 +1288,43 @@ module Pdfcrowd
             self
         end
 
-        # Use the print version of the page if available (@media print).
-        #
-        # * +value+ - Set to true to use the print version of the page.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_use_print_media
         def setUsePrintMedia(value)
             @fields['use_print_media'] = value
             self
         end
 
-        # Do not print the background graphics.
-        #
-        # * +value+ - Set to true to disable the background graphics.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_no_background
         def setNoBackground(value)
             @fields['no_background'] = value
             self
         end
 
-        # Do not execute JavaScript.
-        #
-        # * +value+ - Set to true to disable JavaScript in web pages.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_disable_javascript
         def setDisableJavascript(value)
             @fields['disable_javascript'] = value
             self
         end
 
-        # Do not load images.
-        #
-        # * +value+ - Set to true to disable loading of images.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_disable_image_loading
         def setDisableImageLoading(value)
             @fields['disable_image_loading'] = value
             self
         end
 
-        # Disable loading fonts from remote sources.
-        #
-        # * +value+ - Set to true disable loading remote fonts.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_disable_remote_fonts
         def setDisableRemoteFonts(value)
             @fields['disable_remote_fonts'] = value
             self
         end
 
-        # Use a mobile user agent.
-        #
-        # * +value+ - Set to true to use a mobile user agent.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_use_mobile_user_agent
         def setUseMobileUserAgent(value)
             @fields['use_mobile_user_agent'] = value
             self
         end
 
-        # Specifies how iframes are handled.
-        #
-        # * +iframes+ - Allowed values are all, same-origin, none.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_load_iframes
         def setLoadIframes(iframes)
             unless /(?i)^(all|same-origin|none)$/.match(iframes)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(iframes, "setLoadIframes", "html-to-pdf", "Allowed values are all, same-origin, none.", "set_load_iframes"), 470);
@@ -1513,28 +1334,19 @@ module Pdfcrowd
             self
         end
 
-        # Try to block ads. Enabling this option can produce smaller output and speed up the conversion.
-        #
-        # * +value+ - Set to true to block ads in web pages.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_block_ads
         def setBlockAds(value)
             @fields['block_ads'] = value
             self
         end
 
-        # Set the default HTML content text encoding.
-        #
-        # * +encoding+ - The text encoding of the HTML content.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_default_encoding
         def setDefaultEncoding(encoding)
             @fields['default_encoding'] = encoding
             self
         end
 
-        # Set the locale for the conversion. This may affect the output format of dates, times and numbers.
-        #
-        # * +locale+ - The locale code according to ISO 639.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_locale
         def setLocale(locale)
             @fields['locale'] = locale
             self
@@ -1552,66 +1364,44 @@ module Pdfcrowd
             self
         end
 
-        # Set credentials to access HTTP base authentication protected websites.
-        #
-        # * +user_name+ - Set the HTTP authentication user name.
-        # * +password+ - Set the HTTP authentication password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_http_auth
         def setHttpAuth(user_name, password)
             setHttpAuthUserName(user_name)
             setHttpAuthPassword(password)
             self
         end
 
-        # Set HTTP cookies to be included in all requests made by the converter.
-        #
-        # * +cookies+ - The cookie string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_cookies
         def setCookies(cookies)
             @fields['cookies'] = cookies
             self
         end
 
-        # Do not allow insecure HTTPS connections.
-        #
-        # * +value+ - Set to true to enable SSL certificate verification.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_verify_ssl_certificates
         def setVerifySslCertificates(value)
             @fields['verify_ssl_certificates'] = value
             self
         end
 
-        # Abort the conversion if the main URL HTTP status code is greater than or equal to 400.
-        #
-        # * +fail_on_error+ - Set to true to abort the conversion.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_fail_on_main_url_error
         def setFailOnMainUrlError(fail_on_error)
             @fields['fail_on_main_url_error'] = fail_on_error
             self
         end
 
-        # Abort the conversion if any of the sub-request HTTP status code is greater than or equal to 400 or if some sub-requests are still pending. See details in a debug log.
-        #
-        # * +fail_on_error+ - Set to true to abort the conversion.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_fail_on_any_url_error
         def setFailOnAnyUrlError(fail_on_error)
             @fields['fail_on_any_url_error'] = fail_on_error
             self
         end
 
-        # Do not send the X-Pdfcrowd HTTP header in PDFCrowd HTTP requests.
-        #
-        # * +value+ - Set to true to disable sending X-Pdfcrowd HTTP header.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_no_xpdfcrowd_header
         def setNoXpdfcrowdHeader(value)
             @fields['no_xpdfcrowd_header'] = value
             self
         end
 
-        # Specifies behavior in presence of CSS @page rules. It may affect the page size, margins and orientation.
-        #
-        # * +mode+ - The page rule mode. Allowed values are default, mode1, mode2.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_css_page_rule_mode
         def setCssPageRuleMode(mode)
             unless /(?i)^(default|mode1|mode2)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setCssPageRuleMode", "html-to-pdf", "Allowed values are default, mode1, mode2.", "set_css_page_rule_mode"), 470);
@@ -1621,10 +1411,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply custom CSS to the input HTML document. It allows you to modify the visual appearance and layout of your HTML content dynamically. Tip: Using !important in custom CSS provides a way to prioritize and override conflicting styles.
-        #
-        # * +css+ - A string containing valid CSS. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_custom_css
         def setCustomCss(css)
             if (!(!css.nil? && !css.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(css, "setCustomCss", "html-to-pdf", "The string must not be empty.", "set_custom_css"), 470);
@@ -1634,10 +1421,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript after the document is loaded and ready to print. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...). In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
-        #
-        # * +javascript+ - A string containing a JavaScript code. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_custom_javascript
         def setCustomJavascript(javascript)
             if (!(!javascript.nil? && !javascript.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(javascript, "setCustomJavascript", "html-to-pdf", "The string must not be empty.", "set_custom_javascript"), 470);
@@ -1647,10 +1431,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation (add/remove elements, update CSS, ...). In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
-        #
-        # * +javascript+ - A string containing a JavaScript code. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_on_load_javascript
         def setOnLoadJavascript(javascript)
             if (!(!javascript.nil? && !javascript.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(javascript, "setOnLoadJavascript", "html-to-pdf", "The string must not be empty.", "set_on_load_javascript"), 470);
@@ -1660,10 +1441,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom HTTP header to be included in all requests made by the converter.
-        #
-        # * +header+ - A string containing the header name and value separated by a colon.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_custom_http_header
         def setCustomHttpHeader(header)
             unless /^.+:.+$/.match(header)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(header, "setCustomHttpHeader", "html-to-pdf", "A string containing the header name and value separated by a colon.", "set_custom_http_header"), 470);
@@ -1673,10 +1451,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. Your license defines the maximum wait time by "Max Delay" parameter.
-        #
-        # * +delay+ - The number of milliseconds to wait. Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_javascript_delay
         def setJavascriptDelay(delay)
             if (!(Integer(delay) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(delay, "setJavascriptDelay", "html-to-pdf", "Must be a positive integer or 0.", "set_javascript_delay"), 470);
@@ -1686,10 +1461,7 @@ module Pdfcrowd
             self
         end
 
-        # Convert only the specified element from the main document and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
-        #
-        # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_element_to_convert
         def setElementToConvert(selectors)
             if (!(!selectors.nil? && !selectors.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(selectors, "setElementToConvert", "html-to-pdf", "The string must not be empty.", "set_element_to_convert"), 470);
@@ -1699,10 +1471,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the DOM handling when only a part of the document is converted. This can affect the CSS rules used.
-        #
-        # * +mode+ - Allowed values are cut-out, remove-siblings, hide-siblings.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_element_to_convert_mode
         def setElementToConvertMode(mode)
             unless /(?i)^(cut-out|remove-siblings|hide-siblings)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setElementToConvertMode", "html-to-pdf", "Allowed values are cut-out, remove-siblings, hide-siblings.", "set_element_to_convert_mode"), 470);
@@ -1712,10 +1481,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails. Your license defines the maximum wait time by "Max Delay" parameter.
-        #
-        # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_wait_for_element
         def setWaitForElement(selectors)
             if (!(!selectors.nil? && !selectors.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(selectors, "setWaitForElement", "html-to-pdf", "The string must not be empty.", "set_wait_for_element"), 470);
@@ -1725,19 +1491,13 @@ module Pdfcrowd
             self
         end
 
-        # The main HTML element for conversion is detected automatically.
-        #
-        # * +value+ - Set to true to detect the main element.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_auto_detect_element_to_convert
         def setAutoDetectElementToConvert(value)
             @fields['auto_detect_element_to_convert'] = value
             self
         end
 
-        # The input HTML is automatically enhanced to improve the readability.
-        #
-        # * +enhancements+ - Allowed values are none, readability-v1, readability-v2, readability-v3, readability-v4.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_readability_enhancements
         def setReadabilityEnhancements(enhancements)
             unless /(?i)^(none|readability-v1|readability-v2|readability-v3|readability-v4)$/.match(enhancements)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-pdf", "Allowed values are none, readability-v1, readability-v2, readability-v3, readability-v4.", "set_readability_enhancements"), 470);
@@ -1747,10 +1507,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the viewport width in pixels. The viewport is the user's visible area of the page.
-        #
-        # * +width+ - The accepted range is 96-65000.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_viewport_width
         def setViewportWidth(width)
             if (!(Integer(width) >= 96 && Integer(width) <= 65000))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setViewportWidth", "html-to-pdf", "The accepted range is 96-65000.", "set_viewport_width"), 470);
@@ -1760,10 +1517,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the viewport height in pixels. The viewport is the user's visible area of the page. If the input HTML uses lazily loaded images, try using a large value that covers the entire height of the HTML, e.g. 100000.
-        #
-        # * +height+ - Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_viewport_height
         def setViewportHeight(height)
             if (!(Integer(height) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setViewportHeight", "html-to-pdf", "Must be a positive integer.", "set_viewport_height"), 470);
@@ -1773,21 +1527,14 @@ module Pdfcrowd
             self
         end
 
-        # Set the viewport size. The viewport is the user's visible area of the page.
-        #
-        # * +width+ - Set the viewport width in pixels. The viewport is the user's visible area of the page. The accepted range is 96-65000.
-        # * +height+ - Set the viewport height in pixels. The viewport is the user's visible area of the page. If the input HTML uses lazily loaded images, try using a large value that covers the entire height of the HTML, e.g. 100000. Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_viewport
         def setViewport(width, height)
             setViewportWidth(width)
             setViewportHeight(height)
             self
         end
 
-        # Set the rendering mode of the page, allowing control over how content is displayed.
-        #
-        # * +mode+ - The rendering mode. Allowed values are default, viewport.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_rendering_mode
         def setRenderingMode(mode)
             unless /(?i)^(default|viewport)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setRenderingMode", "html-to-pdf", "Allowed values are default, viewport.", "set_rendering_mode"), 470);
@@ -1797,10 +1544,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the scaling mode used for fitting the HTML contents to the print area.
-        #
-        # * +mode+ - The smart scaling mode. Allowed values are default, disabled, viewport-fit, content-fit, single-page-fit, single-page-fit-ex, mode1.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_smart_scaling_mode
         def setSmartScalingMode(mode)
             unless /(?i)^(default|disabled|viewport-fit|content-fit|single-page-fit|single-page-fit-ex|mode1)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setSmartScalingMode", "html-to-pdf", "Allowed values are default, disabled, viewport-fit, content-fit, single-page-fit, single-page-fit-ex, mode1.", "set_smart_scaling_mode"), 470);
@@ -1810,10 +1554,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the scaling factor (zoom) for the main page area.
-        #
-        # * +factor+ - The percentage value. The accepted range is 10-500.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_scale_factor
         def setScaleFactor(factor)
             if (!(Integer(factor) >= 10 && Integer(factor) <= 500))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(factor, "setScaleFactor", "html-to-pdf", "The accepted range is 10-500.", "set_scale_factor"), 470);
@@ -1823,10 +1564,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the quality of embedded JPEG images. A lower quality results in a smaller PDF file but can lead to compression artifacts.
-        #
-        # * +quality+ - The percentage value. The accepted range is 1-100.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_jpeg_quality
         def setJpegQuality(quality)
             if (!(Integer(quality) >= 1 && Integer(quality) <= 100))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(quality, "setJpegQuality", "html-to-pdf", "The accepted range is 1-100.", "set_jpeg_quality"), 470);
@@ -1836,10 +1574,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify which image types will be converted to JPEG. Converting lossless compression image formats (PNG, GIF, ...) to JPEG may result in a smaller PDF file.
-        #
-        # * +images+ - The image category. Allowed values are none, opaque, all.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_convert_images_to_jpeg
         def setConvertImagesToJpeg(images)
             unless /(?i)^(none|opaque|all)$/.match(images)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(images, "setConvertImagesToJpeg", "html-to-pdf", "Allowed values are none, opaque, all.", "set_convert_images_to_jpeg"), 470);
@@ -1849,10 +1584,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the DPI of images in PDF. A lower DPI may result in a smaller PDF file. If the specified DPI is higher than the actual image DPI, the original image DPI is retained (no upscaling is performed). Use 0 to leave the images unaltered.
-        #
-        # * +dpi+ - The DPI value. Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_image_dpi
         def setImageDpi(dpi)
             if (!(Integer(dpi) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(dpi, "setImageDpi", "html-to-pdf", "Must be a positive integer or 0.", "set_image_dpi"), 470);
@@ -1862,127 +1594,85 @@ module Pdfcrowd
             self
         end
 
-        # Convert HTML forms to fillable PDF forms. Details can be found in the blog post.
-        #
-        # * +value+ - Set to true to make fillable PDF forms.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_enable_pdf_forms
         def setEnablePdfForms(value)
             @fields['enable_pdf_forms'] = value
             self
         end
 
-        # Create linearized PDF. This is also known as Fast Web View.
-        #
-        # * +value+ - Set to true to create linearized PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_linearize
         def setLinearize(value)
             @fields['linearize'] = value
             self
         end
 
-        # Encrypt the PDF. This prevents search engines from indexing the contents.
-        #
-        # * +value+ - Set to true to enable PDF encryption.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_encrypt
         def setEncrypt(value)
             @fields['encrypt'] = value
             self
         end
 
-        # Protect the PDF with a user password. When a PDF has a user password, it must be supplied in order to view the document and to perform operations allowed by the access permissions.
-        #
-        # * +password+ - The user password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_user_password
         def setUserPassword(password)
             @fields['user_password'] = password
             self
         end
 
-        # Protect the PDF with an owner password. Supplying an owner password grants unlimited access to the PDF including changing the passwords and access permissions.
-        #
-        # * +password+ - The owner password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_owner_password
         def setOwnerPassword(password)
             @fields['owner_password'] = password
             self
         end
 
-        # Disallow printing of the output PDF.
-        #
-        # * +value+ - Set to true to set the no-print flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_no_print
         def setNoPrint(value)
             @fields['no_print'] = value
             self
         end
 
-        # Disallow modification of the output PDF.
-        #
-        # * +value+ - Set to true to set the read-only only flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_no_modify
         def setNoModify(value)
             @fields['no_modify'] = value
             self
         end
 
-        # Disallow text and graphics extraction from the output PDF.
-        #
-        # * +value+ - Set to true to set the no-copy flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_no_copy
         def setNoCopy(value)
             @fields['no_copy'] = value
             self
         end
 
-        # Set the title of the PDF.
-        #
-        # * +title+ - The title.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_title
         def setTitle(title)
             @fields['title'] = title
             self
         end
 
-        # Set the subject of the PDF.
-        #
-        # * +subject+ - The subject.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_subject
         def setSubject(subject)
             @fields['subject'] = subject
             self
         end
 
-        # Set the author of the PDF.
-        #
-        # * +author+ - The author.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_author
         def setAuthor(author)
             @fields['author'] = author
             self
         end
 
-        # Associate keywords with the document.
-        #
-        # * +keywords+ - The string with the keywords.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_keywords
         def setKeywords(keywords)
             @fields['keywords'] = keywords
             self
         end
 
-        # Extract meta tags (author, keywords and description) from the input HTML and use them in the output PDF.
-        #
-        # * +value+ - Set to true to extract meta tags.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_extract_meta_tags
         def setExtractMetaTags(value)
             @fields['extract_meta_tags'] = value
             self
         end
 
-        # Specify the page layout to be used when the document is opened.
-        #
-        # * +layout+ - Allowed values are single-page, one-column, two-column-left, two-column-right.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_layout
         def setPageLayout(layout)
             unless /(?i)^(single-page|one-column|two-column-left|two-column-right)$/.match(layout)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(layout, "setPageLayout", "html-to-pdf", "Allowed values are single-page, one-column, two-column-left, two-column-right.", "set_page_layout"), 470);
@@ -1992,10 +1682,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify how the document should be displayed when opened.
-        #
-        # * +mode+ - Allowed values are full-screen, thumbnails, outlines.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_page_mode
         def setPageMode(mode)
             unless /(?i)^(full-screen|thumbnails|outlines)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPageMode", "html-to-pdf", "Allowed values are full-screen, thumbnails, outlines.", "set_page_mode"), 470);
@@ -2005,10 +1692,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify how the page should be displayed when opened.
-        #
-        # * +zoom_type+ - Allowed values are fit-width, fit-height, fit-page.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_initial_zoom_type
         def setInitialZoomType(zoom_type)
             unless /(?i)^(fit-width|fit-height|fit-page)$/.match(zoom_type)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(zoom_type, "setInitialZoomType", "html-to-pdf", "Allowed values are fit-width, fit-height, fit-page.", "set_initial_zoom_type"), 470);
@@ -2018,10 +1702,7 @@ module Pdfcrowd
             self
         end
 
-        # Display the specified page when the document is opened.
-        #
-        # * +page+ - Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_initial_page
         def setInitialPage(page)
             if (!(Integer(page) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(page, "setInitialPage", "html-to-pdf", "Must be a positive integer.", "set_initial_page"), 470);
@@ -2031,10 +1712,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the initial page zoom in percents when the document is opened.
-        #
-        # * +zoom+ - Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_initial_zoom
         def setInitialZoom(zoom)
             if (!(Integer(zoom) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(zoom, "setInitialZoom", "html-to-pdf", "Must be a positive integer.", "set_initial_zoom"), 470);
@@ -2044,91 +1722,61 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to hide the viewer application's tool bars when the document is active.
-        #
-        # * +value+ - Set to true to hide tool bars.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_hide_toolbar
         def setHideToolbar(value)
             @fields['hide_toolbar'] = value
             self
         end
 
-        # Specify whether to hide the viewer application's menu bar when the document is active.
-        #
-        # * +value+ - Set to true to hide the menu bar.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_hide_menubar
         def setHideMenubar(value)
             @fields['hide_menubar'] = value
             self
         end
 
-        # Specify whether to hide user interface elements in the document's window (such as scroll bars and navigation controls), leaving only the document's contents displayed.
-        #
-        # * +value+ - Set to true to hide ui elements.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_hide_window_ui
         def setHideWindowUi(value)
             @fields['hide_window_ui'] = value
             self
         end
 
-        # Specify whether to resize the document's window to fit the size of the first displayed page.
-        #
-        # * +value+ - Set to true to resize the window.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_fit_window
         def setFitWindow(value)
             @fields['fit_window'] = value
             self
         end
 
-        # Specify whether to position the document's window in the center of the screen.
-        #
-        # * +value+ - Set to true to center the window.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_center_window
         def setCenterWindow(value)
             @fields['center_window'] = value
             self
         end
 
-        # Specify whether the window's title bar should display the document title. If false , the title bar should instead display the name of the PDF file containing the document.
-        #
-        # * +value+ - Set to true to display the title.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_display_title
         def setDisplayTitle(value)
             @fields['display_title'] = value
             self
         end
 
-        # Set the predominant reading order for text to right-to-left. This option has no direct effect on the document's contents or page numbering but can be used to determine the relative positioning of pages when displayed side by side or printed n-up
-        #
-        # * +value+ - Set to true to set right-to-left reading order.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_right_to_left
         def setRightToLeft(value)
             @fields['right_to_left'] = value
             self
         end
 
-        # Set the input data for template rendering. The data format can be JSON, XML, YAML or CSV.
-        #
-        # * +data_string+ - The input data string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_string
         def setDataString(data_string)
             @fields['data_string'] = data_string
             self
         end
 
-        # Load the input data for template rendering from the specified file. The data format can be JSON, XML, YAML or CSV.
-        #
-        # * +data_file+ - The file path to a local file containing the input data.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_file
         def setDataFile(data_file)
             @files['data_file'] = data_file
             self
         end
 
-        # Specify the input data format.
-        #
-        # * +data_format+ - The data format. Allowed values are auto, json, xml, yaml, csv.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_format
         def setDataFormat(data_format)
             unless /(?i)^(auto|json|xml|yaml|csv)$/.match(data_format)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(data_format, "setDataFormat", "html-to-pdf", "Allowed values are auto, json, xml, yaml, csv.", "set_data_format"), 470);
@@ -2138,124 +1786,89 @@ module Pdfcrowd
             self
         end
 
-        # Set the encoding of the data file set by setDataFile.
-        #
-        # * +encoding+ - The data file encoding.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_encoding
         def setDataEncoding(encoding)
             @fields['data_encoding'] = encoding
             self
         end
 
-        # Ignore undefined variables in the HTML template. The default mode is strict so any undefined variable causes the conversion to fail. You can use {% if variable is defined %} to check if the variable is defined.
-        #
-        # * +value+ - Set to true to ignore undefined variables.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_ignore_undefined
         def setDataIgnoreUndefined(value)
             @fields['data_ignore_undefined'] = value
             self
         end
 
-        # Auto escape HTML symbols in the input data before placing them into the output.
-        #
-        # * +value+ - Set to true to turn auto escaping on.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_auto_escape
         def setDataAutoEscape(value)
             @fields['data_auto_escape'] = value
             self
         end
 
-        # Auto trim whitespace around each template command block.
-        #
-        # * +value+ - Set to true to turn auto trimming on.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_trim_blocks
         def setDataTrimBlocks(value)
             @fields['data_trim_blocks'] = value
             self
         end
 
-        # Set the advanced data options:csv_delimiter - The CSV data delimiter, the default is ,.xml_remove_root - Remove the root XML element from the input data.data_root - The name of the root element inserted into the input data without a root node (e.g. CSV), the default is data.
-        #
-        # * +options+ - Comma separated list of options.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_options
         def setDataOptions(options)
             @fields['data_options'] = options
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
-        #
-        # * +value+ - Set to true to enable the debug logging.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_debug_log
         def setDebugLog(value)
             @fields['debug_log'] = value
             self
         end
 
-        # Get the URL of the debug log for the last conversion.
-        # * *Returns* - The link to the debug log.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#get_debug_log_url
         def getDebugLogUrl()
             return @helper.getDebugLogUrl()
         end
 
-        # Get the number of conversion credits available in your account.
-        # This method can only be called after a call to one of the convertXtoY methods.
-        # The returned value can differ from the actual count if you run parallel conversions.
-        # The special value 999999 is returned if the information is not available.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#get_remaining_credit_count
         def getRemainingCreditCount()
             return @helper.getRemainingCreditCount()
         end
 
-        # Get the number of credits consumed by the last conversion.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#get_consumed_credit_count
         def getConsumedCreditCount()
             return @helper.getConsumedCreditCount()
         end
 
-        # Get the job id.
-        # * *Returns* - The unique job identifier.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#get_job_id
         def getJobId()
             return @helper.getJobId()
         end
 
-        # Get the number of pages in the output document.
-        # * *Returns* - The page count.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#get_page_count
         def getPageCount()
             return @helper.getPageCount()
         end
 
-        # Get the total number of pages in the original output document, including the pages excluded by setPrintPageRange().
-        # * *Returns* - The total page count.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#get_total_page_count
         def getTotalPageCount()
             return @helper.getTotalPageCount()
         end
 
-        # Get the size of the output in bytes.
-        # * *Returns* - The count of bytes.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#get_output_size
         def getOutputSize()
             return @helper.getOutputSize()
         end
 
-        # Get the version details.
-        # * *Returns* - API version, converter version, and client version.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#get_version
         def getVersion()
             return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
         end
 
-        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        #
-        # * +tag+ - A string with the custom tag.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_tag
         def setTag(tag)
             @fields['tag'] = tag
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_http_proxy
         def setHttpProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "html-to-pdf", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
@@ -2265,10 +1878,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_https_proxy
         def setHttpsProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "html-to-pdf", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
@@ -2278,10 +1888,7 @@ module Pdfcrowd
             self
         end
 
-        # A client certificate to authenticate the converter on your web server. The certificate is used for two-way SSL/TLS authentication and adds extra security.
-        #
-        # * +certificate+ - The file must be in PKCS12 format. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_client_certificate
         def setClientCertificate(certificate)
             if (!(File.file?(certificate) && !File.zero?(certificate)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(certificate, "setClientCertificate", "html-to-pdf", "The file must exist and not be empty.", "set_client_certificate"), 470);
@@ -2291,19 +1898,13 @@ module Pdfcrowd
             self
         end
 
-        # A password for PKCS12 file with a client certificate if it is needed.
-        #
-        # * +password+ -
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_client_certificate_password
         def setClientCertificatePassword(password)
             @fields['client_certificate_password'] = password
             self
         end
 
-        # Set the internal DPI resolution used for positioning of PDF contents. It can help in situations when there are small inaccuracies in the PDF. It is recommended to use values that are a multiple of 72, such as 288 or 360.
-        #
-        # * +dpi+ - The DPI value. The accepted range is 72-600.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_layout_dpi
         def setLayoutDpi(dpi)
             if (!(Integer(dpi) >= 72 && Integer(dpi) <= 600))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(dpi, "setLayoutDpi", "html-to-pdf", "The accepted range is 72-600.", "set_layout_dpi"), 470);
@@ -2313,10 +1914,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area.
-        #
-        # * +x+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'. It may contain a negative value.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_content_area_x
         def setContentAreaX(x)
             unless /(?i)^0$|^\-?[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(x)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setContentAreaX", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'. It may contain a negative value.", "set_content_area_x"), 470);
@@ -2326,10 +1924,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area.
-        #
-        # * +y+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'. It may contain a negative value.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_content_area_y
         def setContentAreaY(y)
             unless /(?i)^0$|^\-?[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(y)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setContentAreaY", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'. It may contain a negative value.", "set_content_area_y"), 470);
@@ -2339,10 +1934,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the width of the content area. It should be at least 1 inch.
-        #
-        # * +width+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_content_area_width
         def setContentAreaWidth(width)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setContentAreaWidth", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_content_area_width"), 470);
@@ -2352,10 +1944,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the height of the content area. It should be at least 1 inch.
-        #
-        # * +height+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_content_area_height
         def setContentAreaHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setContentAreaHeight", "html-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_content_area_height"), 470);
@@ -2365,13 +1954,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the content area position and size. The content area enables to specify a web page area to be converted.
-        #
-        # * +x+ - Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'. It may contain a negative value.
-        # * +y+ - Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'. It may contain a negative value.
-        # * +width+ - Set the width of the content area. It should be at least 1 inch. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +height+ - Set the height of the content area. It should be at least 1 inch. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_content_area
         def setContentArea(x, y, width, height)
             setContentAreaX(x)
             setContentAreaY(y)
@@ -2380,65 +1963,43 @@ module Pdfcrowd
             self
         end
 
-        # A 2D transformation matrix applied to the main contents on each page. The origin [0,0] is located at the top-left corner of the contents. The resolution is 72 dpi.
-        #
-        # * +matrix+ - A comma separated string of matrix elements: "scaleX,skewX,transX,skewY,scaleY,transY"
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_contents_matrix
         def setContentsMatrix(matrix)
             @fields['contents_matrix'] = matrix
             self
         end
 
-        # A 2D transformation matrix applied to the page header contents. The origin [0,0] is located at the top-left corner of the header. The resolution is 72 dpi.
-        #
-        # * +matrix+ - A comma separated string of matrix elements: "scaleX,skewX,transX,skewY,scaleY,transY"
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_header_matrix
         def setHeaderMatrix(matrix)
             @fields['header_matrix'] = matrix
             self
         end
 
-        # A 2D transformation matrix applied to the page footer contents. The origin [0,0] is located at the top-left corner of the footer. The resolution is 72 dpi.
-        #
-        # * +matrix+ - A comma separated string of matrix elements: "scaleX,skewX,transX,skewY,scaleY,transY"
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_footer_matrix
         def setFooterMatrix(matrix)
             @fields['footer_matrix'] = matrix
             self
         end
 
-        # Disable automatic height adjustment that compensates for pixel to point rounding errors.
-        #
-        # * +value+ - Set to true to disable automatic height scale.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_disable_page_height_optimization
         def setDisablePageHeightOptimization(value)
             @fields['disable_page_height_optimization'] = value
             self
         end
 
-        # Add special CSS classes to the main document's body element. This allows applying custom styling based on these classes: pdfcrowd-page-X - where X is the current page number pdfcrowd-page-odd - odd page pdfcrowd-page-even - even page
-        # Warning: If your custom styling affects the contents area size (e.g. by using different margins, padding, border width), the resulting PDF may contain duplicit contents or some contents may be missing.
-        #
-        # * +value+ - Set to true to add the special CSS classes.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_main_document_css_annotation
         def setMainDocumentCssAnnotation(value)
             @fields['main_document_css_annotation'] = value
             self
         end
 
-        # Add special CSS classes to the header/footer's body element. This allows applying custom styling based on these classes: pdfcrowd-page-X - where X is the current page number pdfcrowd-page-count-X - where X is the total page count pdfcrowd-page-first - the first page pdfcrowd-page-last - the last page pdfcrowd-page-odd - odd page pdfcrowd-page-even - even page
-        #
-        # * +value+ - Set to true to add the special CSS classes.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_header_footer_css_annotation
         def setHeaderFooterCssAnnotation(value)
             @fields['header_footer_css_annotation'] = value
             self
         end
 
-        # Set the maximum time to load the page and its resources. After this time, all requests will be considered successful. This can be useful to ensure that the conversion does not timeout. Use this method if there is no other way to fix page loading.
-        #
-        # * +max_time+ - The number of seconds to wait. The accepted range is 10-30.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_max_loading_time
         def setMaxLoadingTime(max_time)
             if (!(Integer(max_time) >= 10 && Integer(max_time) <= 30))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(max_time, "setMaxLoadingTime", "html-to-pdf", "The accepted range is 10-30.", "set_max_loading_time"), 470);
@@ -2448,19 +2009,13 @@ module Pdfcrowd
             self
         end
 
-        # Allows to configure conversion via JSON. The configuration defines various page settings for individual PDF pages or ranges of pages. It provides flexibility in designing each page of the PDF, giving control over each page's size, header, footer etc. If a page or parameter is not explicitly specified, the system will use the default settings for that page or attribute. If a JSON configuration is provided, the settings in the JSON will take precedence over the global options. The structure of the JSON must be: pageSetup: An array of objects where each object defines the configuration for a specific page or range of pages. The following properties can be set for each page object: pages: A comma-separated list of page numbers or ranges. Special strings may be used, such as `odd`, `even` and `last`. For example: 1-: from page 1 to the end of the document 2: only the 2nd page 2,4,6: pages 2, 4, and 6 2-5: pages 2 through 5 odd,2: the 2nd page and all odd pages pageSize: The page size (optional). Possible values: A0, A1, A2, A3, A4, A5, A6, Letter. pageWidth: The width of the page (optional). pageHeight: The height of the page (optional). marginLeft: Left margin (optional). marginRight: Right margin (optional). marginTop: Top margin (optional). marginBottom: Bottom margin (optional). displayHeader: Header appearance (optional). Possible values: none: completely excluded space: only the content is excluded, the space is used content: the content is printed (default) displayFooter: Footer appearance (optional). Possible values: none: completely excluded space: only the content is excluded, the space is used content: the content is printed (default) headerHeight: Height of the header (optional). footerHeight: Height of the footer (optional). orientation: Page orientation, such as "portrait" or "landscape" (optional). backgroundColor: Page background color in RRGGBB or RRGGBBAA hexadecimal format (optional). Dimensions may be empty, 0 or specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        #
-        # * +json_string+ - The JSON string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_conversion_config
         def setConversionConfig(json_string)
             @fields['conversion_config'] = json_string
             self
         end
 
-        # Allows to configure the conversion process via JSON file. See details of the JSON string.
-        #
-        # * +filepath+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_conversion_config_file
         def setConversionConfigFile(filepath)
             if (!(File.file?(filepath) && !File.zero?(filepath)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(filepath, "setConversionConfigFile", "html-to-pdf", "The file must exist and not be empty.", "set_conversion_config_file"), 470);
@@ -2476,19 +2031,13 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the User-Agent HTTP header that will be used by the converter when a request is made to the converted web page.
-        #
-        # * +agent+ - The user agent.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_converter_user_agent
         def setConverterUserAgent(agent)
             @fields['converter_user_agent'] = agent
             self
         end
 
-        # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
-        #
-        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_converter_version
         def setConverterVersion(version)
             unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-pdf", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
@@ -2498,50 +2047,31 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
-        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
-        #
-        # * +value+ - Set to true to use HTTP.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_use_http
         def setUseHttp(value)
             @helper.setUseHttp(value)
             self
         end
 
-        # Specifies the User-Agent HTTP header that the client library will use when interacting with the API.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_client_user_agent
         def setClientUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_user_agent
         def setUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        #
-        # * +host+ - The proxy hostname.
-        # * +port+ - The proxy port.
-        # * +user_name+ - The username.
-        # * +password+ - The password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_proxy
         def setProxy(host, port, user_name, password)
             @helper.setProxy(host, port, user_name, password)
             self
         end
 
-        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        #
-        # * +count+ - Number of retries.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_retry_count
         def setRetryCount(count)
             @helper.setRetryCount(count)
             self
@@ -2550,11 +2080,10 @@ module Pdfcrowd
     end
 
     # Conversion from HTML to image.
+    #
+    # @see https://pdfcrowd.com/api/html-to-image-ruby/
     class HtmlToImageClient
-        # Constructor for the PDFCrowd API client.
-        #
-        # * +user_name+ - Your username at PDFCrowd.
-        # * +api_key+ - Your API key.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#initialize
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
             @fields = {
@@ -2566,10 +2095,7 @@ module Pdfcrowd
             @raw_data = {}
         end
 
-        # The format of the output file.
-        #
-        # * +output_format+ - Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_output_format
         def setOutputFormat(output_format)
             unless /(?i)^(png|jpg|gif|tiff|bmp|ico|ppm|pgm|pbm|pnm|psb|pct|ras|tga|sgi|sun|webp)$/.match(output_format)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(output_format, "setOutputFormat", "html-to-image", "Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.", "set_output_format"), 470);
@@ -2579,10 +2105,7 @@ module Pdfcrowd
             self
         end
 
-        # Convert a web page.
-        #
-        # * +url+ - The address of the web page to convert. Supported protocols are http:// and https://.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_url
         def convertUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "html-to-image", "Supported protocols are http:// and https://.", "convert_url"), 470);
@@ -2592,10 +2115,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a web page and write the result to an output stream.
-        #
-        # * +url+ - The address of the web page to convert. Supported protocols are http:// and https://.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_url_to_stream
         def convertUrlToStream(url, out_stream)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "html-to-image", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
@@ -2605,10 +2125,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a web page and write the result to a local file.
-        #
-        # * +url+ - The address of the web page to convert. Supported protocols are http:// and https://.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_url_to_file
         def convertUrlToFile(url, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "html-to-image", "The string must not be empty.", "convert_url_to_file"), 470);
@@ -2625,10 +2142,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_file
         def convertFile(file)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "html-to-image", "The file must exist and not be empty.", "convert_file"), 470);
@@ -2638,10 +2152,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a local file and write the result to an output stream.
-        #
-        # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_file_to_stream
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "html-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
@@ -2651,10 +2162,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a local file and write the result to a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file can be either a single file or an archive (.tar.gz, .tar.bz2, or .zip). If the HTML document refers to local external assets (images, style sheets, javascript), zip the document together with the assets. The file must exist and not be empty. The file name must have a valid extension.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_file_to_file
         def convertFileToFile(file, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "html-to-image", "The string must not be empty.", "convert_file_to_file"), 470);
@@ -2671,10 +2179,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a string.
-        #
-        # * +text+ - The string content to convert. The string must not be empty.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_string
         def convertString(text)
             if (!(!text.nil? && !text.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(text, "convertString", "html-to-image", "The string must not be empty.", "convert_string"), 470);
@@ -2684,10 +2189,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a string and write the output to an output stream.
-        #
-        # * +text+ - The string content to convert. The string must not be empty.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_string_to_stream
         def convertStringToStream(text, out_stream)
             if (!(!text.nil? && !text.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(text, "convertStringToStream::text", "html-to-image", "The string must not be empty.", "convert_string_to_stream"), 470);
@@ -2697,10 +2199,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a string and write the output to a file.
-        #
-        # * +text+ - The string content to convert. The string must not be empty.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_string_to_file
         def convertStringToFile(text, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStringToFile::file_path", "html-to-image", "The string must not be empty.", "convert_string_to_file"), 470);
@@ -2717,28 +2216,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert the contents of an input stream.
-        #
-        # * +in_stream+ - The input stream with source data. The stream can contain either HTML code or an archive (.zip, .tar.gz, .tar.bz2).The archive can contain HTML code and its external assets (images, style sheets, javascript).
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_stream
         def convertStream(in_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert the contents of an input stream and write the result to an output stream.
-        #
-        # * +in_stream+ - The input stream with source data. The stream can contain either HTML code or an archive (.zip, .tar.gz, .tar.bz2).The archive can contain HTML code and its external assets (images, style sheets, javascript).
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert the contents of an input stream and write the result to a local file.
-        #
-        # * +in_stream+ - The input stream with source data. The stream can contain either HTML code or an archive (.zip, .tar.gz, .tar.bz2).The archive can contain HTML code and its external assets (images, style sheets, javascript).
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_stream_to_file
         def convertStreamToFile(in_stream, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "html-to-image", "The string must not be empty.", "convert_stream_to_file"), 470);
@@ -2755,19 +2245,13 @@ module Pdfcrowd
             end
         end
 
-        # Set the file name of the main HTML document stored in the input archive. If not specified, the first HTML file in the archive is used for conversion. Use this method if the input archive contains multiple HTML documents.
-        #
-        # * +filename+ - The file name.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_zip_main_filename
         def setZipMainFilename(filename)
             @fields['zip_main_filename'] = filename
             self
         end
 
-        # Set the output image width in pixels.
-        #
-        # * +width+ - The accepted range is 96-65000.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_screenshot_width
         def setScreenshotWidth(width)
             if (!(Integer(width) >= 96 && Integer(width) <= 65000))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setScreenshotWidth", "html-to-image", "The accepted range is 96-65000.", "set_screenshot_width"), 470);
@@ -2777,10 +2261,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output image height in pixels. If it is not specified, actual document height is used.
-        #
-        # * +height+ - Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_screenshot_height
         def setScreenshotHeight(height)
             if (!(Integer(height) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setScreenshotHeight", "html-to-image", "Must be a positive integer.", "set_screenshot_height"), 470);
@@ -2790,10 +2271,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the scaling factor (zoom) for the output image.
-        #
-        # * +factor+ - The percentage value. Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_scale_factor
         def setScaleFactor(factor)
             if (!(Integer(factor) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(factor, "setScaleFactor", "html-to-image", "Must be a positive integer.", "set_scale_factor"), 470);
@@ -2803,10 +2281,7 @@ module Pdfcrowd
             self
         end
 
-        # The output image background color.
-        #
-        # * +color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_background_color
         def setBackgroundColor(color)
             unless /^[0-9a-fA-F]{6,8}$/.match(color)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(color, "setBackgroundColor", "html-to-image", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_background_color"), 470);
@@ -2816,64 +2291,43 @@ module Pdfcrowd
             self
         end
 
-        # Use the print version of the page if available (@media print).
-        #
-        # * +value+ - Set to true to use the print version of the page.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_use_print_media
         def setUsePrintMedia(value)
             @fields['use_print_media'] = value
             self
         end
 
-        # Do not print the background graphics.
-        #
-        # * +value+ - Set to true to disable the background graphics.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_no_background
         def setNoBackground(value)
             @fields['no_background'] = value
             self
         end
 
-        # Do not execute JavaScript.
-        #
-        # * +value+ - Set to true to disable JavaScript in web pages.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_disable_javascript
         def setDisableJavascript(value)
             @fields['disable_javascript'] = value
             self
         end
 
-        # Do not load images.
-        #
-        # * +value+ - Set to true to disable loading of images.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_disable_image_loading
         def setDisableImageLoading(value)
             @fields['disable_image_loading'] = value
             self
         end
 
-        # Disable loading fonts from remote sources.
-        #
-        # * +value+ - Set to true disable loading remote fonts.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_disable_remote_fonts
         def setDisableRemoteFonts(value)
             @fields['disable_remote_fonts'] = value
             self
         end
 
-        # Use a mobile user agent.
-        #
-        # * +value+ - Set to true to use a mobile user agent.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_use_mobile_user_agent
         def setUseMobileUserAgent(value)
             @fields['use_mobile_user_agent'] = value
             self
         end
 
-        # Specifies how iframes are handled.
-        #
-        # * +iframes+ - Allowed values are all, same-origin, none.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_load_iframes
         def setLoadIframes(iframes)
             unless /(?i)^(all|same-origin|none)$/.match(iframes)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(iframes, "setLoadIframes", "html-to-image", "Allowed values are all, same-origin, none.", "set_load_iframes"), 470);
@@ -2883,28 +2337,19 @@ module Pdfcrowd
             self
         end
 
-        # Try to block ads. Enabling this option can produce smaller output and speed up the conversion.
-        #
-        # * +value+ - Set to true to block ads in web pages.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_block_ads
         def setBlockAds(value)
             @fields['block_ads'] = value
             self
         end
 
-        # Set the default HTML content text encoding.
-        #
-        # * +encoding+ - The text encoding of the HTML content.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_default_encoding
         def setDefaultEncoding(encoding)
             @fields['default_encoding'] = encoding
             self
         end
 
-        # Set the locale for the conversion. This may affect the output format of dates, times and numbers.
-        #
-        # * +locale+ - The locale code according to ISO 639.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_locale
         def setLocale(locale)
             @fields['locale'] = locale
             self
@@ -2922,66 +2367,44 @@ module Pdfcrowd
             self
         end
 
-        # Set credentials to access HTTP base authentication protected websites.
-        #
-        # * +user_name+ - Set the HTTP authentication user name.
-        # * +password+ - Set the HTTP authentication password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_http_auth
         def setHttpAuth(user_name, password)
             setHttpAuthUserName(user_name)
             setHttpAuthPassword(password)
             self
         end
 
-        # Set HTTP cookies to be included in all requests made by the converter.
-        #
-        # * +cookies+ - The cookie string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_cookies
         def setCookies(cookies)
             @fields['cookies'] = cookies
             self
         end
 
-        # Do not allow insecure HTTPS connections.
-        #
-        # * +value+ - Set to true to enable SSL certificate verification.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_verify_ssl_certificates
         def setVerifySslCertificates(value)
             @fields['verify_ssl_certificates'] = value
             self
         end
 
-        # Abort the conversion if the main URL HTTP status code is greater than or equal to 400.
-        #
-        # * +fail_on_error+ - Set to true to abort the conversion.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_fail_on_main_url_error
         def setFailOnMainUrlError(fail_on_error)
             @fields['fail_on_main_url_error'] = fail_on_error
             self
         end
 
-        # Abort the conversion if any of the sub-request HTTP status code is greater than or equal to 400 or if some sub-requests are still pending. See details in a debug log.
-        #
-        # * +fail_on_error+ - Set to true to abort the conversion.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_fail_on_any_url_error
         def setFailOnAnyUrlError(fail_on_error)
             @fields['fail_on_any_url_error'] = fail_on_error
             self
         end
 
-        # Do not send the X-Pdfcrowd HTTP header in PDFCrowd HTTP requests.
-        #
-        # * +value+ - Set to true to disable sending X-Pdfcrowd HTTP header.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_no_xpdfcrowd_header
         def setNoXpdfcrowdHeader(value)
             @fields['no_xpdfcrowd_header'] = value
             self
         end
 
-        # Apply custom CSS to the input HTML document. It allows you to modify the visual appearance and layout of your HTML content dynamically. Tip: Using !important in custom CSS provides a way to prioritize and override conflicting styles.
-        #
-        # * +css+ - A string containing valid CSS. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_custom_css
         def setCustomCss(css)
             if (!(!css.nil? && !css.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(css, "setCustomCss", "html-to-image", "The string must not be empty.", "set_custom_css"), 470);
@@ -2991,10 +2414,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript after the document is loaded and ready to print. The script is intended for post-load DOM manipulation (add/remove elements, update CSS, ...). In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
-        #
-        # * +javascript+ - A string containing a JavaScript code. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_custom_javascript
         def setCustomJavascript(javascript)
             if (!(!javascript.nil? && !javascript.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(javascript, "setCustomJavascript", "html-to-image", "The string must not be empty.", "set_custom_javascript"), 470);
@@ -3004,10 +2424,7 @@ module Pdfcrowd
             self
         end
 
-        # Run a custom JavaScript right after the document is loaded. The script is intended for early DOM manipulation (add/remove elements, update CSS, ...). In addition to the standard browser APIs, the custom JavaScript code can use helper functions from our JavaScript library.
-        #
-        # * +javascript+ - A string containing a JavaScript code. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_on_load_javascript
         def setOnLoadJavascript(javascript)
             if (!(!javascript.nil? && !javascript.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(javascript, "setOnLoadJavascript", "html-to-image", "The string must not be empty.", "set_on_load_javascript"), 470);
@@ -3017,10 +2434,7 @@ module Pdfcrowd
             self
         end
 
-        # Set a custom HTTP header to be included in all requests made by the converter.
-        #
-        # * +header+ - A string containing the header name and value separated by a colon.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_custom_http_header
         def setCustomHttpHeader(header)
             unless /^.+:.+$/.match(header)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(header, "setCustomHttpHeader", "html-to-image", "A string containing the header name and value separated by a colon.", "set_custom_http_header"), 470);
@@ -3030,10 +2444,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait the specified number of milliseconds to finish all JavaScript after the document is loaded. Your license defines the maximum wait time by "Max Delay" parameter.
-        #
-        # * +delay+ - The number of milliseconds to wait. Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_javascript_delay
         def setJavascriptDelay(delay)
             if (!(Integer(delay) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(delay, "setJavascriptDelay", "html-to-image", "Must be a positive integer or 0.", "set_javascript_delay"), 470);
@@ -3043,10 +2454,7 @@ module Pdfcrowd
             self
         end
 
-        # Convert only the specified element from the main document and its children. The element is specified by one or more CSS selectors. If the element is not found, the conversion fails. If multiple elements are found, the first one is used.
-        #
-        # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_element_to_convert
         def setElementToConvert(selectors)
             if (!(!selectors.nil? && !selectors.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(selectors, "setElementToConvert", "html-to-image", "The string must not be empty.", "set_element_to_convert"), 470);
@@ -3056,10 +2464,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the DOM handling when only a part of the document is converted. This can affect the CSS rules used.
-        #
-        # * +mode+ - Allowed values are cut-out, remove-siblings, hide-siblings.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_element_to_convert_mode
         def setElementToConvertMode(mode)
             unless /(?i)^(cut-out|remove-siblings|hide-siblings)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setElementToConvertMode", "html-to-image", "Allowed values are cut-out, remove-siblings, hide-siblings.", "set_element_to_convert_mode"), 470);
@@ -3069,10 +2474,7 @@ module Pdfcrowd
             self
         end
 
-        # Wait for the specified element in a source document. The element is specified by one or more CSS selectors. The element is searched for in the main document and all iframes. If the element is not found, the conversion fails. Your license defines the maximum wait time by "Max Delay" parameter.
-        #
-        # * +selectors+ - One or more CSS selectors separated by commas. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_wait_for_element
         def setWaitForElement(selectors)
             if (!(!selectors.nil? && !selectors.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(selectors, "setWaitForElement", "html-to-image", "The string must not be empty.", "set_wait_for_element"), 470);
@@ -3082,19 +2484,13 @@ module Pdfcrowd
             self
         end
 
-        # The main HTML element for conversion is detected automatically.
-        #
-        # * +value+ - Set to true to detect the main element.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_auto_detect_element_to_convert
         def setAutoDetectElementToConvert(value)
             @fields['auto_detect_element_to_convert'] = value
             self
         end
 
-        # The input HTML is automatically enhanced to improve the readability.
-        #
-        # * +enhancements+ - Allowed values are none, readability-v1, readability-v2, readability-v3, readability-v4.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_readability_enhancements
         def setReadabilityEnhancements(enhancements)
             unless /(?i)^(none|readability-v1|readability-v2|readability-v3|readability-v4)$/.match(enhancements)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(enhancements, "setReadabilityEnhancements", "html-to-image", "Allowed values are none, readability-v1, readability-v2, readability-v3, readability-v4.", "set_readability_enhancements"), 470);
@@ -3104,28 +2500,19 @@ module Pdfcrowd
             self
         end
 
-        # Set the input data for template rendering. The data format can be JSON, XML, YAML or CSV.
-        #
-        # * +data_string+ - The input data string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_string
         def setDataString(data_string)
             @fields['data_string'] = data_string
             self
         end
 
-        # Load the input data for template rendering from the specified file. The data format can be JSON, XML, YAML or CSV.
-        #
-        # * +data_file+ - The file path to a local file containing the input data.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_file
         def setDataFile(data_file)
             @files['data_file'] = data_file
             self
         end
 
-        # Specify the input data format.
-        #
-        # * +data_format+ - The data format. Allowed values are auto, json, xml, yaml, csv.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_format
         def setDataFormat(data_format)
             unless /(?i)^(auto|json|xml|yaml|csv)$/.match(data_format)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(data_format, "setDataFormat", "html-to-image", "Allowed values are auto, json, xml, yaml, csv.", "set_data_format"), 470);
@@ -3135,112 +2522,79 @@ module Pdfcrowd
             self
         end
 
-        # Set the encoding of the data file set by setDataFile.
-        #
-        # * +encoding+ - The data file encoding.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_encoding
         def setDataEncoding(encoding)
             @fields['data_encoding'] = encoding
             self
         end
 
-        # Ignore undefined variables in the HTML template. The default mode is strict so any undefined variable causes the conversion to fail. You can use {% if variable is defined %} to check if the variable is defined.
-        #
-        # * +value+ - Set to true to ignore undefined variables.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_ignore_undefined
         def setDataIgnoreUndefined(value)
             @fields['data_ignore_undefined'] = value
             self
         end
 
-        # Auto escape HTML symbols in the input data before placing them into the output.
-        #
-        # * +value+ - Set to true to turn auto escaping on.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_auto_escape
         def setDataAutoEscape(value)
             @fields['data_auto_escape'] = value
             self
         end
 
-        # Auto trim whitespace around each template command block.
-        #
-        # * +value+ - Set to true to turn auto trimming on.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_trim_blocks
         def setDataTrimBlocks(value)
             @fields['data_trim_blocks'] = value
             self
         end
 
-        # Set the advanced data options:csv_delimiter - The CSV data delimiter, the default is ,.xml_remove_root - Remove the root XML element from the input data.data_root - The name of the root element inserted into the input data without a root node (e.g. CSV), the default is data.
-        #
-        # * +options+ - Comma separated list of options.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_options
         def setDataOptions(options)
             @fields['data_options'] = options
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
-        #
-        # * +value+ - Set to true to enable the debug logging.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_debug_log
         def setDebugLog(value)
             @fields['debug_log'] = value
             self
         end
 
-        # Get the URL of the debug log for the last conversion.
-        # * *Returns* - The link to the debug log.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#get_debug_log_url
         def getDebugLogUrl()
             return @helper.getDebugLogUrl()
         end
 
-        # Get the number of conversion credits available in your account.
-        # This method can only be called after a call to one of the convertXtoY methods.
-        # The returned value can differ from the actual count if you run parallel conversions.
-        # The special value 999999 is returned if the information is not available.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#get_remaining_credit_count
         def getRemainingCreditCount()
             return @helper.getRemainingCreditCount()
         end
 
-        # Get the number of credits consumed by the last conversion.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#get_consumed_credit_count
         def getConsumedCreditCount()
             return @helper.getConsumedCreditCount()
         end
 
-        # Get the job id.
-        # * *Returns* - The unique job identifier.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#get_job_id
         def getJobId()
             return @helper.getJobId()
         end
 
-        # Get the size of the output in bytes.
-        # * *Returns* - The count of bytes.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#get_output_size
         def getOutputSize()
             return @helper.getOutputSize()
         end
 
-        # Get the version details.
-        # * *Returns* - API version, converter version, and client version.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#get_version
         def getVersion()
             return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
         end
 
-        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        #
-        # * +tag+ - A string with the custom tag.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_tag
         def setTag(tag)
             @fields['tag'] = tag
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_http_proxy
         def setHttpProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "html-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
@@ -3250,10 +2604,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_https_proxy
         def setHttpsProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "html-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
@@ -3263,10 +2614,7 @@ module Pdfcrowd
             self
         end
 
-        # A client certificate to authenticate the converter on your web server. The certificate is used for two-way SSL/TLS authentication and adds extra security.
-        #
-        # * +certificate+ - The file must be in PKCS12 format. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_client_certificate
         def setClientCertificate(certificate)
             if (!(File.file?(certificate) && !File.zero?(certificate)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(certificate, "setClientCertificate", "html-to-image", "The file must exist and not be empty.", "set_client_certificate"), 470);
@@ -3276,19 +2624,13 @@ module Pdfcrowd
             self
         end
 
-        # A password for PKCS12 file with a client certificate if it is needed.
-        #
-        # * +password+ -
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_client_certificate_password
         def setClientCertificatePassword(password)
             @fields['client_certificate_password'] = password
             self
         end
 
-        # Set the maximum time to load the page and its resources. After this time, all requests will be considered successful. This can be useful to ensure that the conversion does not timeout. Use this method if there is no other way to fix page loading.
-        #
-        # * +max_time+ - The number of seconds to wait. The accepted range is 10-30.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_max_loading_time
         def setMaxLoadingTime(max_time)
             if (!(Integer(max_time) >= 10 && Integer(max_time) <= 30))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(max_time, "setMaxLoadingTime", "html-to-image", "The accepted range is 10-30.", "set_max_loading_time"), 470);
@@ -3304,19 +2646,13 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the User-Agent HTTP header that will be used by the converter when a request is made to the converted web page.
-        #
-        # * +agent+ - The user agent.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_converter_user_agent
         def setConverterUserAgent(agent)
             @fields['converter_user_agent'] = agent
             self
         end
 
-        # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
-        #
-        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_converter_version
         def setConverterVersion(version)
             unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "html-to-image", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
@@ -3326,50 +2662,31 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
-        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
-        #
-        # * +value+ - Set to true to use HTTP.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_use_http
         def setUseHttp(value)
             @helper.setUseHttp(value)
             self
         end
 
-        # Specifies the User-Agent HTTP header that the client library will use when interacting with the API.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_client_user_agent
         def setClientUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_user_agent
         def setUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        #
-        # * +host+ - The proxy hostname.
-        # * +port+ - The proxy port.
-        # * +user_name+ - The username.
-        # * +password+ - The password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_proxy
         def setProxy(host, port, user_name, password)
             @helper.setProxy(host, port, user_name, password)
             self
         end
 
-        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        #
-        # * +count+ - Number of retries.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_retry_count
         def setRetryCount(count)
             @helper.setRetryCount(count)
             self
@@ -3378,11 +2695,10 @@ module Pdfcrowd
     end
 
     # Conversion from one image format to another image format.
+    #
+    # @see https://pdfcrowd.com/api/image-to-image-ruby/
     class ImageToImageClient
-        # Constructor for the PDFCrowd API client.
-        #
-        # * +user_name+ - Your username at PDFCrowd.
-        # * +api_key+ - Your API key.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#initialize
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
             @fields = {
@@ -3394,10 +2710,7 @@ module Pdfcrowd
             @raw_data = {}
         end
 
-        # Convert an image.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_url
         def convertUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "image-to-image", "Supported protocols are http:// and https://.", "convert_url"), 470);
@@ -3407,10 +2720,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert an image and write the result to an output stream.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_url_to_stream
         def convertUrlToStream(url, out_stream)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "image-to-image", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
@@ -3420,10 +2730,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert an image and write the result to a local file.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_url_to_file
         def convertUrlToFile(url, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "image-to-image", "The string must not be empty.", "convert_url_to_file"), 470);
@@ -3440,10 +2747,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_file
         def convertFile(file)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "image-to-image", "The file must exist and not be empty.", "convert_file"), 470);
@@ -3453,10 +2757,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a local file and write the result to an output stream.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_file_to_stream
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "image-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
@@ -3466,10 +2767,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a local file and write the result to a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_file_to_file
         def convertFileToFile(file, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "image-to-image", "The string must not be empty.", "convert_file_to_file"), 470);
@@ -3486,28 +2784,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert raw data.
-        #
-        # * +data+ - The raw content to be converted.
-        # * *Returns* - Byte array with the output.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_raw_data
         def convertRawData(data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert raw data and write the result to an output stream.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert raw data to a file.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_raw_data_to_file
         def convertRawDataToFile(data, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertRawDataToFile::file_path", "image-to-image", "The string must not be empty.", "convert_raw_data_to_file"), 470);
@@ -3524,28 +2813,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert the contents of an input stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_stream
         def convertStream(in_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert the contents of an input stream and write the result to an output stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert the contents of an input stream and write the result to a local file.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_stream_to_file
         def convertStreamToFile(in_stream, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "image-to-image", "The string must not be empty.", "convert_stream_to_file"), 470);
@@ -3562,10 +2842,7 @@ module Pdfcrowd
             end
         end
 
-        # The format of the output file.
-        #
-        # * +output_format+ - Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_output_format
         def setOutputFormat(output_format)
             unless /(?i)^(png|jpg|gif|tiff|bmp|ico|ppm|pgm|pbm|pnm|psb|pct|ras|tga|sgi|sun|webp)$/.match(output_format)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(output_format, "setOutputFormat", "image-to-image", "Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.", "set_output_format"), 470);
@@ -3575,28 +2852,19 @@ module Pdfcrowd
             self
         end
 
-        # Resize the image.
-        #
-        # * +resize+ - The resize percentage or new image dimensions.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_resize
         def setResize(resize)
             @fields['resize'] = resize
             self
         end
 
-        # Rotate the image.
-        #
-        # * +rotate+ - The rotation specified in degrees.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_rotate
         def setRotate(rotate)
             @fields['rotate'] = rotate
             self
         end
 
-        # Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area.
-        #
-        # * +x+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_crop_area_x
         def setCropAreaX(x)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(x)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setCropAreaX", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_crop_area_x"), 470);
@@ -3606,10 +2874,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area.
-        #
-        # * +y+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_crop_area_y
         def setCropAreaY(y)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(y)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setCropAreaY", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_crop_area_y"), 470);
@@ -3619,10 +2884,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the width of the content area. It should be at least 1 inch.
-        #
-        # * +width+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_crop_area_width
         def setCropAreaWidth(width)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setCropAreaWidth", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_crop_area_width"), 470);
@@ -3632,10 +2894,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the height of the content area. It should be at least 1 inch.
-        #
-        # * +height+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_crop_area_height
         def setCropAreaHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setCropAreaHeight", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_crop_area_height"), 470);
@@ -3645,13 +2904,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the content area position and size. The content area enables to specify the part to be converted.
-        #
-        # * +x+ - Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +y+ - Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +width+ - Set the width of the content area. It should be at least 1 inch. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +height+ - Set the height of the content area. It should be at least 1 inch. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_crop_area
         def setCropArea(x, y, width, height)
             setCropAreaX(x)
             setCropAreaY(y)
@@ -3660,19 +2913,13 @@ module Pdfcrowd
             self
         end
 
-        # Remove borders of an image which does not change in color.
-        #
-        # * +value+ - Set to true to remove borders.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_remove_borders
         def setRemoveBorders(value)
             @fields['remove_borders'] = value
             self
         end
 
-        # Set the output canvas size.
-        #
-        # * +size+ - Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_canvas_size
         def setCanvasSize(size)
             unless /(?i)^(A0|A1|A2|A3|A4|A5|A6|Letter)$/.match(size)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(size, "setCanvasSize", "image-to-image", "Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.", "set_canvas_size"), 470);
@@ -3682,10 +2929,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output canvas width.
-        #
-        # * +width+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_canvas_width
         def setCanvasWidth(width)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setCanvasWidth", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_canvas_width"), 470);
@@ -3695,10 +2939,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output canvas height.
-        #
-        # * +height+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_canvas_height
         def setCanvasHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setCanvasHeight", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_canvas_height"), 470);
@@ -3708,21 +2949,14 @@ module Pdfcrowd
             self
         end
 
-        # Set the output canvas dimensions. If no canvas size is specified, margins are applied as a border around the image.
-        #
-        # * +width+ - Set the output canvas width. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +height+ - Set the output canvas height. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_canvas_dimensions
         def setCanvasDimensions(width, height)
             setCanvasWidth(width)
             setCanvasHeight(height)
             self
         end
 
-        # Set the output canvas orientation.
-        #
-        # * +orientation+ - Allowed values are landscape, portrait.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_orientation
         def setOrientation(orientation)
             unless /(?i)^(landscape|portrait)$/.match(orientation)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(orientation, "setOrientation", "image-to-image", "Allowed values are landscape, portrait.", "set_orientation"), 470);
@@ -3732,10 +2966,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the image position on the canvas.
-        #
-        # * +position+ - Allowed values are center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_position
         def setPosition(position)
             unless /(?i)^(center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right)$/.match(position)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(position, "setPosition", "image-to-image", "Allowed values are center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right.", "set_position"), 470);
@@ -3745,10 +2976,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the mode to print the image on the canvas.
-        #
-        # * +mode+ - Allowed values are default, fit, stretch.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_print_canvas_mode
         def setPrintCanvasMode(mode)
             unless /(?i)^(default|fit|stretch)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPrintCanvasMode", "image-to-image", "Allowed values are default, fit, stretch.", "set_print_canvas_mode"), 470);
@@ -3758,10 +2986,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output canvas top margin.
-        #
-        # * +top+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_margin_top
         def setMarginTop(top)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(top)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(top, "setMarginTop", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_top"), 470);
@@ -3771,10 +2996,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output canvas right margin.
-        #
-        # * +right+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_margin_right
         def setMarginRight(right)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(right)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(right, "setMarginRight", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_right"), 470);
@@ -3784,10 +3006,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output canvas bottom margin.
-        #
-        # * +bottom+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_margin_bottom
         def setMarginBottom(bottom)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(bottom)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(bottom, "setMarginBottom", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_bottom"), 470);
@@ -3797,10 +3016,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output canvas left margin.
-        #
-        # * +left+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_margin_left
         def setMarginLeft(left)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(left)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(left, "setMarginLeft", "image-to-image", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_left"), 470);
@@ -3810,13 +3026,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output canvas margins.
-        #
-        # * +top+ - Set the output canvas top margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +right+ - Set the output canvas right margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +bottom+ - Set the output canvas bottom margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +left+ - Set the output canvas left margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_margins
         def setMargins(top, right, bottom, left)
             setMarginTop(top)
             setMarginRight(right)
@@ -3825,10 +3035,7 @@ module Pdfcrowd
             self
         end
 
-        # The canvas background color in RGB or RGBA hexadecimal format. The color fills the entire canvas regardless of margins. If no canvas size is specified and the image format supports background (e.g. PDF, PNG), the background color is applied too.
-        #
-        # * +color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_canvas_background_color
         def setCanvasBackgroundColor(color)
             unless /^[0-9a-fA-F]{6,8}$/.match(color)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(color, "setCanvasBackgroundColor", "image-to-image", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_canvas_background_color"), 470);
@@ -3838,76 +3045,55 @@ module Pdfcrowd
             self
         end
 
-        # Set the DPI resolution of the input image. The DPI affects margin options specified in points too (e.g. 1 point is equal to 1 pixel in 96 DPI).
-        #
-        # * +dpi+ - The DPI value.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_dpi
         def setDpi(dpi)
             @fields['dpi'] = dpi
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
-        #
-        # * +value+ - Set to true to enable the debug logging.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_debug_log
         def setDebugLog(value)
             @fields['debug_log'] = value
             self
         end
 
-        # Get the URL of the debug log for the last conversion.
-        # * *Returns* - The link to the debug log.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#get_debug_log_url
         def getDebugLogUrl()
             return @helper.getDebugLogUrl()
         end
 
-        # Get the number of conversion credits available in your account.
-        # This method can only be called after a call to one of the convertXtoY methods.
-        # The returned value can differ from the actual count if you run parallel conversions.
-        # The special value 999999 is returned if the information is not available.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#get_remaining_credit_count
         def getRemainingCreditCount()
             return @helper.getRemainingCreditCount()
         end
 
-        # Get the number of credits consumed by the last conversion.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#get_consumed_credit_count
         def getConsumedCreditCount()
             return @helper.getConsumedCreditCount()
         end
 
-        # Get the job id.
-        # * *Returns* - The unique job identifier.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#get_job_id
         def getJobId()
             return @helper.getJobId()
         end
 
-        # Get the size of the output in bytes.
-        # * *Returns* - The count of bytes.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#get_output_size
         def getOutputSize()
             return @helper.getOutputSize()
         end
 
-        # Get the version details.
-        # * *Returns* - API version, converter version, and client version.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#get_version
         def getVersion()
             return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
         end
 
-        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        #
-        # * +tag+ - A string with the custom tag.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_tag
         def setTag(tag)
             @fields['tag'] = tag
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_http_proxy
         def setHttpProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "image-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
@@ -3917,10 +3103,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_https_proxy
         def setHttpsProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "image-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
@@ -3930,10 +3113,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
-        #
-        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_converter_version
         def setConverterVersion(version)
             unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-image", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
@@ -3943,50 +3123,31 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
-        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
-        #
-        # * +value+ - Set to true to use HTTP.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_use_http
         def setUseHttp(value)
             @helper.setUseHttp(value)
             self
         end
 
-        # Specifies the User-Agent HTTP header that the client library will use when interacting with the API.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_client_user_agent
         def setClientUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_user_agent
         def setUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        #
-        # * +host+ - The proxy hostname.
-        # * +port+ - The proxy port.
-        # * +user_name+ - The username.
-        # * +password+ - The password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_proxy
         def setProxy(host, port, user_name, password)
             @helper.setProxy(host, port, user_name, password)
             self
         end
 
-        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        #
-        # * +count+ - Number of retries.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#set_retry_count
         def setRetryCount(count)
             @helper.setRetryCount(count)
             self
@@ -3995,11 +3156,10 @@ module Pdfcrowd
     end
 
     # Conversion from PDF to PDF.
+    #
+    # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/
     class PdfToPdfClient
-        # Constructor for the PDFCrowd API client.
-        #
-        # * +user_name+ - Your username at PDFCrowd.
-        # * +api_key+ - Your API key.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#initialize
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
             @fields = {
@@ -4011,10 +3171,7 @@ module Pdfcrowd
             @raw_data = {}
         end
 
-        # Specifies the action to be performed on the input PDFs.
-        #
-        # * +action+ - Allowed values are join, shuffle, extract, delete.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_action
         def setAction(action)
             unless /(?i)^(join|shuffle|extract|delete)$/.match(action)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(action, "setAction", "pdf-to-pdf", "Allowed values are join, shuffle, extract, delete.", "set_action"), 470);
@@ -4024,22 +3181,17 @@ module Pdfcrowd
             self
         end
 
-        # Perform an action on the input files.
-        # * *Returns* - Byte array containing the output PDF.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#convert
         def convert()
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Perform an action on the input files and write the output PDF to an output stream.
-        #
-        # * +out_stream+ - The output stream that will contain the output PDF.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#convert_to_stream
         def convertToStream(out_stream)
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Perform an action on the input files and write the output PDF to a file.
-        #
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#convert_to_file
         def convertToFile(file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertToFile", "pdf-to-pdf", "The string must not be empty.", "convert_to_file"), 470);
@@ -4050,10 +3202,7 @@ module Pdfcrowd
             output_file.close()
         end
 
-        # Add a PDF file to the list of the input PDFs.
-        #
-        # * +file_path+ - The file path to a local PDF file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#add_pdf_file
         def addPdfFile(file_path)
             if (!(File.file?(file_path) && !File.zero?(file_path)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "addPdfFile", "pdf-to-pdf", "The file must exist and not be empty.", "add_pdf_file"), 470);
@@ -4064,10 +3213,7 @@ module Pdfcrowd
             self
         end
 
-        # Add in-memory raw PDF data to the list of the input PDFs.Typical usage is for adding PDF created by another PDFCrowd converter. Example in PHP: $clientPdf2Pdf->addPdfRawData($clientHtml2Pdf->convertUrl('http://www.example.com'));
-        #
-        # * +data+ - The raw PDF data. The input data must be PDF content.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#add_pdf_raw_data
         def addPdfRawData(data)
             if (!(!data.nil? && data.length > 300 and data[0...4] == '%PDF'))
                 raise Error.new(Pdfcrowd.create_invalid_value_message("raw PDF data", "addPdfRawData", "pdf-to-pdf", "The input data must be PDF content.", "add_pdf_raw_data"), 470);
@@ -4078,19 +3224,13 @@ module Pdfcrowd
             self
         end
 
-        # Password to open the encrypted PDF file.
-        #
-        # * +password+ - The input PDF password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_input_pdf_password
         def setInputPdfPassword(password)
             @fields['input_pdf_password'] = password
             self
         end
 
-        # Set the page range for extract or delete action.
-        #
-        # * +pages+ - A comma separated list of page numbers or ranges.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_page_range
         def setPageRange(pages)
             unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPageRange", "pdf-to-pdf", "A comma separated list of page numbers or ranges.", "set_page_range"), 470);
@@ -4100,10 +3240,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply a watermark to each page of the output PDF file. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
-        #
-        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_page_watermark
         def setPageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(watermark, "setPageWatermark", "pdf-to-pdf", "The file must exist and not be empty.", "set_page_watermark"), 470);
@@ -4113,10 +3250,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply the file as a watermark to each page of the output PDF. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_page_watermark_url
         def setPageWatermarkUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setPageWatermarkUrl", "pdf-to-pdf", "Supported protocols are http:// and https://.", "set_page_watermark_url"), 470);
@@ -4126,10 +3260,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
-        #
-        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_multipage_watermark
         def setMultipageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(watermark, "setMultipageWatermark", "pdf-to-pdf", "The file must exist and not be empty.", "set_multipage_watermark"), 470);
@@ -4139,10 +3270,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply each page of the file as a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_multipage_watermark_url
         def setMultipageWatermarkUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setMultipageWatermarkUrl", "pdf-to-pdf", "Supported protocols are http:// and https://.", "set_multipage_watermark_url"), 470);
@@ -4152,10 +3280,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply a background to each page of the output PDF file. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
-        #
-        # * +background+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_page_background
         def setPageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(background, "setPageBackground", "pdf-to-pdf", "The file must exist and not be empty.", "set_page_background"), 470);
@@ -4165,10 +3290,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply the file as a background to each page of the output PDF. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_page_background_url
         def setPageBackgroundUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setPageBackgroundUrl", "pdf-to-pdf", "Supported protocols are http:// and https://.", "set_page_background_url"), 470);
@@ -4178,10 +3300,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
-        #
-        # * +background+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_multipage_background
         def setMultipageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(background, "setMultipageBackground", "pdf-to-pdf", "The file must exist and not be empty.", "set_multipage_background"), 470);
@@ -4191,10 +3310,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply each page of the file as a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_multipage_background_url
         def setMultipageBackgroundUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setMultipageBackgroundUrl", "pdf-to-pdf", "Supported protocols are http:// and https://.", "set_multipage_background_url"), 470);
@@ -4204,109 +3320,73 @@ module Pdfcrowd
             self
         end
 
-        # Create linearized PDF. This is also known as Fast Web View.
-        #
-        # * +value+ - Set to true to create linearized PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_linearize
         def setLinearize(value)
             @fields['linearize'] = value
             self
         end
 
-        # Encrypt the PDF. This prevents search engines from indexing the contents.
-        #
-        # * +value+ - Set to true to enable PDF encryption.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_encrypt
         def setEncrypt(value)
             @fields['encrypt'] = value
             self
         end
 
-        # Protect the PDF with a user password. When a PDF has a user password, it must be supplied in order to view the document and to perform operations allowed by the access permissions.
-        #
-        # * +password+ - The user password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_user_password
         def setUserPassword(password)
             @fields['user_password'] = password
             self
         end
 
-        # Protect the PDF with an owner password. Supplying an owner password grants unlimited access to the PDF including changing the passwords and access permissions.
-        #
-        # * +password+ - The owner password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_owner_password
         def setOwnerPassword(password)
             @fields['owner_password'] = password
             self
         end
 
-        # Disallow printing of the output PDF.
-        #
-        # * +value+ - Set to true to set the no-print flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_no_print
         def setNoPrint(value)
             @fields['no_print'] = value
             self
         end
 
-        # Disallow modification of the output PDF.
-        #
-        # * +value+ - Set to true to set the read-only only flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_no_modify
         def setNoModify(value)
             @fields['no_modify'] = value
             self
         end
 
-        # Disallow text and graphics extraction from the output PDF.
-        #
-        # * +value+ - Set to true to set the no-copy flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_no_copy
         def setNoCopy(value)
             @fields['no_copy'] = value
             self
         end
 
-        # Set the title of the PDF.
-        #
-        # * +title+ - The title.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_title
         def setTitle(title)
             @fields['title'] = title
             self
         end
 
-        # Set the subject of the PDF.
-        #
-        # * +subject+ - The subject.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_subject
         def setSubject(subject)
             @fields['subject'] = subject
             self
         end
 
-        # Set the author of the PDF.
-        #
-        # * +author+ - The author.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_author
         def setAuthor(author)
             @fields['author'] = author
             self
         end
 
-        # Associate keywords with the document.
-        #
-        # * +keywords+ - The string with the keywords.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_keywords
         def setKeywords(keywords)
             @fields['keywords'] = keywords
             self
         end
 
-        # Use metadata (title, subject, author and keywords) from the n-th input PDF.
-        #
-        # * +index+ - Set the index of the input PDF file from which to use the metadata. 0 means no metadata. Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_use_metadata_from
         def setUseMetadataFrom(index)
             if (!(Integer(index) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(index, "setUseMetadataFrom", "pdf-to-pdf", "Must be a positive integer or 0.", "set_use_metadata_from"), 470);
@@ -4316,10 +3396,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the page layout to be used when the document is opened.
-        #
-        # * +layout+ - Allowed values are single-page, one-column, two-column-left, two-column-right.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_page_layout
         def setPageLayout(layout)
             unless /(?i)^(single-page|one-column|two-column-left|two-column-right)$/.match(layout)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(layout, "setPageLayout", "pdf-to-pdf", "Allowed values are single-page, one-column, two-column-left, two-column-right.", "set_page_layout"), 470);
@@ -4329,10 +3406,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify how the document should be displayed when opened.
-        #
-        # * +mode+ - Allowed values are full-screen, thumbnails, outlines.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_page_mode
         def setPageMode(mode)
             unless /(?i)^(full-screen|thumbnails|outlines)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPageMode", "pdf-to-pdf", "Allowed values are full-screen, thumbnails, outlines.", "set_page_mode"), 470);
@@ -4342,10 +3416,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify how the page should be displayed when opened.
-        #
-        # * +zoom_type+ - Allowed values are fit-width, fit-height, fit-page.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_initial_zoom_type
         def setInitialZoomType(zoom_type)
             unless /(?i)^(fit-width|fit-height|fit-page)$/.match(zoom_type)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(zoom_type, "setInitialZoomType", "pdf-to-pdf", "Allowed values are fit-width, fit-height, fit-page.", "set_initial_zoom_type"), 470);
@@ -4355,10 +3426,7 @@ module Pdfcrowd
             self
         end
 
-        # Display the specified page when the document is opened.
-        #
-        # * +page+ - Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_initial_page
         def setInitialPage(page)
             if (!(Integer(page) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(page, "setInitialPage", "pdf-to-pdf", "Must be a positive integer.", "set_initial_page"), 470);
@@ -4368,10 +3436,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the initial page zoom in percents when the document is opened.
-        #
-        # * +zoom+ - Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_initial_zoom
         def setInitialZoom(zoom)
             if (!(Integer(zoom) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(zoom, "setInitialZoom", "pdf-to-pdf", "Must be a positive integer.", "set_initial_zoom"), 470);
@@ -4381,136 +3446,96 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to hide the viewer application's tool bars when the document is active.
-        #
-        # * +value+ - Set to true to hide tool bars.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_hide_toolbar
         def setHideToolbar(value)
             @fields['hide_toolbar'] = value
             self
         end
 
-        # Specify whether to hide the viewer application's menu bar when the document is active.
-        #
-        # * +value+ - Set to true to hide the menu bar.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_hide_menubar
         def setHideMenubar(value)
             @fields['hide_menubar'] = value
             self
         end
 
-        # Specify whether to hide user interface elements in the document's window (such as scroll bars and navigation controls), leaving only the document's contents displayed.
-        #
-        # * +value+ - Set to true to hide ui elements.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_hide_window_ui
         def setHideWindowUi(value)
             @fields['hide_window_ui'] = value
             self
         end
 
-        # Specify whether to resize the document's window to fit the size of the first displayed page.
-        #
-        # * +value+ - Set to true to resize the window.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_fit_window
         def setFitWindow(value)
             @fields['fit_window'] = value
             self
         end
 
-        # Specify whether to position the document's window in the center of the screen.
-        #
-        # * +value+ - Set to true to center the window.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_center_window
         def setCenterWindow(value)
             @fields['center_window'] = value
             self
         end
 
-        # Specify whether the window's title bar should display the document title. If false , the title bar should instead display the name of the PDF file containing the document.
-        #
-        # * +value+ - Set to true to display the title.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_display_title
         def setDisplayTitle(value)
             @fields['display_title'] = value
             self
         end
 
-        # Set the predominant reading order for text to right-to-left. This option has no direct effect on the document's contents or page numbering but can be used to determine the relative positioning of pages when displayed side by side or printed n-up
-        #
-        # * +value+ - Set to true to set right-to-left reading order.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_right_to_left
         def setRightToLeft(value)
             @fields['right_to_left'] = value
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
-        #
-        # * +value+ - Set to true to enable the debug logging.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_debug_log
         def setDebugLog(value)
             @fields['debug_log'] = value
             self
         end
 
-        # Get the URL of the debug log for the last conversion.
-        # * *Returns* - The link to the debug log.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#get_debug_log_url
         def getDebugLogUrl()
             return @helper.getDebugLogUrl()
         end
 
-        # Get the number of conversion credits available in your account.
-        # This method can only be called after a call to one of the convertXtoY methods.
-        # The returned value can differ from the actual count if you run parallel conversions.
-        # The special value 999999 is returned if the information is not available.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#get_remaining_credit_count
         def getRemainingCreditCount()
             return @helper.getRemainingCreditCount()
         end
 
-        # Get the number of credits consumed by the last conversion.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#get_consumed_credit_count
         def getConsumedCreditCount()
             return @helper.getConsumedCreditCount()
         end
 
-        # Get the job id.
-        # * *Returns* - The unique job identifier.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#get_job_id
         def getJobId()
             return @helper.getJobId()
         end
 
-        # Get the number of pages in the output document.
-        # * *Returns* - The page count.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#get_page_count
         def getPageCount()
             return @helper.getPageCount()
         end
 
-        # Get the size of the output in bytes.
-        # * *Returns* - The count of bytes.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#get_output_size
         def getOutputSize()
             return @helper.getOutputSize()
         end
 
-        # Get the version details.
-        # * *Returns* - API version, converter version, and client version.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#get_version
         def getVersion()
             return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
         end
 
-        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        #
-        # * +tag+ - A string with the custom tag.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_tag
         def setTag(tag)
             @fields['tag'] = tag
             self
         end
 
-        # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
-        #
-        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_converter_version
         def setConverterVersion(version)
             unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "pdf-to-pdf", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
@@ -4520,50 +3545,31 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
-        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
-        #
-        # * +value+ - Set to true to use HTTP.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_use_http
         def setUseHttp(value)
             @helper.setUseHttp(value)
             self
         end
 
-        # Specifies the User-Agent HTTP header that the client library will use when interacting with the API.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_client_user_agent
         def setClientUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_user_agent
         def setUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        #
-        # * +host+ - The proxy hostname.
-        # * +port+ - The proxy port.
-        # * +user_name+ - The username.
-        # * +password+ - The password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_proxy
         def setProxy(host, port, user_name, password)
             @helper.setProxy(host, port, user_name, password)
             self
         end
 
-        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        #
-        # * +count+ - Number of retries.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_retry_count
         def setRetryCount(count)
             @helper.setRetryCount(count)
             self
@@ -4572,11 +3578,10 @@ module Pdfcrowd
     end
 
     # Conversion from an image to PDF.
+    #
+    # @see https://pdfcrowd.com/api/image-to-pdf-ruby/
     class ImageToPdfClient
-        # Constructor for the PDFCrowd API client.
-        #
-        # * +user_name+ - Your username at PDFCrowd.
-        # * +api_key+ - Your API key.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#initialize
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
             @fields = {
@@ -4588,10 +3593,7 @@ module Pdfcrowd
             @raw_data = {}
         end
 
-        # Convert an image.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_url
         def convertUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "image-to-pdf", "Supported protocols are http:// and https://.", "convert_url"), 470);
@@ -4601,10 +3603,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert an image and write the result to an output stream.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_url_to_stream
         def convertUrlToStream(url, out_stream)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "image-to-pdf", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
@@ -4614,10 +3613,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert an image and write the result to a local file.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_url_to_file
         def convertUrlToFile(url, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "image-to-pdf", "The string must not be empty.", "convert_url_to_file"), 470);
@@ -4634,10 +3630,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_file
         def convertFile(file)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "image-to-pdf", "The file must exist and not be empty.", "convert_file"), 470);
@@ -4647,10 +3640,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a local file and write the result to an output stream.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_file_to_stream
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "image-to-pdf", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
@@ -4660,10 +3650,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a local file and write the result to a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_file_to_file
         def convertFileToFile(file, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "image-to-pdf", "The string must not be empty.", "convert_file_to_file"), 470);
@@ -4680,28 +3667,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert raw data.
-        #
-        # * +data+ - The raw content to be converted.
-        # * *Returns* - Byte array with the output.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_raw_data
         def convertRawData(data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert raw data and write the result to an output stream.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert raw data to a file.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_raw_data_to_file
         def convertRawDataToFile(data, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertRawDataToFile::file_path", "image-to-pdf", "The string must not be empty.", "convert_raw_data_to_file"), 470);
@@ -4718,28 +3696,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert the contents of an input stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_stream
         def convertStream(in_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert the contents of an input stream and write the result to an output stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert the contents of an input stream and write the result to a local file.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_stream_to_file
         def convertStreamToFile(in_stream, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "image-to-pdf", "The string must not be empty.", "convert_stream_to_file"), 470);
@@ -4756,28 +3725,19 @@ module Pdfcrowd
             end
         end
 
-        # Resize the image.
-        #
-        # * +resize+ - The resize percentage or new image dimensions.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_resize
         def setResize(resize)
             @fields['resize'] = resize
             self
         end
 
-        # Rotate the image.
-        #
-        # * +rotate+ - The rotation specified in degrees.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_rotate
         def setRotate(rotate)
             @fields['rotate'] = rotate
             self
         end
 
-        # Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area.
-        #
-        # * +x+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_crop_area_x
         def setCropAreaX(x)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(x)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setCropAreaX", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_crop_area_x"), 470);
@@ -4787,10 +3747,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area.
-        #
-        # * +y+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_crop_area_y
         def setCropAreaY(y)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(y)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setCropAreaY", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_crop_area_y"), 470);
@@ -4800,10 +3757,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the width of the content area. It should be at least 1 inch.
-        #
-        # * +width+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_crop_area_width
         def setCropAreaWidth(width)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setCropAreaWidth", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_crop_area_width"), 470);
@@ -4813,10 +3767,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the height of the content area. It should be at least 1 inch.
-        #
-        # * +height+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_crop_area_height
         def setCropAreaHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setCropAreaHeight", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_crop_area_height"), 470);
@@ -4826,13 +3777,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the content area position and size. The content area enables to specify the part to be converted.
-        #
-        # * +x+ - Set the top left X coordinate of the content area. It is relative to the top left X coordinate of the print area. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +y+ - Set the top left Y coordinate of the content area. It is relative to the top left Y coordinate of the print area. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +width+ - Set the width of the content area. It should be at least 1 inch. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +height+ - Set the height of the content area. It should be at least 1 inch. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_crop_area
         def setCropArea(x, y, width, height)
             setCropAreaX(x)
             setCropAreaY(y)
@@ -4841,19 +3786,13 @@ module Pdfcrowd
             self
         end
 
-        # Remove borders of an image which does not change in color.
-        #
-        # * +value+ - Set to true to remove borders.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_remove_borders
         def setRemoveBorders(value)
             @fields['remove_borders'] = value
             self
         end
 
-        # Set the output page size.
-        #
-        # * +size+ - Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_size
         def setPageSize(size)
             unless /(?i)^(A0|A1|A2|A3|A4|A5|A6|Letter)$/.match(size)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(size, "setPageSize", "image-to-pdf", "Allowed values are A0, A1, A2, A3, A4, A5, A6, Letter.", "set_page_size"), 470);
@@ -4863,10 +3802,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page width.
-        #
-        # * +width+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_width
         def setPageWidth(width)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(width)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setPageWidth", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_page_width"), 470);
@@ -4876,10 +3812,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page height.
-        #
-        # * +height+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_height
         def setPageHeight(height)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(height)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setPageHeight", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_page_height"), 470);
@@ -4889,21 +3822,14 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page dimensions. If no page size is specified, margins are applied as a border around the image.
-        #
-        # * +width+ - Set the output page width. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +height+ - Set the output page height. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_dimensions
         def setPageDimensions(width, height)
             setPageWidth(width)
             setPageHeight(height)
             self
         end
 
-        # Set the output page orientation.
-        #
-        # * +orientation+ - Allowed values are landscape, portrait.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_orientation
         def setOrientation(orientation)
             unless /(?i)^(landscape|portrait)$/.match(orientation)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(orientation, "setOrientation", "image-to-pdf", "Allowed values are landscape, portrait.", "set_orientation"), 470);
@@ -4913,10 +3839,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the image position on the page.
-        #
-        # * +position+ - Allowed values are center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_position
         def setPosition(position)
             unless /(?i)^(center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right)$/.match(position)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(position, "setPosition", "image-to-pdf", "Allowed values are center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right.", "set_position"), 470);
@@ -4926,10 +3849,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the mode to print the image on the content area of the page.
-        #
-        # * +mode+ - Allowed values are default, fit, stretch.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_print_page_mode
         def setPrintPageMode(mode)
             unless /(?i)^(default|fit|stretch)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPrintPageMode", "image-to-pdf", "Allowed values are default, fit, stretch.", "set_print_page_mode"), 470);
@@ -4939,10 +3859,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page top margin.
-        #
-        # * +top+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_margin_top
         def setMarginTop(top)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(top)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(top, "setMarginTop", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_top"), 470);
@@ -4952,10 +3869,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page right margin.
-        #
-        # * +right+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_margin_right
         def setMarginRight(right)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(right)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(right, "setMarginRight", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_right"), 470);
@@ -4965,10 +3879,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page bottom margin.
-        #
-        # * +bottom+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_margin_bottom
         def setMarginBottom(bottom)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(bottom)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(bottom, "setMarginBottom", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_bottom"), 470);
@@ -4978,10 +3889,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page left margin.
-        #
-        # * +left+ - The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_margin_left
         def setMarginLeft(left)
             unless /(?i)^0$|^[0-9]*\.?[0-9]+(pt|px|mm|cm|in)$/.match(left)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(left, "setMarginLeft", "image-to-pdf", "The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.", "set_margin_left"), 470);
@@ -4991,13 +3899,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the output page margins.
-        #
-        # * +top+ - Set the output page top margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +right+ - Set the output page right margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +bottom+ - Set the output page bottom margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * +left+ - Set the output page left margin. The value must be specified in inches 'in', millimeters 'mm', centimeters 'cm', pixels 'px', or points 'pt'.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_margins
         def setPageMargins(top, right, bottom, left)
             setMarginTop(top)
             setMarginRight(right)
@@ -5006,10 +3908,7 @@ module Pdfcrowd
             self
         end
 
-        # The page background color in RGB or RGBA hexadecimal format. The color fills the entire page regardless of the margins. If not page size is specified and the image format supports background (e.g. PDF, PNG), the background color is applied too.
-        #
-        # * +color+ - The value must be in RRGGBB or RRGGBBAA hexadecimal format.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_background_color
         def setPageBackgroundColor(color)
             unless /^[0-9a-fA-F]{6,8}$/.match(color)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(color, "setPageBackgroundColor", "image-to-pdf", "The value must be in RRGGBB or RRGGBBAA hexadecimal format.", "set_page_background_color"), 470);
@@ -5019,19 +3918,13 @@ module Pdfcrowd
             self
         end
 
-        # Set the DPI resolution of the input image. The DPI affects margin options specified in points too (e.g. 1 point is equal to 1 pixel in 96 DPI).
-        #
-        # * +dpi+ - The DPI value.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_dpi
         def setDpi(dpi)
             @fields['dpi'] = dpi
             self
         end
 
-        # Apply a watermark to each page of the output PDF file. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
-        #
-        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_watermark
         def setPageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(watermark, "setPageWatermark", "image-to-pdf", "The file must exist and not be empty.", "set_page_watermark"), 470);
@@ -5041,10 +3934,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply the file as a watermark to each page of the output PDF. A watermark can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the watermark.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_watermark_url
         def setPageWatermarkUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setPageWatermarkUrl", "image-to-pdf", "Supported protocols are http:// and https://.", "set_page_watermark_url"), 470);
@@ -5054,10 +3944,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
-        #
-        # * +watermark+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_multipage_watermark
         def setMultipageWatermark(watermark)
             if (!(File.file?(watermark) && !File.zero?(watermark)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(watermark, "setMultipageWatermark", "image-to-pdf", "The file must exist and not be empty.", "set_multipage_watermark"), 470);
@@ -5067,10 +3954,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply each page of the file as a watermark to the corresponding page of the output PDF. A watermark can be either a PDF or an image.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_multipage_watermark_url
         def setMultipageWatermarkUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setMultipageWatermarkUrl", "image-to-pdf", "Supported protocols are http:// and https://.", "set_multipage_watermark_url"), 470);
@@ -5080,10 +3964,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply a background to each page of the output PDF file. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
-        #
-        # * +background+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_background
         def setPageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(background, "setPageBackground", "image-to-pdf", "The file must exist and not be empty.", "set_page_background"), 470);
@@ -5093,10 +3974,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply the file as a background to each page of the output PDF. A background can be either a PDF or an image. If a multi-page file (PDF or TIFF) is used, the first page is used as the background.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_background_url
         def setPageBackgroundUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setPageBackgroundUrl", "image-to-pdf", "Supported protocols are http:// and https://.", "set_page_background_url"), 470);
@@ -5106,10 +3984,7 @@ module Pdfcrowd
             self
         end
 
-        # Apply each page of a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
-        #
-        # * +background+ - The file path to a local file. The file must exist and not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_multipage_background
         def setMultipageBackground(background)
             if (!(File.file?(background) && !File.zero?(background)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(background, "setMultipageBackground", "image-to-pdf", "The file must exist and not be empty.", "set_multipage_background"), 470);
@@ -5119,10 +3994,7 @@ module Pdfcrowd
             self
         end
 
-        # Load a file from the specified URL and apply each page of the file as a background to the corresponding page of the output PDF. A background can be either a PDF or an image.
-        #
-        # * +url+ - Supported protocols are http:// and https://.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_multipage_background_url
         def setMultipageBackgroundUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "setMultipageBackgroundUrl", "image-to-pdf", "Supported protocols are http:// and https://.", "set_multipage_background_url"), 470);
@@ -5132,109 +4004,73 @@ module Pdfcrowd
             self
         end
 
-        # Create linearized PDF. This is also known as Fast Web View.
-        #
-        # * +value+ - Set to true to create linearized PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_linearize
         def setLinearize(value)
             @fields['linearize'] = value
             self
         end
 
-        # Encrypt the PDF. This prevents search engines from indexing the contents.
-        #
-        # * +value+ - Set to true to enable PDF encryption.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_encrypt
         def setEncrypt(value)
             @fields['encrypt'] = value
             self
         end
 
-        # Protect the PDF with a user password. When a PDF has a user password, it must be supplied in order to view the document and to perform operations allowed by the access permissions.
-        #
-        # * +password+ - The user password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_user_password
         def setUserPassword(password)
             @fields['user_password'] = password
             self
         end
 
-        # Protect the PDF with an owner password. Supplying an owner password grants unlimited access to the PDF including changing the passwords and access permissions.
-        #
-        # * +password+ - The owner password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_owner_password
         def setOwnerPassword(password)
             @fields['owner_password'] = password
             self
         end
 
-        # Disallow printing of the output PDF.
-        #
-        # * +value+ - Set to true to set the no-print flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_no_print
         def setNoPrint(value)
             @fields['no_print'] = value
             self
         end
 
-        # Disallow modification of the output PDF.
-        #
-        # * +value+ - Set to true to set the read-only only flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_no_modify
         def setNoModify(value)
             @fields['no_modify'] = value
             self
         end
 
-        # Disallow text and graphics extraction from the output PDF.
-        #
-        # * +value+ - Set to true to set the no-copy flag in the output PDF.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_no_copy
         def setNoCopy(value)
             @fields['no_copy'] = value
             self
         end
 
-        # Set the title of the PDF.
-        #
-        # * +title+ - The title.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_title
         def setTitle(title)
             @fields['title'] = title
             self
         end
 
-        # Set the subject of the PDF.
-        #
-        # * +subject+ - The subject.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_subject
         def setSubject(subject)
             @fields['subject'] = subject
             self
         end
 
-        # Set the author of the PDF.
-        #
-        # * +author+ - The author.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_author
         def setAuthor(author)
             @fields['author'] = author
             self
         end
 
-        # Associate keywords with the document.
-        #
-        # * +keywords+ - The string with the keywords.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_keywords
         def setKeywords(keywords)
             @fields['keywords'] = keywords
             self
         end
 
-        # Specify the page layout to be used when the document is opened.
-        #
-        # * +layout+ - Allowed values are single-page, one-column, two-column-left, two-column-right.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_layout
         def setPageLayout(layout)
             unless /(?i)^(single-page|one-column|two-column-left|two-column-right)$/.match(layout)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(layout, "setPageLayout", "image-to-pdf", "Allowed values are single-page, one-column, two-column-left, two-column-right.", "set_page_layout"), 470);
@@ -5244,10 +4080,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify how the document should be displayed when opened.
-        #
-        # * +mode+ - Allowed values are full-screen, thumbnails, outlines.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_page_mode
         def setPageMode(mode)
             unless /(?i)^(full-screen|thumbnails|outlines)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPageMode", "image-to-pdf", "Allowed values are full-screen, thumbnails, outlines.", "set_page_mode"), 470);
@@ -5257,10 +4090,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify how the page should be displayed when opened.
-        #
-        # * +zoom_type+ - Allowed values are fit-width, fit-height, fit-page.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_initial_zoom_type
         def setInitialZoomType(zoom_type)
             unless /(?i)^(fit-width|fit-height|fit-page)$/.match(zoom_type)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(zoom_type, "setInitialZoomType", "image-to-pdf", "Allowed values are fit-width, fit-height, fit-page.", "set_initial_zoom_type"), 470);
@@ -5270,10 +4100,7 @@ module Pdfcrowd
             self
         end
 
-        # Display the specified page when the document is opened.
-        #
-        # * +page+ - Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_initial_page
         def setInitialPage(page)
             if (!(Integer(page) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(page, "setInitialPage", "image-to-pdf", "Must be a positive integer.", "set_initial_page"), 470);
@@ -5283,10 +4110,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the initial page zoom in percents when the document is opened.
-        #
-        # * +zoom+ - Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_initial_zoom
         def setInitialZoom(zoom)
             if (!(Integer(zoom) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(zoom, "setInitialZoom", "image-to-pdf", "Must be a positive integer.", "set_initial_zoom"), 470);
@@ -5296,121 +4120,85 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to hide the viewer application's tool bars when the document is active.
-        #
-        # * +value+ - Set to true to hide tool bars.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_hide_toolbar
         def setHideToolbar(value)
             @fields['hide_toolbar'] = value
             self
         end
 
-        # Specify whether to hide the viewer application's menu bar when the document is active.
-        #
-        # * +value+ - Set to true to hide the menu bar.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_hide_menubar
         def setHideMenubar(value)
             @fields['hide_menubar'] = value
             self
         end
 
-        # Specify whether to hide user interface elements in the document's window (such as scroll bars and navigation controls), leaving only the document's contents displayed.
-        #
-        # * +value+ - Set to true to hide ui elements.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_hide_window_ui
         def setHideWindowUi(value)
             @fields['hide_window_ui'] = value
             self
         end
 
-        # Specify whether to resize the document's window to fit the size of the first displayed page.
-        #
-        # * +value+ - Set to true to resize the window.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_fit_window
         def setFitWindow(value)
             @fields['fit_window'] = value
             self
         end
 
-        # Specify whether to position the document's window in the center of the screen.
-        #
-        # * +value+ - Set to true to center the window.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_center_window
         def setCenterWindow(value)
             @fields['center_window'] = value
             self
         end
 
-        # Specify whether the window's title bar should display the document title. If false , the title bar should instead display the name of the PDF file containing the document.
-        #
-        # * +value+ - Set to true to display the title.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_display_title
         def setDisplayTitle(value)
             @fields['display_title'] = value
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
-        #
-        # * +value+ - Set to true to enable the debug logging.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_debug_log
         def setDebugLog(value)
             @fields['debug_log'] = value
             self
         end
 
-        # Get the URL of the debug log for the last conversion.
-        # * *Returns* - The link to the debug log.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#get_debug_log_url
         def getDebugLogUrl()
             return @helper.getDebugLogUrl()
         end
 
-        # Get the number of conversion credits available in your account.
-        # This method can only be called after a call to one of the convertXtoY methods.
-        # The returned value can differ from the actual count if you run parallel conversions.
-        # The special value 999999 is returned if the information is not available.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#get_remaining_credit_count
         def getRemainingCreditCount()
             return @helper.getRemainingCreditCount()
         end
 
-        # Get the number of credits consumed by the last conversion.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#get_consumed_credit_count
         def getConsumedCreditCount()
             return @helper.getConsumedCreditCount()
         end
 
-        # Get the job id.
-        # * *Returns* - The unique job identifier.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#get_job_id
         def getJobId()
             return @helper.getJobId()
         end
 
-        # Get the size of the output in bytes.
-        # * *Returns* - The count of bytes.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#get_output_size
         def getOutputSize()
             return @helper.getOutputSize()
         end
 
-        # Get the version details.
-        # * *Returns* - API version, converter version, and client version.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#get_version
         def getVersion()
             return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
         end
 
-        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        #
-        # * +tag+ - A string with the custom tag.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_tag
         def setTag(tag)
             @fields['tag'] = tag
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_http_proxy
         def setHttpProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "image-to-pdf", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
@@ -5420,10 +4208,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_https_proxy
         def setHttpsProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "image-to-pdf", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
@@ -5433,10 +4218,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
-        #
-        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_converter_version
         def setConverterVersion(version)
             unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "image-to-pdf", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
@@ -5446,50 +4228,31 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
-        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
-        #
-        # * +value+ - Set to true to use HTTP.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_use_http
         def setUseHttp(value)
             @helper.setUseHttp(value)
             self
         end
 
-        # Specifies the User-Agent HTTP header that the client library will use when interacting with the API.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_client_user_agent
         def setClientUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_user_agent
         def setUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        #
-        # * +host+ - The proxy hostname.
-        # * +port+ - The proxy port.
-        # * +user_name+ - The username.
-        # * +password+ - The password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_proxy
         def setProxy(host, port, user_name, password)
             @helper.setProxy(host, port, user_name, password)
             self
         end
 
-        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        #
-        # * +count+ - Number of retries.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_retry_count
         def setRetryCount(count)
             @helper.setRetryCount(count)
             self
@@ -5498,11 +4261,10 @@ module Pdfcrowd
     end
 
     # Conversion from PDF to HTML.
+    #
+    # @see https://pdfcrowd.com/api/pdf-to-html-ruby/
     class PdfToHtmlClient
-        # Constructor for the PDFCrowd API client.
-        #
-        # * +user_name+ - Your username at PDFCrowd.
-        # * +api_key+ - Your API key.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#initialize
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
             @fields = {
@@ -5514,10 +4276,7 @@ module Pdfcrowd
             @raw_data = {}
         end
 
-        # Convert a PDF.
-        #
-        # * +url+ - The address of the PDF to convert. Supported protocols are http:// and https://.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_url
         def convertUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "pdf-to-html", "Supported protocols are http:// and https://.", "convert_url"), 470);
@@ -5527,10 +4286,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a PDF and write the result to an output stream.
-        #
-        # * +url+ - The address of the PDF to convert. Supported protocols are http:// and https://.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_url_to_stream
         def convertUrlToStream(url, out_stream)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "pdf-to-html", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
@@ -5540,10 +4296,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a PDF and write the result to a local file.
-        #
-        # * +url+ - The address of the PDF to convert. Supported protocols are http:// and https://.
-        # * +file_path+ - The output file path. The string must not be empty. The converter generates an HTML or ZIP file. If ZIP file is generated, the file path must have a ZIP or zip extension.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_url_to_file
         def convertUrlToFile(url, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "pdf-to-html", "The string must not be empty.", "convert_url_to_file"), 470);
@@ -5564,10 +4317,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_file
         def convertFile(file)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "pdf-to-html", "The file must exist and not be empty.", "convert_file"), 470);
@@ -5577,10 +4327,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a local file and write the result to an output stream.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_file_to_stream
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "pdf-to-html", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
@@ -5590,10 +4337,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a local file and write the result to a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +file_path+ - The output file path. The string must not be empty. The converter generates an HTML or ZIP file. If ZIP file is generated, the file path must have a ZIP or zip extension.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_file_to_file
         def convertFileToFile(file, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "pdf-to-html", "The string must not be empty.", "convert_file_to_file"), 470);
@@ -5614,28 +4358,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert raw data.
-        #
-        # * +data+ - The raw content to be converted.
-        # * *Returns* - Byte array with the output.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_raw_data
         def convertRawData(data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert raw data and write the result to an output stream.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert raw data to a file.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +file_path+ - The output file path. The string must not be empty. The converter generates an HTML or ZIP file. If ZIP file is generated, the file path must have a ZIP or zip extension.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_raw_data_to_file
         def convertRawDataToFile(data, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertRawDataToFile::file_path", "pdf-to-html", "The string must not be empty.", "convert_raw_data_to_file"), 470);
@@ -5656,28 +4391,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert the contents of an input stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_stream
         def convertStream(in_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert the contents of an input stream and write the result to an output stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert the contents of an input stream and write the result to a local file.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +file_path+ - The output file path. The string must not be empty. The converter generates an HTML or ZIP file. If ZIP file is generated, the file path must have a ZIP or zip extension.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_stream_to_file
         def convertStreamToFile(in_stream, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "pdf-to-html", "The string must not be empty.", "convert_stream_to_file"), 470);
@@ -5698,19 +4424,13 @@ module Pdfcrowd
             end
         end
 
-        # Password to open the encrypted PDF file.
-        #
-        # * +password+ - The input PDF password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_pdf_password
         def setPdfPassword(password)
             @fields['pdf_password'] = password
             self
         end
 
-        # Set the scaling factor (zoom) for the main page area.
-        #
-        # * +factor+ - The percentage value. Must be a positive integer.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_scale_factor
         def setScaleFactor(factor)
             if (!(Integer(factor) > 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(factor, "setScaleFactor", "pdf-to-html", "Must be a positive integer.", "set_scale_factor"), 470);
@@ -5720,10 +4440,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the page range to print.
-        #
-        # * +pages+ - A comma separated list of page numbers or ranges.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_print_page_range
         def setPrintPageRange(pages)
             unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPrintPageRange", "pdf-to-html", "A comma separated list of page numbers or ranges.", "set_print_page_range"), 470);
@@ -5733,19 +4450,13 @@ module Pdfcrowd
             self
         end
 
-        # Set the output graphics DPI.
-        #
-        # * +dpi+ - The DPI value.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_dpi
         def setDpi(dpi)
             @fields['dpi'] = dpi
             self
         end
 
-        # Specifies where the images are stored.
-        #
-        # * +mode+ - The image storage mode. Allowed values are embed, separate, none.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_image_mode
         def setImageMode(mode)
             unless /(?i)^(embed|separate|none)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setImageMode", "pdf-to-html", "Allowed values are embed, separate, none.", "set_image_mode"), 470);
@@ -5755,10 +4466,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies the format for the output images.
-        #
-        # * +image_format+ - The image format. Allowed values are png, jpg, svg.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_image_format
         def setImageFormat(image_format)
             unless /(?i)^(png|jpg|svg)$/.match(image_format)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(image_format, "setImageFormat", "pdf-to-html", "Allowed values are png, jpg, svg.", "set_image_format"), 470);
@@ -5768,10 +4476,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies where the style sheets are stored.
-        #
-        # * +mode+ - The style sheet storage mode. Allowed values are embed, separate.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_css_mode
         def setCssMode(mode)
             unless /(?i)^(embed|separate)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setCssMode", "pdf-to-html", "Allowed values are embed, separate.", "set_css_mode"), 470);
@@ -5781,10 +4486,7 @@ module Pdfcrowd
             self
         end
 
-        # Specifies where the fonts are stored.
-        #
-        # * +mode+ - The font storage mode. Allowed values are embed, separate.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_font_mode
         def setFontMode(mode)
             unless /(?i)^(embed|separate)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setFontMode", "pdf-to-html", "Allowed values are embed, separate.", "set_font_mode"), 470);
@@ -5794,10 +4496,7 @@ module Pdfcrowd
             self
         end
 
-        # Sets the processing mode for handling Type 3 fonts.
-        #
-        # * +mode+ - The type3 font mode. Allowed values are raster, convert.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_type3_mode
         def setType3Mode(mode)
             unless /(?i)^(raster|convert)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setType3Mode", "pdf-to-html", "Allowed values are raster, convert.", "set_type3_mode"), 470);
@@ -5807,19 +4506,13 @@ module Pdfcrowd
             self
         end
 
-        # Converts ligatures, two or more letters combined into a single glyph, back into their individual ASCII characters.
-        #
-        # * +value+ - Set to true to split ligatures.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_split_ligatures
         def setSplitLigatures(value)
             @fields['split_ligatures'] = value
             self
         end
 
-        # Apply custom CSS to the output HTML document. It allows you to modify the visual appearance and layout. Tip: Using !important in custom CSS provides a way to prioritize and override conflicting styles.
-        #
-        # * +css+ - A string containing valid CSS. The string must not be empty.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_custom_css
         def setCustomCss(css)
             if (!(!css.nil? && !css.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(css, "setCustomCss", "pdf-to-html", "The string must not be empty.", "set_custom_css"), 470);
@@ -5829,10 +4522,7 @@ module Pdfcrowd
             self
         end
 
-        # Add the specified prefix to all id and class attributes in the HTML content, creating a namespace for safe integration into another HTML document. This ensures unique identifiers, preventing conflicts when merging with other HTML.
-        #
-        # * +prefix+ - The prefix to add before each id and class attribute name. Start with a letter or underscore, and use only letters, numbers, hyphens, underscores, or colons.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_html_namespace
         def setHtmlNamespace(prefix)
             unless /(?i)^[a-z_][a-z0-9_:-]*$/.match(prefix)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(prefix, "setHtmlNamespace", "pdf-to-html", "Start with a letter or underscore, and use only letters, numbers, hyphens, underscores, or colons.", "set_html_namespace"), 470);
@@ -5842,124 +4532,89 @@ module Pdfcrowd
             self
         end
 
-        # A helper method to determine if the output file is a zip archive. The output of the conversion may be either an HTML file or a zip file containing the HTML and its external assets.
-        # * *Returns* - True if the conversion output is a zip file, otherwise False.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#is_zipped_output
         def isZippedOutput()
             @fields.fetch('image_mode', '') == 'separate' || @fields.fetch('css_mode', '') == 'separate' || @fields.fetch('font_mode', '') == 'separate' || @fields.fetch('force_zip', false) == true
         end
 
-        # Enforces the zip output format.
-        #
-        # * +value+ - Set to true to get the output as a zip archive.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_force_zip
         def setForceZip(value)
             @fields['force_zip'] = value
             self
         end
 
-        # Set the HTML title. The title from the input PDF is used by default.
-        #
-        # * +title+ - The HTML title.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_title
         def setTitle(title)
             @fields['title'] = title
             self
         end
 
-        # Set the HTML subject. The subject from the input PDF is used by default.
-        #
-        # * +subject+ - The HTML subject.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_subject
         def setSubject(subject)
             @fields['subject'] = subject
             self
         end
 
-        # Set the HTML author. The author from the input PDF is used by default.
-        #
-        # * +author+ - The HTML author.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_author
         def setAuthor(author)
             @fields['author'] = author
             self
         end
 
-        # Associate keywords with the HTML document. Keywords from the input PDF are used by default.
-        #
-        # * +keywords+ - The string containing the keywords.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_keywords
         def setKeywords(keywords)
             @fields['keywords'] = keywords
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
-        #
-        # * +value+ - Set to true to enable the debug logging.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_debug_log
         def setDebugLog(value)
             @fields['debug_log'] = value
             self
         end
 
-        # Get the URL of the debug log for the last conversion.
-        # * *Returns* - The link to the debug log.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#get_debug_log_url
         def getDebugLogUrl()
             return @helper.getDebugLogUrl()
         end
 
-        # Get the number of conversion credits available in your account.
-        # This method can only be called after a call to one of the convertXtoY methods.
-        # The returned value can differ from the actual count if you run parallel conversions.
-        # The special value 999999 is returned if the information is not available.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#get_remaining_credit_count
         def getRemainingCreditCount()
             return @helper.getRemainingCreditCount()
         end
 
-        # Get the number of credits consumed by the last conversion.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#get_consumed_credit_count
         def getConsumedCreditCount()
             return @helper.getConsumedCreditCount()
         end
 
-        # Get the job id.
-        # * *Returns* - The unique job identifier.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#get_job_id
         def getJobId()
             return @helper.getJobId()
         end
 
-        # Get the number of pages in the output document.
-        # * *Returns* - The page count.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#get_page_count
         def getPageCount()
             return @helper.getPageCount()
         end
 
-        # Get the size of the output in bytes.
-        # * *Returns* - The count of bytes.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#get_output_size
         def getOutputSize()
             return @helper.getOutputSize()
         end
 
-        # Get the version details.
-        # * *Returns* - API version, converter version, and client version.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#get_version
         def getVersion()
             return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
         end
 
-        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        #
-        # * +tag+ - A string with the custom tag.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_tag
         def setTag(tag)
             @fields['tag'] = tag
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_http_proxy
         def setHttpProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "pdf-to-html", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
@@ -5969,10 +4624,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_https_proxy
         def setHttpsProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "pdf-to-html", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
@@ -5982,10 +4634,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the converter version. Different versions may produce different output. Choose which one provides the best output for your case.
-        #
-        # * +version+ - The version identifier. Allowed values are 24.04, 20.10, 18.10, latest.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_converter_version
         def setConverterVersion(version)
             unless /(?i)^(24.04|20.10|18.10|latest)$/.match(version)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(version, "setConverterVersion", "pdf-to-html", "Allowed values are 24.04, 20.10, 18.10, latest.", "set_converter_version"), 470);
@@ -5995,50 +4644,31 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
-        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
-        #
-        # * +value+ - Set to true to use HTTP.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_use_http
         def setUseHttp(value)
             @helper.setUseHttp(value)
             self
         end
 
-        # Specifies the User-Agent HTTP header that the client library will use when interacting with the API.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_client_user_agent
         def setClientUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_user_agent
         def setUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        #
-        # * +host+ - The proxy hostname.
-        # * +port+ - The proxy port.
-        # * +user_name+ - The username.
-        # * +password+ - The password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_proxy
         def setProxy(host, port, user_name, password)
             @helper.setProxy(host, port, user_name, password)
             self
         end
 
-        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        #
-        # * +count+ - Number of retries.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#set_retry_count
         def setRetryCount(count)
             @helper.setRetryCount(count)
             self
@@ -6053,11 +4683,10 @@ module Pdfcrowd
     end
 
     # Conversion from PDF to text.
+    #
+    # @see https://pdfcrowd.com/api/pdf-to-text-ruby/
     class PdfToTextClient
-        # Constructor for the PDFCrowd API client.
-        #
-        # * +user_name+ - Your username at PDFCrowd.
-        # * +api_key+ - Your API key.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#initialize
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
             @fields = {
@@ -6069,10 +4698,7 @@ module Pdfcrowd
             @raw_data = {}
         end
 
-        # Convert a PDF.
-        #
-        # * +url+ - The address of the PDF to convert. Supported protocols are http:// and https://.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_url
         def convertUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "pdf-to-text", "Supported protocols are http:// and https://.", "convert_url"), 470);
@@ -6082,10 +4708,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a PDF and write the result to an output stream.
-        #
-        # * +url+ - The address of the PDF to convert. Supported protocols are http:// and https://.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_url_to_stream
         def convertUrlToStream(url, out_stream)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "pdf-to-text", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
@@ -6095,10 +4718,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a PDF and write the result to a local file.
-        #
-        # * +url+ - The address of the PDF to convert. Supported protocols are http:// and https://.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_url_to_file
         def convertUrlToFile(url, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "pdf-to-text", "The string must not be empty.", "convert_url_to_file"), 470);
@@ -6115,10 +4735,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_file
         def convertFile(file)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "pdf-to-text", "The file must exist and not be empty.", "convert_file"), 470);
@@ -6128,10 +4745,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a local file and write the result to an output stream.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_file_to_stream
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "pdf-to-text", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
@@ -6141,10 +4755,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a local file and write the result to a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_file_to_file
         def convertFileToFile(file, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "pdf-to-text", "The string must not be empty.", "convert_file_to_file"), 470);
@@ -6161,28 +4772,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert raw data.
-        #
-        # * +data+ - The raw content to be converted.
-        # * *Returns* - Byte array with the output.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_raw_data
         def convertRawData(data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert raw data and write the result to an output stream.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert raw data to a file.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_raw_data_to_file
         def convertRawDataToFile(data, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertRawDataToFile::file_path", "pdf-to-text", "The string must not be empty.", "convert_raw_data_to_file"), 470);
@@ -6199,28 +4801,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert the contents of an input stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_stream
         def convertStream(in_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert the contents of an input stream and write the result to an output stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert the contents of an input stream and write the result to a local file.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_stream_to_file
         def convertStreamToFile(in_stream, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "pdf-to-text", "The string must not be empty.", "convert_stream_to_file"), 470);
@@ -6237,19 +4830,13 @@ module Pdfcrowd
             end
         end
 
-        # The password to open the encrypted PDF file.
-        #
-        # * +password+ - The input PDF password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_pdf_password
         def setPdfPassword(password)
             @fields['pdf_password'] = password
             self
         end
 
-        # Set the page range to print.
-        #
-        # * +pages+ - A comma separated list of page numbers or ranges.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_print_page_range
         def setPrintPageRange(pages)
             unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPrintPageRange", "pdf-to-text", "A comma separated list of page numbers or ranges.", "set_print_page_range"), 470);
@@ -6259,19 +4846,13 @@ module Pdfcrowd
             self
         end
 
-        # Ignore the original PDF layout.
-        #
-        # * +value+ - Set to true to ignore the layout.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_no_layout
         def setNoLayout(value)
             @fields['no_layout'] = value
             self
         end
 
-        # The end-of-line convention for the text output.
-        #
-        # * +eol+ - Allowed values are unix, dos, mac.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_eol
         def setEol(eol)
             unless /(?i)^(unix|dos|mac)$/.match(eol)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(eol, "setEol", "pdf-to-text", "Allowed values are unix, dos, mac.", "set_eol"), 470);
@@ -6281,10 +4862,7 @@ module Pdfcrowd
             self
         end
 
-        # Specify the page break mode for the text output.
-        #
-        # * +mode+ - Allowed values are none, default, custom.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_page_break_mode
         def setPageBreakMode(mode)
             unless /(?i)^(none|default|custom)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setPageBreakMode", "pdf-to-text", "Allowed values are none, default, custom.", "set_page_break_mode"), 470);
@@ -6294,19 +4872,13 @@ module Pdfcrowd
             self
         end
 
-        # Specify the custom page break.
-        #
-        # * +page_break+ - String to insert between the pages.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_custom_page_break
         def setCustomPageBreak(page_break)
             @fields['custom_page_break'] = page_break
             self
         end
 
-        # Specify the paragraph detection mode.
-        #
-        # * +mode+ - Allowed values are none, bounding-box, characters.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_paragraph_mode
         def setParagraphMode(mode)
             unless /(?i)^(none|bounding-box|characters)$/.match(mode)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(mode, "setParagraphMode", "pdf-to-text", "Allowed values are none, bounding-box, characters.", "set_paragraph_mode"), 470);
@@ -6316,10 +4888,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the maximum line spacing when the paragraph detection mode is enabled.
-        #
-        # * +threshold+ - The value must be a positive integer percentage.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_line_spacing_threshold
         def setLineSpacingThreshold(threshold)
             unless /(?i)^0$|^[0-9]+%$/.match(threshold)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(threshold, "setLineSpacingThreshold", "pdf-to-text", "The value must be a positive integer percentage.", "set_line_spacing_threshold"), 470);
@@ -6329,28 +4898,19 @@ module Pdfcrowd
             self
         end
 
-        # Remove the hyphen character from the end of lines.
-        #
-        # * +value+ - Set to true to remove hyphens.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_remove_hyphenation
         def setRemoveHyphenation(value)
             @fields['remove_hyphenation'] = value
             self
         end
 
-        # Remove empty lines from the text output.
-        #
-        # * +value+ - Set to true to remove empty lines.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_remove_empty_lines
         def setRemoveEmptyLines(value)
             @fields['remove_empty_lines'] = value
             self
         end
 
-        # Set the top left X coordinate of the crop area in points.
-        #
-        # * +x+ - Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_crop_area_x
         def setCropAreaX(x)
             if (!(Integer(x) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setCropAreaX", "pdf-to-text", "Must be a positive integer or 0.", "set_crop_area_x"), 470);
@@ -6360,10 +4920,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left Y coordinate of the crop area in points.
-        #
-        # * +y+ - Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_crop_area_y
         def setCropAreaY(y)
             if (!(Integer(y) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setCropAreaY", "pdf-to-text", "Must be a positive integer or 0.", "set_crop_area_y"), 470);
@@ -6373,10 +4930,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the width of the crop area in points.
-        #
-        # * +width+ - Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_crop_area_width
         def setCropAreaWidth(width)
             if (!(Integer(width) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setCropAreaWidth", "pdf-to-text", "Must be a positive integer or 0.", "set_crop_area_width"), 470);
@@ -6386,10 +4940,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the height of the crop area in points.
-        #
-        # * +height+ - Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_crop_area_height
         def setCropAreaHeight(height)
             if (!(Integer(height) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setCropAreaHeight", "pdf-to-text", "Must be a positive integer or 0.", "set_crop_area_height"), 470);
@@ -6399,13 +4950,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the crop area. It allows to extract just a part of a PDF page.
-        #
-        # * +x+ - Set the top left X coordinate of the crop area in points. Must be a positive integer or 0.
-        # * +y+ - Set the top left Y coordinate of the crop area in points. Must be a positive integer or 0.
-        # * +width+ - Set the width of the crop area in points. Must be a positive integer or 0.
-        # * +height+ - Set the height of the crop area in points. Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_crop_area
         def setCropArea(x, y, width, height)
             setCropAreaX(x)
             setCropAreaY(y)
@@ -6414,73 +4959,54 @@ module Pdfcrowd
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
-        #
-        # * +value+ - Set to true to enable the debug logging.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_debug_log
         def setDebugLog(value)
             @fields['debug_log'] = value
             self
         end
 
-        # Get the URL of the debug log for the last conversion.
-        # * *Returns* - The link to the debug log.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#get_debug_log_url
         def getDebugLogUrl()
             return @helper.getDebugLogUrl()
         end
 
-        # Get the number of conversion credits available in your account.
-        # This method can only be called after a call to one of the convertXtoY methods.
-        # The returned value can differ from the actual count if you run parallel conversions.
-        # The special value 999999 is returned if the information is not available.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#get_remaining_credit_count
         def getRemainingCreditCount()
             return @helper.getRemainingCreditCount()
         end
 
-        # Get the number of credits consumed by the last conversion.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#get_consumed_credit_count
         def getConsumedCreditCount()
             return @helper.getConsumedCreditCount()
         end
 
-        # Get the job id.
-        # * *Returns* - The unique job identifier.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#get_job_id
         def getJobId()
             return @helper.getJobId()
         end
 
-        # Get the number of pages in the output document.
-        # * *Returns* - The page count.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#get_page_count
         def getPageCount()
             return @helper.getPageCount()
         end
 
-        # Get the size of the output in bytes.
-        # * *Returns* - The count of bytes.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#get_output_size
         def getOutputSize()
             return @helper.getOutputSize()
         end
 
-        # Get the version details.
-        # * *Returns* - API version, converter version, and client version.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#get_version
         def getVersion()
             return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
         end
 
-        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        #
-        # * +tag+ - A string with the custom tag.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_tag
         def setTag(tag)
             @fields['tag'] = tag
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_http_proxy
         def setHttpProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "pdf-to-text", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
@@ -6490,10 +5016,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_https_proxy
         def setHttpsProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "pdf-to-text", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
@@ -6503,50 +5026,31 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
-        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
-        #
-        # * +value+ - Set to true to use HTTP.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_use_http
         def setUseHttp(value)
             @helper.setUseHttp(value)
             self
         end
 
-        # Specifies the User-Agent HTTP header that the client library will use when interacting with the API.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_client_user_agent
         def setClientUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_user_agent
         def setUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        #
-        # * +host+ - The proxy hostname.
-        # * +port+ - The proxy port.
-        # * +user_name+ - The username.
-        # * +password+ - The password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_proxy
         def setProxy(host, port, user_name, password)
             @helper.setProxy(host, port, user_name, password)
             self
         end
 
-        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        #
-        # * +count+ - Number of retries.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#set_retry_count
         def setRetryCount(count)
             @helper.setRetryCount(count)
             self
@@ -6555,11 +5059,10 @@ module Pdfcrowd
     end
 
     # Conversion from PDF to image.
+    #
+    # @see https://pdfcrowd.com/api/pdf-to-image-ruby/
     class PdfToImageClient
-        # Constructor for the PDFCrowd API client.
-        #
-        # * +user_name+ - Your username at PDFCrowd.
-        # * +api_key+ - Your API key.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#initialize
         def initialize(user_name, api_key)
             @helper = ConnectionHelper.new(user_name, api_key)
             @fields = {
@@ -6571,10 +5074,7 @@ module Pdfcrowd
             @raw_data = {}
         end
 
-        # Convert an image.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_url
         def convertUrl(url)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "pdf-to-image", "Supported protocols are http:// and https://.", "convert_url"), 470);
@@ -6584,10 +5084,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert an image and write the result to an output stream.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_url_to_stream
         def convertUrlToStream(url, out_stream)
             unless /(?i)^https?:\/\/.*$/.match(url)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "pdf-to-image", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
@@ -6597,10 +5094,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert an image and write the result to a local file.
-        #
-        # * +url+ - The address of the image to convert. Supported protocols are http:// and https://.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_url_to_file
         def convertUrlToFile(url, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertUrlToFile::file_path", "pdf-to-image", "The string must not be empty.", "convert_url_to_file"), 470);
@@ -6617,10 +5111,7 @@ module Pdfcrowd
             end
         end
 
-        # Convert a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_file
         def convertFile(file)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "pdf-to-image", "The file must exist and not be empty.", "convert_file"), 470);
@@ -6630,10 +5121,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert a local file and write the result to an output stream.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_file_to_stream
         def convertFileToStream(file, out_stream)
             if (!(File.file?(file) && !File.zero?(file)))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "pdf-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
@@ -6643,10 +5131,7 @@ module Pdfcrowd
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert a local file and write the result to a local file.
-        #
-        # * +file+ - The path to a local file to convert. The file must exist and not be empty.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_file_to_file
         def convertFileToFile(file, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertFileToFile::file_path", "pdf-to-image", "The string must not be empty.", "convert_file_to_file"), 470);
@@ -6663,28 +5148,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert raw data.
-        #
-        # * +data+ - The raw content to be converted.
-        # * *Returns* - Byte array with the output.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_raw_data
         def convertRawData(data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert raw data and write the result to an output stream.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert raw data to a file.
-        #
-        # * +data+ - The raw content to be converted.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_raw_data_to_file
         def convertRawDataToFile(data, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertRawDataToFile::file_path", "pdf-to-image", "The string must not be empty.", "convert_raw_data_to_file"), 470);
@@ -6701,28 +5177,19 @@ module Pdfcrowd
             end
         end
 
-        # Convert the contents of an input stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * *Returns* - Byte array containing the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_stream
         def convertStream(in_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
-        # Convert the contents of an input stream and write the result to an output stream.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +out_stream+ - The output stream that will contain the conversion output.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
 
-        # Convert the contents of an input stream and write the result to a local file.
-        #
-        # * +in_stream+ - The input stream with source data.
-        # * +file_path+ - The output file path. The string must not be empty.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_stream_to_file
         def convertStreamToFile(in_stream, file_path)
             if (!(!file_path.nil? && !file_path.empty?))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file_path, "convertStreamToFile::file_path", "pdf-to-image", "The string must not be empty.", "convert_stream_to_file"), 470);
@@ -6739,10 +5206,7 @@ module Pdfcrowd
             end
         end
 
-        # The format of the output file.
-        #
-        # * +output_format+ - Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_output_format
         def setOutputFormat(output_format)
             unless /(?i)^(png|jpg|gif|tiff|bmp|ico|ppm|pgm|pbm|pnm|psb|pct|ras|tga|sgi|sun|webp)$/.match(output_format)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(output_format, "setOutputFormat", "pdf-to-image", "Allowed values are png, jpg, gif, tiff, bmp, ico, ppm, pgm, pbm, pnm, psb, pct, ras, tga, sgi, sun, webp.", "set_output_format"), 470);
@@ -6752,19 +5216,13 @@ module Pdfcrowd
             self
         end
 
-        # Password to open the encrypted PDF file.
-        #
-        # * +password+ - The input PDF password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_pdf_password
         def setPdfPassword(password)
             @fields['pdf_password'] = password
             self
         end
 
-        # Set the page range to print.
-        #
-        # * +pages+ - A comma separated list of page numbers or ranges.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_print_page_range
         def setPrintPageRange(pages)
             unless /^(?:\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*,\s*)*\s*(?:\d+|(?:\d*\s*\-\s*\d+)|(?:\d+\s*\-\s*\d*))\s*$/.match(pages)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(pages, "setPrintPageRange", "pdf-to-image", "A comma separated list of page numbers or ranges.", "set_print_page_range"), 470);
@@ -6774,43 +5232,30 @@ module Pdfcrowd
             self
         end
 
-        # Set the output graphics DPI.
-        #
-        # * +dpi+ - The DPI value.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_dpi
         def setDpi(dpi)
             @fields['dpi'] = dpi
             self
         end
 
-        # A helper method to determine if the output file from a conversion process is a zip archive. The conversion output can be either a single image file or a zip file containing one or more image files. This method should be called after the conversion has been successfully completed.
-        # * *Returns* - True if the conversion output is a zip archive, otherwise False.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#is_zipped_output
         def isZippedOutput()
             @fields.fetch('force_zip', false) == true || getPageCount() > 1
         end
 
-        # Enforces the zip output format.
-        #
-        # * +value+ - Set to true to get the output as a zip archive.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_force_zip
         def setForceZip(value)
             @fields['force_zip'] = value
             self
         end
 
-        # Use the crop box rather than media box.
-        #
-        # * +value+ - Set to true to use crop box.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_use_cropbox
         def setUseCropbox(value)
             @fields['use_cropbox'] = value
             self
         end
 
-        # Set the top left X coordinate of the crop area in points.
-        #
-        # * +x+ - Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_crop_area_x
         def setCropAreaX(x)
             if (!(Integer(x) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(x, "setCropAreaX", "pdf-to-image", "Must be a positive integer or 0.", "set_crop_area_x"), 470);
@@ -6820,10 +5265,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the top left Y coordinate of the crop area in points.
-        #
-        # * +y+ - Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_crop_area_y
         def setCropAreaY(y)
             if (!(Integer(y) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(y, "setCropAreaY", "pdf-to-image", "Must be a positive integer or 0.", "set_crop_area_y"), 470);
@@ -6833,10 +5275,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the width of the crop area in points.
-        #
-        # * +width+ - Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_crop_area_width
         def setCropAreaWidth(width)
             if (!(Integer(width) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(width, "setCropAreaWidth", "pdf-to-image", "Must be a positive integer or 0.", "set_crop_area_width"), 470);
@@ -6846,10 +5285,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the height of the crop area in points.
-        #
-        # * +height+ - Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_crop_area_height
         def setCropAreaHeight(height)
             if (!(Integer(height) >= 0))
                 raise Error.new(Pdfcrowd.create_invalid_value_message(height, "setCropAreaHeight", "pdf-to-image", "Must be a positive integer or 0.", "set_crop_area_height"), 470);
@@ -6859,13 +5295,7 @@ module Pdfcrowd
             self
         end
 
-        # Set the crop area. It allows to extract just a part of a PDF page.
-        #
-        # * +x+ - Set the top left X coordinate of the crop area in points. Must be a positive integer or 0.
-        # * +y+ - Set the top left Y coordinate of the crop area in points. Must be a positive integer or 0.
-        # * +width+ - Set the width of the crop area in points. Must be a positive integer or 0.
-        # * +height+ - Set the height of the crop area in points. Must be a positive integer or 0.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_crop_area
         def setCropArea(x, y, width, height)
             setCropAreaX(x)
             setCropAreaY(y)
@@ -6874,82 +5304,60 @@ module Pdfcrowd
             self
         end
 
-        # Generate a grayscale image.
-        #
-        # * +value+ - Set to true to generate a grayscale image.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_use_grayscale
         def setUseGrayscale(value)
             @fields['use_grayscale'] = value
             self
         end
 
-        # Turn on the debug logging. Details about the conversion are stored in the debug log. The URL of the log can be obtained from the getDebugLogUrl method or available in conversion statistics.
-        #
-        # * +value+ - Set to true to enable the debug logging.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_debug_log
         def setDebugLog(value)
             @fields['debug_log'] = value
             self
         end
 
-        # Get the URL of the debug log for the last conversion.
-        # * *Returns* - The link to the debug log.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#get_debug_log_url
         def getDebugLogUrl()
             return @helper.getDebugLogUrl()
         end
 
-        # Get the number of conversion credits available in your account.
-        # This method can only be called after a call to one of the convertXtoY methods.
-        # The returned value can differ from the actual count if you run parallel conversions.
-        # The special value 999999 is returned if the information is not available.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#get_remaining_credit_count
         def getRemainingCreditCount()
             return @helper.getRemainingCreditCount()
         end
 
-        # Get the number of credits consumed by the last conversion.
-        # * *Returns* - The number of credits.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#get_consumed_credit_count
         def getConsumedCreditCount()
             return @helper.getConsumedCreditCount()
         end
 
-        # Get the job id.
-        # * *Returns* - The unique job identifier.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#get_job_id
         def getJobId()
             return @helper.getJobId()
         end
 
-        # Get the number of pages in the output document.
-        # * *Returns* - The page count.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#get_page_count
         def getPageCount()
             return @helper.getPageCount()
         end
 
-        # Get the size of the output in bytes.
-        # * *Returns* - The count of bytes.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#get_output_size
         def getOutputSize()
             return @helper.getOutputSize()
         end
 
-        # Get the version details.
-        # * *Returns* - API version, converter version, and client version.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#get_version
         def getVersion()
             return "client " + CLIENT_VERSION + ", API v2, converter " + @helper.getConverterVersion()
         end
 
-        # Tag the conversion with a custom value. The tag is used in conversion statistics. A value longer than 32 characters is cut off.
-        #
-        # * +tag+ - A string with the custom tag.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_tag
         def setTag(tag)
             @fields['tag'] = tag
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTP scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_http_proxy
         def setHttpProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpProxy", "pdf-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_http_proxy"), 470);
@@ -6959,10 +5367,7 @@ module Pdfcrowd
             self
         end
 
-        # A proxy server used by the conversion process for accessing the source URLs with HTTPS scheme. It can help to circumvent regional restrictions or provide limited access to your intranet.
-        #
-        # * +proxy+ - The value must have format DOMAIN_OR_IP_ADDRESS:PORT.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_https_proxy
         def setHttpsProxy(proxy)
             unless /(?i)^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z0-9]{1,}:\d+$/.match(proxy)
                 raise Error.new(Pdfcrowd.create_invalid_value_message(proxy, "setHttpsProxy", "pdf-to-image", "The value must have format DOMAIN_OR_IP_ADDRESS:PORT.", "set_https_proxy"), 470);
@@ -6972,50 +5377,31 @@ module Pdfcrowd
             self
         end
 
-        # Specify whether to use HTTP or HTTPS when connecting to the PDFCrowd API.
-        # Warning: Using HTTP is insecure as data sent over HTTP is not encrypted. Enable this option only if you know what you are doing.
-        #
-        # * +value+ - Set to true to use HTTP.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_use_http
         def setUseHttp(value)
             @helper.setUseHttp(value)
             self
         end
 
-        # Specifies the User-Agent HTTP header that the client library will use when interacting with the API.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_client_user_agent
         def setClientUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Set a custom user agent HTTP header. It can be useful if you are behind a proxy or a firewall.
-        #
-        # * +agent+ - The user agent string.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_user_agent
         def setUserAgent(agent)
             @helper.setUserAgent(agent)
             self
         end
 
-        # Specifies an HTTP proxy that the API client library will use to connect to the internet.
-        #
-        # * +host+ - The proxy hostname.
-        # * +port+ - The proxy port.
-        # * +user_name+ - The username.
-        # * +password+ - The password.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_proxy
         def setProxy(host, port, user_name, password)
             @helper.setProxy(host, port, user_name, password)
             self
         end
 
-        # Specifies the number of automatic retries when the 502 or 503 HTTP status code is received. The status code indicates a temporary network issue. This feature can be disabled by setting to 0.
-        #
-        # * +count+ - Number of retries.
-        # * *Returns* - The converter object.
+        # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#set_retry_count
         def setRetryCount(count)
             @helper.setRetryCount(count)
             self
