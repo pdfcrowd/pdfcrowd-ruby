@@ -558,7 +558,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.5.4'
+    CLIENT_VERSION = '6.6.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -569,7 +569,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.5.4 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.6.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
@@ -1810,6 +1810,16 @@ module Pdfcrowd
             self
         end
 
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_variable_markers
+        def setDataVariableMarkers(markers)
+            unless /(?i)^(standard|square|angle)$/.match(markers)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(markers, "setDataVariableMarkers", "html-to-pdf", "Allowed values are standard, square, angle.", "set_data_variable_markers"), 470);
+            end
+            
+            @fields['data_variable_markers'] = markers
+            self
+        end
+
         # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_data_options
         def setDataOptions(options)
             @fields['data_options'] = options
@@ -2543,6 +2553,16 @@ module Pdfcrowd
         # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_trim_blocks
         def setDataTrimBlocks(value)
             @fields['data_trim_blocks'] = value
+            self
+        end
+
+        # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#set_data_variable_markers
+        def setDataVariableMarkers(markers)
+            unless /(?i)^(standard|square|angle)$/.match(markers)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(markers, "setDataVariableMarkers", "html-to-image", "Allowed values are standard, square, angle.", "set_data_variable_markers"), 470);
+            end
+            
+            @fields['data_variable_markers'] = markers
             self
         end
 
