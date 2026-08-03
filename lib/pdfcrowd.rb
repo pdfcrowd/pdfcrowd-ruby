@@ -558,7 +558,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.6.0'
+    CLIENT_VERSION = '6.7.0'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -569,7 +569,7 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.6.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.7.0 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
@@ -1669,6 +1669,33 @@ module Pdfcrowd
         # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_extract_meta_tags
         def setExtractMetaTags(value)
             @fields['extract_meta_tags'] = value
+            self
+        end
+
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_conformance
+        def setConformance(conformance)
+            unless /(?i)^(PDF\/A-2a|PDF\/A-2b|PDF\/A-2u|PDF\/A-3a|PDF\/A-3b|PDF\/A-3u|PDF\/A-4|PDF\/A-4e|PDF\/A-4f)$/.match(conformance)
+                raise Error.new(Pdfcrowd.create_invalid_value_message(conformance, "setConformance", "html-to-pdf", "Allowed values are PDF/A-2a, PDF/A-2b, PDF/A-2u, PDF/A-3a, PDF/A-3b, PDF/A-3u, PDF/A-4, PDF/A-4e, PDF/A-4f.", "set_conformance"), 470);
+            end
+            
+            @fields['conformance'] = conformance
+            self
+        end
+
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#set_tagged_pdf
+        def setTaggedPdf(value)
+            @fields['tagged_pdf'] = value
+            self
+        end
+
+        # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#add_attachment
+        def addAttachment(attachment)
+            if (!(File.file?(attachment) && !File.zero?(attachment)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(attachment, "addAttachment", "html-to-pdf", "The file must exist and not be empty.", "add_attachment"), 470);
+            end
+            
+            @files['attachment_%s' % @file_id] = attachment
+            @file_id += 1
             self
         end
 
@@ -3416,6 +3443,17 @@ module Pdfcrowd
             self
         end
 
+        # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#add_attachment
+        def addAttachment(attachment)
+            if (!(File.file?(attachment) && !File.zero?(attachment)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(attachment, "addAttachment", "pdf-to-pdf", "The file must exist and not be empty.", "add_attachment"), 470);
+            end
+            
+            @files['attachment_%s' % @file_id] = attachment
+            @file_id += 1
+            self
+        end
+
         # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#set_page_layout
         def setPageLayout(layout)
             unless /(?i)^(single-page|one-column|two-column-left|two-column-right)$/.match(layout)
@@ -4087,6 +4125,17 @@ module Pdfcrowd
         # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#set_keywords
         def setKeywords(keywords)
             @fields['keywords'] = keywords
+            self
+        end
+
+        # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#add_attachment
+        def addAttachment(attachment)
+            if (!(File.file?(attachment) && !File.zero?(attachment)))
+                raise Error.new(Pdfcrowd.create_invalid_value_message(attachment, "addAttachment", "image-to-pdf", "The file must exist and not be empty.", "add_attachment"), 470);
+            end
+            
+            @files['attachment_%s' % @file_id] = attachment
+            @file_id += 1
             self
         end
 
