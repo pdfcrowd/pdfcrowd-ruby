@@ -558,7 +558,7 @@ end
 module Pdfcrowd
     HOST = ENV["PDFCROWD_HOST"] || 'api.pdfcrowd.com'
     MULTIPART_BOUNDARY = '----------ThIs_Is_tHe_bOUnDary_$'
-    CLIENT_VERSION = '6.7.0'
+    CLIENT_VERSION = '6.7.1'
 
     class ConnectionHelper
         def initialize(user_name, api_key)
@@ -569,10 +569,19 @@ module Pdfcrowd
 
             setProxy(nil, nil, nil, nil)
             setUseHttp(false)
-            setUserAgent('pdfcrowd_ruby_client/6.7.0 (https://pdfcrowd.com)')
+            setUserAgent('pdfcrowd_ruby_client/6.7.1 (https://pdfcrowd.com)')
 
             @retry_count = 1
             @converter_version = '24.04'
+        end
+
+        def reset_input(fields, files, raw_data)
+            # Preserve conversion options and auxiliary files between requests.
+            fields.delete('url')
+            fields.delete('text')
+            files.delete('file')
+            raw_data.delete('file')
+            raw_data.delete('stream')
         end
 
         def post(fields, files, raw_data, out_stream = nil)
@@ -792,6 +801,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "html-to-pdf", "Supported protocols are http:// and https://.", "convert_url"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data)
         end
@@ -802,6 +812,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "html-to-pdf", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -813,13 +824,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertUrlToStream(url, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertUrlToStream(url,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -829,6 +852,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "html-to-pdf", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -839,6 +863,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "html-to-pdf", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -850,13 +875,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertFileToStream(file, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertFileToStream(file,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -866,6 +903,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(text, "convertString", "html-to-pdf", "The string must not be empty.", "convert_string"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['text'] = text
             @helper.post(@fields, @files, @raw_data)
         end
@@ -876,6 +914,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(text, "convertStringToStream::text", "html-to-pdf", "The string must not be empty.", "convert_string_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['text'] = text
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -887,24 +926,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStringToStream(text, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStringToStream(text,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_stream
         def convertStream(in_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/html-to-pdf-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -916,13 +969,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStreamToStream(in_stream, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStreamToStream(in_stream,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -2148,6 +2213,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "html-to-image", "Supported protocols are http:// and https://.", "convert_url"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data)
         end
@@ -2158,6 +2224,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "html-to-image", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -2169,13 +2236,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertUrlToStream(url, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertUrlToStream(url,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -2185,6 +2264,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "html-to-image", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -2195,6 +2275,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "html-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -2206,13 +2287,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertFileToStream(file, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertFileToStream(file,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -2222,6 +2315,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(text, "convertString", "html-to-image", "The string must not be empty.", "convert_string"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['text'] = text
             @helper.post(@fields, @files, @raw_data)
         end
@@ -2232,6 +2326,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(text, "convertStringToStream::text", "html-to-image", "The string must not be empty.", "convert_string_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['text'] = text
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -2243,24 +2338,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStringToStream(text, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStringToStream(text,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_stream
         def convertStream(in_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/html-to-image-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -2272,13 +2381,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStreamToStream(in_stream, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStreamToStream(in_stream,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -2763,6 +2884,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "image-to-image", "Supported protocols are http:// and https://.", "convert_url"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data)
         end
@@ -2773,6 +2895,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "image-to-image", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -2784,13 +2907,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertUrlToStream(url, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertUrlToStream(url,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -2800,6 +2935,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "image-to-image", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -2810,6 +2946,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "image-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -2821,24 +2958,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertFileToStream(file, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertFileToStream(file,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_raw_data
         def convertRawData(data)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -2850,24 +3001,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertRawDataToStream(data, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertRawDataToStream(data,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_stream
         def convertStream(in_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/image-to-image-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -2879,13 +3044,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStreamToStream(in_stream, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStreamToStream(in_stream,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -3245,8 +3422,26 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
-            convertToStream(output_file)
-            output_file.close()
+            succeeded = false
+            begin
+                convertToStream(output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
+            end
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-pdf-ruby/ref/#add_pdf_file
@@ -3657,6 +3852,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "image-to-pdf", "Supported protocols are http:// and https://.", "convert_url"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data)
         end
@@ -3667,6 +3863,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "image-to-pdf", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -3678,13 +3875,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertUrlToStream(url, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertUrlToStream(url,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -3694,6 +3903,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "image-to-pdf", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -3704,6 +3914,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "image-to-pdf", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -3715,24 +3926,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertFileToStream(file, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertFileToStream(file,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_raw_data
         def convertRawData(data)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -3744,24 +3969,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertRawDataToStream(data, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertRawDataToStream(data,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_stream
         def convertStream(in_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/image-to-pdf-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -3773,13 +4012,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStreamToStream(in_stream, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStreamToStream(in_stream,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -4351,6 +4602,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "pdf-to-html", "Supported protocols are http:// and https://.", "convert_url"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data)
         end
@@ -4361,6 +4613,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "pdf-to-html", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -4376,13 +4629,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertUrlToStream(url, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertUrlToStream(url,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -4392,6 +4657,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "pdf-to-html", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -4402,6 +4668,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "pdf-to-html", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -4417,24 +4684,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertFileToStream(file, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertFileToStream(file,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_raw_data
         def convertRawData(data)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -4450,24 +4731,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertRawDataToStream(data, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertRawDataToStream(data,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_stream
         def convertStream(in_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-html-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -4483,13 +4778,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStreamToStream(in_stream, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStreamToStream(in_stream,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -4773,6 +5080,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "pdf-to-text", "Supported protocols are http:// and https://.", "convert_url"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data)
         end
@@ -4783,6 +5091,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "pdf-to-text", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -4794,13 +5103,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertUrlToStream(url, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertUrlToStream(url,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -4810,6 +5131,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "pdf-to-text", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -4820,6 +5142,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "pdf-to-text", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -4831,24 +5154,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertFileToStream(file, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertFileToStream(file,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_raw_data
         def convertRawData(data)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -4860,24 +5197,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertRawDataToStream(data, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertRawDataToStream(data,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_stream
         def convertStream(in_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-text-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -4889,13 +5240,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStreamToStream(in_stream, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStreamToStream(in_stream,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -5149,6 +5512,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrl", "pdf-to-image", "Supported protocols are http:// and https://.", "convert_url"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data)
         end
@@ -5159,6 +5523,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(url, "convertUrlToStream::url", "pdf-to-image", "Supported protocols are http:// and https://.", "convert_url_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @fields['url'] = url
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -5170,13 +5535,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertUrlToStream(url, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertUrlToStream(url,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
@@ -5186,6 +5563,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFile", "pdf-to-image", "The file must exist and not be empty.", "convert_file"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data)
         end
@@ -5196,6 +5574,7 @@ module Pdfcrowd
                 raise Error.new(Pdfcrowd.create_invalid_value_message(file, "convertFileToStream::file", "pdf-to-image", "The file must exist and not be empty.", "convert_file_to_stream"), 470);
             end
             
+            @helper.reset_input(@fields, @files, @raw_data)
             @files['file'] = file
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -5207,24 +5586,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertFileToStream(file, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertFileToStream(file,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_raw_data
         def convertRawData(data)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_raw_data_to_stream
         def convertRawDataToStream(data, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['file'] = data
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -5236,24 +5629,38 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertRawDataToStream(data, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertRawDataToStream(data,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_stream
         def convertStream(in_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data)
         end
 
         # @see https://pdfcrowd.com/api/pdf-to-image-ruby/ref/#convert_stream_to_stream
         def convertStreamToStream(in_stream, out_stream)
+            @helper.reset_input(@fields, @files, @raw_data)
             @raw_data['stream'] = in_stream.read
             @helper.post(@fields, @files, @raw_data, out_stream)
         end
@@ -5265,13 +5672,25 @@ module Pdfcrowd
             end
             
             output_file = open(file_path, "wb")
+            succeeded = false
             begin
-                convertStreamToStream(in_stream, output_file)
-                output_file.close()
-            rescue Error => why
-                output_file.close()
-                FileUtils.rm(file_path)
-                raise
+                convertStreamToStream(in_stream,output_file)
+                succeeded = true
+            ensure
+                if succeeded
+                    output_file.close()
+                else
+                    begin
+                        output_file.close()
+                    rescue Exception
+                        # Preserve the conversion failure.
+                    end
+                    begin
+                        FileUtils.rm(file_path)
+                    rescue Exception
+                        # Removing a failed output must not mask the original failure.
+                    end
+                end
             end
         end
 
